@@ -1,0 +1,454 @@
+
+/* scroll */
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #383357; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #4c4e89; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #8682d9; 
+}
+
+/* scroll */
+
+
+.el-calendar {
+  background-color: transparent !important;
+  padding: 0 20px;
+  margin-top: 10px !important;
+}
+
+.el-calendar__title {
+  color: #fff !important;
+  align-self: center;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+}
+
+.el-calendar-table thead th {
+  font-size: 0;
+}
+
+.el-calendar-table thead th:first-letter {
+  font-size: 12px !important;
+}
+.el-calendar__header {
+  border-bottom: none !important;
+  padding: 12px 20px 12px 0px !important;
+}
+.el-calendar-table thead th {
+  margin-left: 10px !important;
+  padding: 12px 0 12px 23px !important;
+  font-weight: 400;
+  color: #A2B0D5 !important;
+}
+.el-calendar__body {
+     padding: 0px !important;
+}
+.el-calendar-table .el-calendar-day {
+  box-sizing: border-box;
+  /* padding: 8px; */
+  height: 32px !important;
+  background-color: #16153C !important;
+  margin: 4px !important;
+  border-radius: 3px !important;
+}
+td.current.is-selected .el-calendar-day{
+  border: 1px solid #2280aa !important;
+}
+td.current.is-selected {
+  background-color: transparent !important;
+}
+td.prev .el-calendar-day, td.next .el-calendar-day{
+  background-color: transparent !important;
+}
+
+.el-button-group>.el-button:first-child {
+  /* border-top-right-radius: 0;
+  border-bottom-right-radius: 0; */
+  display: none !important;
+}
+td.current .el-calendar-day {
+  padding: 4px !important;
+}
+
+td.current.is-selected.is-today .el-calendar-day {
+  background: linear-gradient(270deg, #403B62 0%, #3C4F6F 100%) !important;
+  border: 1px solid #2280aa !important;
+}
+td {
+  text-align: center;
+}
+.el-calendar-day span {
+  font-size: 12px;
+}
+.el-calendar-table tr td:first-child {
+  border-left: none !important;
+}
+
+.el-calendar-table tr:first-child td {
+  border-top: none !important;
+}
+
+.el-calendar-table td {
+  border-bottom: none !important;
+  border-right: none !important;
+  /* vertical-align: top;
+  transition: background-color .2s ease; */
+  /* background-color: red; */
+  
+  /* margin-right: 10px !important; */
+}
+
+.el-input-group__append, .el-input-group__prepend, .el-input-group--prepend .el-input__inner {
+  border: 1px solid rgba(255, 255, 255, .16) !important;
+}
+
+.el-input-group--prepend .el-input__inner {
+  border-left: 0px !important;
+}
+.el-card.box-card.card-left-panel{
+  border: none !important;
+  cursor: pointer !important;
+}
+
+.el-button {
+  cursor: pointer;
+  background: #42427c !important;
+  border: 1px solid #57698e !important; 
+  color: #cbcbcb !important;
+}
+.events-box {
+  box-sizing: border-box;
+  /* display: flex; */
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 8px 9px;
+  gap: 10px;
+  /* width: 328px; */
+  height: 57px;
+  background: linear-gradient(270deg, #403B62 0%, #3C4F6F 100%);
+  border: 0.5px solid #5CE6E6;
+  border-radius: 4px;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  margin: 0px 20px;
+}
+
+.bookings-sub-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #A2B0D5;
+}
+.bookings-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+.left-panel-wrapper {
+  display: inline-block;
+  height: 82vh;
+  overflow: auto;
+  padding-bottom: 100px;
+}
+.right-panel-wrapper {
+  display: inline-block;
+  text-align: left;
+  width: 100%;
+  height: 81vh;
+  overflow: auto;
+  padding-bottom: 80px !important;
+}
+.left-panel {
+  text-align: left !important;
+}
+.el-card.box-card.card-left-panel > .el-card__body {
+  background-color: #16153C;
+
+}
+div.card-content-title {
+  color: #ffffff;
+  text-align: left;
+  font-weight: 700;
+  padding-left: 16px;
+  padding-top: 21px;
+  font-size: 18px;
+  font-family: sans-serif;
+}
+h3.selected-menu.custom-menu {
+  margin: 0px !important;
+  margin-block: 0px !important;
+  display: inline-block !important;
+  color: #5CE6E6;
+  font-weight: 300;
+  padding-top: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  padding-right: 20px;
+  margin-left: 48px !important;
+}
+
+h3.custom-menu {
+  margin: 0px !important;
+  margin-block: 0px !important;
+  display: inline-block !important;
+  color: #ffffff;
+  font-weight: 300;
+  padding-top: 10px;
+  font-weight: 600;
+  font-size: 14px;
+}
+div.card-content-region {
+  color: #ffffff;
+  text-align: left;
+  font-weight: 700;
+  padding-left: 16px;
+  /* padding-top: 42px; */
+  font-size: 32px;
+  font-family: sans-serif;
+}
+div.card-content-sched {
+  color: #ffffff;
+  text-align: left;
+  font-weight: 600;
+  padding-left: 16px;
+  padding-top: 51px;
+  font-size: 12px;
+  font-family: sans-serif;
+}
+.el-card.box-card.card-left-panel > .el-card__header {
+  padding: 0px !important;
+  border-bottom: none !important;
+}
+
+.card-header-content {
+  height: 158px !important;
+}
+
+.text.item {
+  color: #A2B0D5;
+  text-align: justify;
+  font-size: 12px;
+  font-weight: 400;
+}
+.full-height {
+  display: block;
+  overflow: hidden;
+}
+
+/* .radial-gradient {
+background-image: radial-gradient(
+  farthest-corner at 40px 40px,
+  #f35 0%,
+  #43e 100%
+);
+} */
+
+#app {
+margin-top: 0px !important;
+background-image: radial-gradient(
+  farthest-corner at 40px 40px,
+  #1F294E 0%,
+  #201D46 100%
+);
+color: #fff;
+}
+html, body {
+/*background-color: #fff;*/
+/*color: #636b6f;*/
+font-family: sans-serif;
+font-weight: 200;
+height: 100vh;
+margin: 0;
+
+}
+a.custom-link {
+color: #5494fe;
+}
+
+i.el-icon-circle-plus {
+position: absolute;
+margin-top: 17px;
+margin-left: 16px;
+color: grey;
+}
+
+.channel-item:hover {
+background-color: #596791;
+cursor: pointer;
+}
+.full-height {
+height: 100vh;
+}
+
+.flex-center {
+align-items: center;
+display: flex;
+justify-content: center;
+}
+
+.position-ref {
+position: relative;
+}
+
+.top-right {
+position: absolute;
+right: 10px;
+top: 18px;
+}
+
+.content {
+text-align: center;
+}
+
+.title {
+font-size: 84px;
+}
+
+.left-panel, .right-panel {
+height: 100vh;
+}
+
+.left-panel {
+/* background-color: rgba(255, 255, 255, .07); */
+background-image: radial-gradient(
+  farthest-corner at 280px 50px,
+  #2D2C56 40%,
+  #2D2751 100%
+);
+color: #fff;
+
+}
+.left-panel > .panel-header {
+  padding: 27.8px 0 27.8px 20px !important;
+}
+.right-panel > .panel-header {
+padding:20px;
+}
+.panel-header {
+
+text-align: left;
+border-bottom: 1px solid rgb(255 255 255 / 13%);
+}
+
+.channel-item {
+text-align: left;
+padding: 10px 30px;
+}
+
+.channel-items {
+text-align: left;
+padding: 10px 30px;
+}
+.channel-item-container {
+display: inline-block;
+margin-top: 30px;
+}
+.chat-selected {
+background-color: #596791;
+}
+.channel-item > .el-badge.item {
+float: right;
+
+}
+
+.channel-item > .el-badge.item > .el-badge__content {
+border: none !important;
+}
+.item-read {
+color: rgba(255, 255, 255, .57);
+}
+
+.el-dropdown {
+  background: #16153C !important;
+  border-radius: 3px !important;
+  padding: 5px !important;
+}
+
+span.avatar-head-panel.el-avatar.el-avatar--circle {
+height: 40px !important;
+width: 40px !important;
+line-height: 60px;
+position: absolute;
+right: 30px;
+}
+.el-input__inner, .el-input-group__prepend {
+background-color: transparent !important;
+border: 1px solid rgba(220, 223, 230, .19);
+}
+
+.el-input-group__prepend {
+  border-right: 0px !important;
+  padding: 0 0px 0 10px !important;
+}
+.message-item-container {
+color: #ffffff;
+display: inline-block;
+padding-top: 20px;
+}
+
+span.avatar-message-panel.el-avatar.el-avatar--circle {
+float: left;
+height: 40px !important;
+width: 40px !important;
+/* padding: 10px; */
+}
+
+.message-item {
+display: inline-block;
+margin-left: 10px;
+width: 95%;
+}
+
+span.message-item-date {
+color:#7f89b5;
+margin-left: 50px;
+}
+
+.message-item-name {
+padding-bottom: 10px;
+}
+
+.chatbox.el-textarea {
+width: 80%;
+margin-right: 15px;
+}
+
+.chatbox.el-textarea > .el-textarea__inner {
+
+/* background-color: transparent !important;
+border: 1px solid rgba(220, 223, 230, .14) !important;
+font-family: inherit; */
+background-color: transparent !important;
+border: 1px solid rgba(220, 223, 230, .14) !important;
+font-family: inherit;
+text-indent: 26px;
+line-height: 17px;
+padding-top: 15px;
+padding-bottom: 0px;
+
+}
+
+.btn-send.el-button--success {
+color: #FFF;
+background-color: #67C23A;
+border-color: #67C23A;
+padding: 18px 50px;
+}
+.message-box-container.el-col.el-col-24 {
+bottom: 19px;
+position: absolute;
+display: block;
+width: 75%;
+}
