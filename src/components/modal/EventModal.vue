@@ -37,7 +37,9 @@
           <div style="color: #ffffff;">Weekly</div>
         </div>  
       </div>
-      <span style="color: #ffffff;padding: 20px 0 15px;display: inline-block;">Available past recordings:</span>
+      <span v-if="type === 'upcoming'" style="color: #ffffff;padding: 20px 0 15px;display: inline-block;">Available past recordings:</span>
+      <span v-else style="color: #ffffff;padding: 20px 0 15px;display: inline-block;">Book from available dates:</span>
+      
       <div v-if="type === 'upcoming'" class="video-wrapper" :style="{ backgroundImage: 'url(' + thumbnail_image + ')' }">
 
       </div>
