@@ -5,9 +5,10 @@
         <el-col :span="18" class="right-panel">
           <el-col :span="24" class="panel-header">
             <el-col :span="17">
-              <h3 class="selected-menu custom-menu">Upcoming Events</h3>
-              <h3 class="custom-menu">Recordings</h3>
-              
+              <!-- <h3 class="selected-menu custom-menu">Upcoming Events</h3>
+              <h3 class="custom-menu">Recordings</h3> -->
+              <el-radio v-model="radio" label="upcoming" style="margin-left: 48px !important; padding-top: 15px;" @change="getTypes('upcoming')">Upcoming Events</el-radio>
+              <el-radio v-model="radio" label="recording" @change="getTypes('recording')">Recordings</el-radio>
             </el-col>
             <el-col :span="7">
               <el-col :span="8">
@@ -39,7 +40,7 @@
           </el-col>
          
           <!-- <MessagePanelComponent/> -->
-          <LeftContent/>
+          <LeftContent :type="radio"/>
         </el-col>
         <el-col :span="6" class="left-panel">
           <el-col :span="24" class="panel-header">
@@ -69,7 +70,8 @@
     data() {
       return {
         search: '',
-        use_region: 'gb'
+        use_region: 'gb',
+        radio: 'upcoming'
       }
     },
     methods: {
@@ -86,6 +88,9 @@
       },
       getCountryByRegion(region) {
         console.log(region)
+      },
+      getTypes(type) {
+        this.radio = type
       }
     },
     
