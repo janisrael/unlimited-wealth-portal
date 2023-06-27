@@ -485,7 +485,7 @@ span.modal-span {
   text-align: left;
   display: inline-block;
   color: #A2B0D5;
-
+  word-break: break-word;
 }
 
 
@@ -500,7 +500,7 @@ span.modal-span {
   background-size: cover;
 }
 
-.slick-track {
+/* .slick-track {
   width: 100% !important;
   
 }
@@ -508,7 +508,7 @@ span.modal-span {
 .slick-slide {
   
   width: 100% !important;
-}
+} */
 
 .carousel-block .carouse-content {
   /* height: 130px; */
@@ -524,4 +524,36 @@ span.modal-span {
   border-left: 10px solid #17153C;
   border-right: 10px solid #17153C;
   color: #ffffff;
+}
+
+#carousel-wrapper {
+  display: block;
+  width: 97%;
+  margin-left: 12px;
+  margin-top: 10px;
+}
+
+.el-dialog__body {
+  width: 95% !important;
+}
+
+.carousel-checked {
+  right: 90px;
+  top: -43px;
+}
+
+.icon-play {
+  color: #5CE6E6;
+  margin-top: 5px;
+  font-size: 20px;
+}
+
+.carousel-day {
+  margin-top: -16px;
+  font-size: 12px;
+  color: #A2B0D5;
+}
+
+.el-checkbox__inner {
+  background-color: #18153C !important;
 }
