@@ -4,6 +4,7 @@
       title=""
       :visible.sync="dialogVisible"
       width="30%"
+      top="20%"
       :before-close="handleClose">
 
       <el-col :span="24">
@@ -115,5 +116,9 @@
   font-size: 14px;
   font-weight: 600;
   color: #ffffff;
+}
+
+.el-dialog {
+  margin: 50px 30px 50px auto !important;
 }
 </style>
