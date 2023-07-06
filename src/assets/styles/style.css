@@ -186,6 +186,8 @@ div.card-content-title {
   padding-top: 21px;
   font-size: 18px;
   font-family: sans-serif;
+  /* text-shadow: 1px 1px 2px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a; */
+  text-shadow: 2px 3px 5px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a;
 }
 h3.selected-menu.custom-menu {
   margin: 0px !important;
@@ -218,6 +220,7 @@ div.card-content-region {
   /* padding-top: 42px; */
   font-size: 32px;
   font-family: sans-serif;
+  text-shadow: 2px 3px 5px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a;
 }
 div.card-content-sched {
   color: #ffffff;
@@ -227,6 +230,8 @@ div.card-content-sched {
   padding-top: 51px;
   font-size: 12px;
   font-family: sans-serif;
+  text-shadow: 2px 3px 5px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a;
+  
 }
 .el-card.box-card.card-left-panel > .el-card__header {
   padding: 0px !important;
@@ -497,7 +502,7 @@ span.modal-span {
 
 .video-wrapper {
   width: 100%;
-  height: 445px;
+  min-height: 404px;
   background-size: cover;
 }
 
@@ -511,7 +516,7 @@ span.modal-span {
   width: 100% !important;
 } */
 
-.carousel-block .carouse-content {
+.carousel-block .carousel-content {
   /* height: 130px; */
   text-align: center;
   padding: 36px 0px;
@@ -525,6 +530,7 @@ span.modal-span {
   border-left: 10px solid #17153C;
   border-right: 10px solid #17153C;
   color: #ffffff;
+  cursor: pointer;
 }
 
 #carousel-wrapper {
@@ -539,7 +545,7 @@ span.modal-span {
 }
 
 .carousel-checked {
-  right: 90px;
+  right: -63px;
   top: -43px;
 }
 
@@ -580,4 +586,17 @@ span.modal-span {
   margin-top: 0px;
   display: block;
   margin-left: 8px;
+}
+
+.calendar-modal .el-dialog {
+  margin: 50px 30px 50px auto !important;
+}
+
+.carousel-formated-date {
+  font-size: 18px; 
+  font-weight: 400;
+}
+
+.slick-slide.slick-active.slick-current .carousel-content {
+  background-color: #3e376a;
 }

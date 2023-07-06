@@ -9,6 +9,7 @@
               <h3 class="custom-menu">Recordings</h3> -->
               <el-radio v-model="radio" label="upcoming" style="margin-left: 48px !important; padding-top: 15px;" @change="getTypes('upcoming')">Upcoming Events</el-radio>
               <el-radio v-model="radio" label="recording" @change="getTypes('recording')">Recordings</el-radio>
+
             </el-col>
             <el-col :span="7">
               <el-col :span="8">
@@ -40,7 +41,7 @@
           </el-col>
          
           <!-- <MessagePanelComponent/> -->
-          <LeftContent :type="radio"/>
+          <LeftContent :type="radio" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region"/>
         </el-col>
         <el-col :span="6" class="left-panel">
           <el-col :span="24" class="panel-header">
@@ -71,20 +72,43 @@
       return {
         search: '',
         use_region: 'gb',
-        radio: 'upcoming'
+        radio: 'upcoming',
+        events: [],
+        recordings: [],
+        selected_region: 'uk',
+        tumbnail_region_title: 'Europe',
+        region: 'uk'
       }
     },
+    mounted () {
+      this.getEvents()
+      
+    },
     methods: {
+      getEvents() {
+        var url = 'https://uw-portal-api.tinkerpub.com/api/event-types/' + this.selected_region
+        this.axios
+        .get(url)
+        .then(response => (this.events = response.data.data))
+      },
       handleChangeRegion(command) {
         if(command) {
           if(command === 'uk') {
             this.use_region = 'gb'
+            
+            this.tumbnail_region_title = 'Europe'
+          } else if(command === 'aus' || command === 'au') {
+            this.use_region = command
+            this.tumbnail_region_title = 'Australia'
           } else {
             this.use_region = command
+            this.tumbnail_region_title = 'Philippines'
           }
-          
+          this.region = command
         
         }
+        this.selected_region = command
+        this.getEvents()
       },
       getCountryByRegion(region) {
         console.log(region)
