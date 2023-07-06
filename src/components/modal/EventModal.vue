@@ -1,11 +1,12 @@
 <template>
   <div>
     <el-dialog
-      title="LFX Daily webinar - Europe"
+      :title="event.name"
       :visible.sync="dialogVisible"
       width="50%"
+      :close-on-click-modal="false"
       :before-close="handleClose">
-      <span class="modal-span">Get ahead of the curve with our early morning briefing. Our trader mentors will help you look trough the markets to see what’s going on and some places that you might want to look for today’s trades.</span>
+      <span class="modal-span">{{ event.description }}</span>
       <el-col :span="24">
       <div style="  display: inline-block; width: 100%; text-align: left;  padding: 20px 5px 10px;">
         <div style="  display: inline-block;margin-right: 10px;">
@@ -25,7 +26,7 @@
 
         <div style="  display: inline-block;padding: 0 50px">
           <div style="color: #A2B0D5;font-zie: 12px;">Region:</div>
-          <div style="color: #ffffff;">UK</div>
+          <div style="color: #ffffff;" v-if="event_list.length">{{ event_list[0].region }}</div>
         </div>  
 
         <div style="  display: inline-block;padding: 0 50px">
@@ -40,98 +41,41 @@
       <span v-if="type === 'recording'" style="color: #ffffff;padding: 30px 0 15px;display: inline-block;">Available past recordings:</span>
       <span v-else style="color: #ffffff;padding: 30px 0 15px;display: inline-block;">Book from available dates:</span>
       
-      <div v-if="type === 'recording'" class="video-wrapper" :style="{ backgroundImage: 'url(' + thumbnail_image + ')' }">
+      <!-- <div v-if="type === 'recording'" class="video-wrapper" :style="{ backgroundImage: 'url(' + thumbnail_image + ')' }"> -->
+      <div v-if="type === 'recording'" class="video-wrapper">
         <div class="player-container">
-            <vue-core-video-player @play="handlePLay()" src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"></vue-core-video-player>
+            <vue-core-video-player @play="handlePLay()" :src="video_url"></vue-core-video-player>
           </div>
       </div>
-      <div id="carousel-wrapper">
-        <VueSlickCarousel v-if="type === 'upcoming'" v-bind="settings" :arrows="true" >
-          <div class="carousel-block">
-            <div class="carouse-content">
-              <el-checkbox v-model="checked1" class="carousel-checked"></el-checkbox>
-              <div class="carousel-day">Wednesday</div>
-              1st May
+
+      <!--  carousels upcoming -->
+      <div v-if="type === 'upcoming'" id="carousel-wrapper">
+        <VueSlickCarousel v-if="event_list.length" ref="slick" v-bind="settings">
+          <div v-for="(event, i) in event_list" :key="i" class="carousel-block">
+            <div class="carousel-content" @click="getSelected(event, i)">
+              <el-checkbox v-model="event.selected" class="carousel-checked"></el-checkbox>
+              <div class="carousel-day">{{ getDate(event.date) }}</div>
+               <div class="carousel-formated-date">{{ getFormatedDate(event.date) }}</div>
+               <div>{{ getMonth(event.date) }}</div>
             </div>
-          </div>
-          <div class="carousel-block">
-            <div class="carouse-content">
-            <el-checkbox v-model="checked2" class="carousel-checked"></el-checkbox>
-            <div class="carousel-day">Wednesday</div>
-            2nd May
-            </div>
-          </div>
-          <div class="carousel-block">
-            <div class="carouse-content">
-            <el-checkbox v-model="checked3" class="carousel-checked"></el-checkbox>
-            <div class="carousel-day">Wednesday</div>
-            3rd May
-            </div>
-          </div>
-          <div class="carousel-block">
-            <div class="carouse-content">
-            <el-checkbox v-model="checked4" class="carousel-checked"></el-checkbox>
-            <div class="carousel-day">Wednesday</div>
-            4th May
-            </div>
-          </div>
-          <div class="carousel-block">
-            <div class="carouse-content">
-            <el-checkbox v-model="checked5" class="carousel-checked"></el-checkbox>
-            <div class="carousel-day">Wednesday</div>
-            5th May
-            </div>
-          </div>
-          <div class="carousel-block">
-            <div class="carouse-content">
-            <el-checkbox v-model="checked6" class="carousel-checked"></el-checkbox>
-            <div class="carousel-day">Wednesday</div>
-            6th May</div>
           </div>
         </VueSlickCarousel>
-
-
-        <VueSlickCarousel v-else v-bind="settings" :arrows="true" >
-          <div class="carousel-block">
-            <div class="carouse-content">
-              1st May
-              <div><i class="el-icon-video-play icon-play"></i></div>
-              
-            </div>
-          </div>
-          <div class="carousel-block">
-            <div class="carouse-content">
-            2nd May
-            <div><i class="el-icon-video-play icon-play"></i></div>
-            </div>
-          </div>
-          <div class="carousel-block">
-            <div class="carouse-content">
-            3rd May
-            <div><i class="el-icon-video-play icon-play"></i></div>
-            </div>
-          </div>
-          <div class="carousel-block">
-            <div class="carouse-content">
-            4th May
-            <div><i class="el-icon-video-play icon-play"></i></div>
-            </div>
-          </div>
-          <div class="carousel-block">
-            <div class="carouse-content">
-            5th May
-            <div><i class="el-icon-video-play icon-play"></i></div>
-            </div>
-          </div>
-          <div class="carousel-block">
-            <div class="carouse-content">
-            6th May
-            <div><i class="el-icon-video-play icon-play"></i></div>
-            </div>
-            
-          </div>
-        </VueSlickCarousel>
+        <div v-else>
+          No available dates
+        </div>
       </div>
+      <!--  carousels recordnings -->
+      <div v-else id="carousel-wrapper">
+          <VueSlickCarousel v-if="event_list.length" ref="slick" v-bind="settings">
+            <div v-for="(event, i) in event_list" :key="i" class="carousel-block">
+              <div class="carousel-content"  @click="getSelected(event, i)">
+                {{ getFormatedDate(event.date) }}
+                <div><i class="el-icon-video-play icon-play"></i></div>
+              </div>
+            </div>   
+          </VueSlickCarousel>
+        </div>
+
       </el-col>
       <span slot="footer" class="dialog-footer">
         <!-- <el-button @click="dialogVisible = false">Cancel</el-button>
@@ -158,62 +102,109 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css'
         type: String,
         required: true
       },
+      event_list: {
+        type: Array,
+        required: true
+      },
+      event: {
+        type: Object,
+        required: true
+      }
     },
     data() {
       return {
         dialogVisible: true,
         thumbnail_image: require('../../assets/images/video-thumbnail.png'),
-        checked1: true,
-        checked2: false,
-        checked3: false,
-        checked4: false,
-        checked5: false,
-        checked6: false,
         settings: {
           dots: false,
-          focusOnSelect: false,
+          focusOnSelect: true,
           infinite: false,
           speed: 500,
           slidesToShow: 5,
           slidesToScroll: 5,
-          touchThreshold: 7,
+          touchThreshold: 9,
           arrows: true,
-          centerMode: true,
-          // dots: false,
-          // // centerPadding: "0px",
-          // lazyLoad: "progressive",
-          // focusOnSelect: true,
-          // infinite: false,
-          // slidesPerRow: 5,
-          // // rows: 1,
-          // // accessibility: true,
-          // speed: 300,
-          // // edgeFriction: 0.35,
-          // slidesToShow: 5,
-          // slidesToScroll: 5,
-          // dontAnimate: true,
-          // touchThreshold: 7,
-          // arrows: true,
-          // // variableWidth: true,
-          // centerMode: true,
-          // draggable: true,
-          // // windowWidth: null,
-          initialSlide: 2,
+          centerMode: false,
+          accessibility: true,
+          edgeFriction: 0.35,
         },
+        video_url: ''
       };
     },
     methods: {
       handleClose() {
         this.dialogVisible = false
         this.$emit('close')
-        // this.$confirm('Are you sure to close this dialog?')
-        //   .then(_ => {
-        //     done();
-        //   })
-        //   .catch(_ => {});
+        
       },
       handlePLay() {
         console.log('play')
+      },
+      getDate(date) {
+        var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        var d = new Date(date);
+        var dayName = days[d.getDay()];
+        return dayName
+      },
+      getMonth(date) {
+        var d = new Date(date);
+        var month = d.toLocaleString('default', { month: 'short' });
+        return month
+      },
+      getFormatedDate(date) {
+        var d = new Date(date);
+        var month = d.toLocaleString('default', { month: 'short' });
+        var this_date = d.getDate()
+        var dateExt = this.getDateExt(this_date)
+
+        var formated_date = ''
+        if(this.type === 'upcoming') {
+          formated_date = this_date + dateExt
+        } else {
+          formated_date = this_date + dateExt + ' ' + month
+        }
+        return formated_date
+      },
+      getDateExt(date) {
+        if (date > 3 && date < 21) return 'th';
+        switch (date % 10) {
+          case 1:  return "st";
+          case 2:  return "nd";
+          case 3:  return "rd";
+          default: return "th";
+        }
+      },
+      getSelected(event, index) {
+        setTimeout(() => {
+          /* eslint-disable */
+          if(this.type === 'upcoming') {
+            if(this.event_list[index].selected === true) {
+              this.event_list[index].selected = false
+            } else {
+              this.event_list[index].selected = true
+            }
+            
+          } else {
+            this.event_list.forEach((value,index) => {
+              value.selected = false
+            })
+            this.event_list[index].selected = true
+          }
+          
+          this.getVideo(event)
+          console.log(this.event_list)
+          this.$refs.slick.goTo(index)
+        }, 20);
+      },
+      getVideo(event) {
+        var url = event.meta.resource_path
+        this.axios
+        .get(url)
+        .then(response => {
+          if (response.status === 200) {
+            this.video_url = response.data.data.video_recording_url
+          }
+        })
       }
     }
   }

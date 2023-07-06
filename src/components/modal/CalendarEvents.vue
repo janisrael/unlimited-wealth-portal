@@ -5,7 +5,8 @@
       :visible.sync="dialogVisible"
       width="30%"
       top="20%"
-      :before-close="handleClose">
+      :before-close="handleClose"
+      class="calendar-modal">
 
       <el-col :span="24">
         <h4 style="margin-left: 20px;font-size: 14px; font-weight: 600; color: #ffffff;">My events</h4>
@@ -118,7 +119,5 @@
   color: #ffffff;
 }
 
-.el-dialog {
-  margin: 50px 30px 50px auto !important;
-}
+
 </style>
