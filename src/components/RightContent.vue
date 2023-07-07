@@ -2,24 +2,18 @@
   <div class="right-panel-wrapper">
     <!-- <el-row> -->
       <el-col :span="24">
-    <!--    <el-calendar v-model="value">
-        </el-calendar>-->
-
         <el-calendar>
-  <!-- Use 2.5 slot syntax. If you use Vue 2.6, please use new slot syntax-->
           <template
             slot="dateCell"
             slot-scope="{ data }">
-
-             
-            <p :class="data.isSelected ? 'is-selected' : ''" class="calendar-date"  @click="getDate(data)">
+            <div :class="data.isSelected ? 'is-selected' : ''" class="calendar-date"  @click="getDate(data)">
               {{ data.day.split('-').slice(2).join('-') }}
                 <!-- {{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}} -->
-              <span class="dot"></span>
-            </p>
-            
-            
-          <!-- <div class="dot"></div> -->
+              <div style="display: block; width: 100%;margin-top: -7px;">
+                <span v-for="(dot,index) in getDots(data)" :key="index"  class="dot">
+                </span>
+              </div>
+            </div>
         </template>
       </el-calendar>
       </el-col>
@@ -133,7 +127,7 @@
         </el-col>
       </el-col>
     <!-- </el-row> -->
-    <component :is="currentComponent" :date="date" @close="CloseModal()"/>
+    <component :is="currentComponent" :date="date" :event_on_this_day="event_on_this_day" @close="CloseModal()"/>
   </div>
 </template>
 
@@ -145,26 +139,73 @@ import CalendarEvents from '../components/modal/CalendarEvents.vue'
     components: {
       CalendarEvents
     },
+    props: {
+      region: {
+        type: String,
+        require: true
+      },
+    },
     data() {
       return {
         value: new Date(),
         avatar: require('../assets/images/avatar.png'),
         currentComponent: null,
-        date: {}
+        date: {},
+        // region: 'phl',
+        event_list: [],
+        event_on_this_day: []
       }
     },
+    created () {
+      this.getEventsDate()
+    },
     methods: {
+      getEventsDate() {
+        var events = []
+        var url = 'https://uw-portal-api.tinkerpub.com/api/calendar/' + this.region
+        this.axios
+        .get(url)
+        .then(response => {
+          if (response.status === 200) {
+            events = response.data.data
+            const converted_to_array = Object.values(events);
+            this.event_list = converted_to_array
+          }
+          
+        })
+      },
       errorHandler() {
         
       },
       getDate(data) {
-        console.log(data)
         this.date = data
-        this.currentComponent = CalendarEvents
-        // alert(data)
+        this.event_list.forEach((value) => {
+          if(value.events[0].date === this.date.day) {
+            this.event_on_this_day = value
+          }
+        })
+// console.log(this.event_on_this_day,'this.event_on_this_day.length')
+        if(this.event_on_this_day.events) {
+          this.currentComponent = CalendarEvents
+        } else {
+          this.$notify.info({
+            title: 'No Event',
+            message: 'There is no event on this date'
+          });
+        }
+        
       },
       CloseModal() {
         this.currentComponent = null
+      },
+      getDots(data) {
+        var count = 0
+        this.event_list.forEach((value) => {
+          if(value.events[0].date === data.day) {
+            count = value.total
+          }
+        })
+        return count
       }
     },
   }

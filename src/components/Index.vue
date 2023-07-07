@@ -49,7 +49,8 @@
               <i class="el-icon-warning-outline" style="color: #5CE6E6;"></i>
 
           </el-col>
-          <RightContent/>
+          <!-- <RightContent :region="region"/> -->
+          <component ref="calendarComponent" :is="currentRightComponent" :region="region"/>
         </el-col>
 
       </el-col>
@@ -77,7 +78,8 @@
         recordings: [],
         selected_region: 'uk',
         tumbnail_region_title: 'Europe',
-        region: 'uk'
+        region: 'uk',
+        currentRightComponent: null
       }
     },
     mounted () {
@@ -90,6 +92,8 @@
         this.axios
         .get(url)
         .then(response => (this.events = response.data.data))
+        
+        this.currentRightComponent = RightContent
       },
       handleChangeRegion(command) {
         if(command) {
@@ -108,7 +112,16 @@
         
         }
         this.selected_region = command
-        this.getEvents()
+        
+
+        setTimeout(() => {
+          /* eslint-disable */
+          this.currentRightComponent = null
+          this.getEvents()  
+          this.$refs.calendarComponent.getEventsDate()
+        }, 100);
+        
+
       },
       getCountryByRegion(region) {
         console.log(region)

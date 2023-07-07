@@ -32,6 +32,7 @@
               </div>
               <div  class="text item">
                 <!-- Get ahead of the curve with our early morning briefing. Our trader mentors will help you look trough the markets to see what’s going on and some places that you might want to look for today’s trades.  -->
+                <span v-if="!event.description"> -</span>
                 {{ event.description }}
               </div>
             </el-card>
@@ -86,7 +87,6 @@
         var url = ''
         var events = []
         if(this.type === 'upcoming') {
-          // http://uw-portal-api.tinkerpub.com/api/events/upcoming?region=%7Bregion%7D&event_type_id=%7Bevent_type_id%7D
           url = 'https://uw-portal-api.tinkerpub.com/api/events/upcoming?region=' + this.region + '&event_type_id=' + event.id
           this.axios
           .get(url)
