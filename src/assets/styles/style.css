@@ -240,6 +240,10 @@ div.card-content-sched {
 
 .card-header-content {
   height: 158px !important;
+  /* background-color: black; */
+}
+.card-header-content.lazy-background {
+  background-color: #262a5e;
 }
 
 .text.item {
@@ -572,20 +576,24 @@ span.modal-span {
   display: inline-block;
   margin-top: 25px;
   border-radius: 50%;
-  display: block;
+  /* display: block; */
   margin-top: 1px;
+  margin: 0 auto;
+  margin-right: 3px;
+
 }
 .calendar-date {
   text-align: center;
   display: inline-block;
   margin-top: 4px;
   font-size: 12px;
+  width: 100%;
 }
 
 .prev p.calendar-date, .next p.calendar-date{
   margin-top: 0px;
   display: block;
-  margin-left: 8px;
+  /* margin-left: 8px; */
 }
 
 .calendar-modal .el-dialog {
@@ -599,4 +607,26 @@ span.modal-span {
 
 .slick-slide.slick-active.slick-current .carousel-content {
   background-color: #3e376a;
+}
+
+.el-dropdown-menu {
+  background-color: #17153c !important;
+  border: 1px solid #2a3267 !important;
+}
+
+.el-popper[x-placement^=bottom] .popper__arrow {
+  border-bottom-color: #17153c !important;
+}
+
+.el-popper .popper__arrow {
+  border-bottom-color: #2a3267 !important;
+  /* border-color: #17153c !important; */
+  /* background-color: red !important; */
+  /* display: none !important; */
+}
+.el-popper .popper__arrow::after {
+  border-bottom-color: #2a3267 !important;
+  /* border-color: #17153c !important; */
+  /* background-color: red !important; */
+  /* display: none !important; */
 }
