@@ -197,6 +197,7 @@ import CalendarEvents from '../components/modal/CalendarEvents.vue'
       },
       CloseModal() {
         this.currentComponent = null
+        this.event_on_this_day = []
       },
       getDots(data) {
         var count = 0
