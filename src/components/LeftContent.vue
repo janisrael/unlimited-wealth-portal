@@ -13,7 +13,7 @@
                     @onError="onError(event)"
                     image-class="cam-viewport"
                     :blur="0"
-                    position="center"
+                    position="top center"
                     size="cover"
                     style="background-size: cover;"
                     class="card-header-content">
