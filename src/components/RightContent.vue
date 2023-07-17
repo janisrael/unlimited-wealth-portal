@@ -2,6 +2,7 @@
   <div class="right-panel-wrapper">
     <!-- <el-row> -->
       <el-col :span="24">
+      
         <el-calendar>
           <template
             slot="dateCell"
@@ -173,6 +174,7 @@ import CalendarEvents from '../components/modal/CalendarEvents.vue'
         //       'Accept': 'application/json'
         //     }
         //   };
+      
         var url = 'https://uw-portal-api.tinkerpub.com/api/calendar/' + this.region
         this.axios
         .get(url,

@@ -51,7 +51,7 @@
 
           </el-col>
           <!-- <RightContent :region="region"/> -->
-          <component ref="calendarComponent" :is="currentRightComponent" :region="region" :token="token"/>
+          <component v-if="region" ref="calendarComponent" :is="currentRightComponent" :region="region" :token="token"/>
         </el-col>
 
       </el-col>
@@ -109,7 +109,6 @@
       checkToken() {
         var current_url = window.location.href
         var substr = current_url.substring(current_url.indexOf("=") + 1);
-        // this.token = substr
         if(substr) {
           // check token, 
             let url = 'https://uw-portal-api.tinkerpub.com/api/auth/login'
@@ -121,15 +120,15 @@
               if (response.status === 200) {
                   if(response.data.customer.use_region === 'uk') {
                     this.use_region = 'gb'
-                    this.selected_region = response.data.customer.use_region
+                    this.selected_region = 'gb'  
                     this.region = response.data.customer.use_region
                   }
-                  // this.currentRightComponent = null   
                   // this.currentLeftComponent = LoginComponent   
                   const sessionStorage = window.sessionStorage
                   sessionStorage.setItem('token', response.data.app_session.session_key)
                   this.token = sessionStorage.getItem('token')
                   this.verification = true
+                  this.currentRightComponent = RightContent
                   this.getEvents()
               } else {
                   this.verification = false
@@ -149,6 +148,12 @@
                   })
             .then(response => {
               if (response.status === 200) {
+                  if(response.data.customer.use_region === 'uk') {
+                    this.use_region = 'gb'
+                    this.selected_region = 'gb'  
+                    this.region = response.data.customer.use_region
+                  }
+
                   this.verification = true
                   const sessionStorage = window.sessionStorage
                   sessionStorage.setItem('token', response.data.app_session.session_key)
@@ -162,9 +167,7 @@
                   // this.currentRightComponent = null   
                   // this.currentLeftComponent = LoginComponent   
               }
-              
             })
-         
           } else {
             this.verification = false
             // this.currentRightComponent = null
