@@ -93,22 +93,17 @@
     },
     mounted () {
      this.checkToken()
-      // if(current_url.includes('login')) {
-      //   this.currentRightComponent = LoginComponent
-      //   return
-      // } else {
-      //   this.getEvents()
-      // }
-      
     },
     beforeCreate () {
-      // router.push({ path: '/home', replace: true })
       window.sessionStorage.removeItem('token')
     },
     methods: {
       checkToken() {
         var current_url = window.location.href
-        var substr = current_url.substring(current_url.indexOf("=") + 1);
+        var substr = ''
+        if(current_url.includes('token')) {
+          substr = current_url.substring(current_url.indexOf("=") + 1);
+        }
         if(substr) {
           // check token, 
             let url = 'https://uw-portal-api.tinkerpub.com/api/auth/login'
@@ -123,24 +118,21 @@
                     this.selected_region = 'gb'  
                     this.region = response.data.customer.use_region
                   }
-                  // this.currentLeftComponent = LoginComponent   
-                  const sessionStorage = window.sessionStorage
+                  // const sessionStorage = 
                   sessionStorage.setItem('token', response.data.app_session.session_key)
-                  this.token = sessionStorage.getItem('token')
+                  this.token = window.sessionStorage.getItem('token')
                   this.verification = true
                   this.currentRightComponent = RightContent
                   this.getEvents()
               } else {
                   this.verification = false
-                  // this.currentRightComponent = null   
-                  // this.currentLeftComponent = LoginComponent   
               }
               
             })
 
         } else {
           
-          if(sessionStorage.getItem('token')) {
+          if(window.sessionStorage.getItem('token')) {
             let url = 'https://uw-portal-api.tinkerpub.com/api/auth/login'
             this.axios
             .get(url, {
@@ -159,19 +151,13 @@
                   sessionStorage.setItem('token', response.data.app_session.session_key)
                   this.token = sessionStorage.getItem('token')
                   this.getEvents()
-                  // const sessionStorage = window.sessionStorage
-                  // sessionStorage.setItem('token', response.data.app_session.session_key)
                   
               } else {
                   this.verification = false
-                  // this.currentRightComponent = null   
-                  // this.currentLeftComponent = LoginComponent   
               }
             })
           } else {
             this.verification = false
-            // this.currentRightComponent = null
-            // this.currentLeftComponent = LoginComponent   
           }
 
         }
