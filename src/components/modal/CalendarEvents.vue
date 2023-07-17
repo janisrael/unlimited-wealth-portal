@@ -4,7 +4,7 @@
       title=""
       :visible.sync="dialogVisible"
       width="30%"
-      top="20%"
+      top="5%"
       :before-close="handleClose"
       class="calendar-modal">
 

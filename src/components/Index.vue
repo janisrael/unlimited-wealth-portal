@@ -41,7 +41,8 @@
           </el-col>
          
           <!-- <MessagePanelComponent/> -->
-          <LeftContent :type="radio" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region"/>
+          <!-- <LeftContent :type="radio" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region"/> -->
+          <component ref="leftComponent" :is="currentLeftComponent" :type="radio" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region" :token="token" @login="login"/>
         </el-col>
         <el-col :span="6" class="left-panel">
           <el-col :span="24" class="panel-header">
@@ -50,7 +51,7 @@
 
           </el-col>
           <!-- <RightContent :region="region"/> -->
-          <component ref="calendarComponent" :is="currentRightComponent" :region="region"/>
+          <component ref="calendarComponent" :is="currentRightComponent" :region="region" :token="token"/>
         </el-col>
 
       </el-col>
@@ -59,15 +60,17 @@
 </template>
 
 <script>
-
+/* eslint-disable */
   import LeftContent from './LeftContent.vue'
   import RightContent from './RightContent.vue'
+  import LoginComponent from './LoginComponent.vue'
   
   export default {
     name: 'IndexVue',
     components: {
       LeftContent,
-      RightContent
+      RightContent,
+      LoginComponent
     },
     data() {
       return {
@@ -79,20 +82,82 @@
         selected_region: 'uk',
         tumbnail_region_title: 'Europe',
         region: 'uk',
-        currentRightComponent: null
+        currentRightComponent: null,
+        currentLeftComponent: null,
+        token: ''
       }
     },
     mounted () {
-      this.getEvents()
+     this.checkToken()
+      // if(current_url.includes('login')) {
+      //   this.currentRightComponent = LoginComponent
+      //   return
+      // } else {
+      //   this.getEvents()
+      // }
       
     },
+    beforeCreate () {
+     
+      // router.push({ path: '/home', replace: true })
+    },
     methods: {
+      checkToken() {
+        var current_url = window.location.href
+        var substr = current_url.substring(current_url.indexOf("=") + 1);
+
+        this.token = substr
+        if(substr) {
+          // check token, 
+            let url = 'https://uw-portal-api.tinkerpub.com/api/auth/login'
+            this.axios
+            .get(url, {
+                    token: substr,
+                    // password: 'Smart@123'
+                  })
+            .then(response => {
+              if (response.status === 200) {
+                  this.getEvents()
+              } else {
+                  this.currentRightComponent = null   
+                  this.currentLeftComponent = LoginComponent   
+              }
+              
+            })
+
+        } else {
+          this.currentRightComponent = null
+          this.currentLeftComponent = LoginComponent
+        }
+      },
+      login(token) {
+        // this.token = token
+        var current_url = ''
+        current_url =window.location.href + token
+        window.location.href = current_url
+        this.checkToken()
+      },
       getEvents() {
-        var url = 'https://uw-portal-api.tinkerpub.com/api/event-types/' + this.selected_region
+        // let config = {
+        //     headers:{
+        //       'X-Session-Key:': this.token,
+        //       'Content-Type': 'application/json',
+        //       'Accept': 'application/json'
+        //     }
+        //   };
+        var url = 'https://uw-portal-api.tinkerpub.com/api/event-types'
         this.axios
-        .get(url)
+        .get(url, 
+        {
+          headers: {
+           'X-Session-Key': this.token,
+           'Content-Type': 'application/json',
+           'Accept': 'application/json'
+          }
+        }
+        )
         .then(response => (this.events = response.data.data))
-        
+        this.currentLeftComponent = LeftContent
         this.currentRightComponent = RightContent
       },
       handleChangeRegion(command) {

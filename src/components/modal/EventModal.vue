@@ -4,6 +4,7 @@
       :title="event.name"
       :visible.sync="dialogVisible"
       width="50%"
+      top="5%"
       :close-on-click-modal="false"
       :before-close="handleClose">
       <span class="modal-span">{{ event.description }}</span>
@@ -63,6 +64,10 @@
         <div v-else>
           No available dates
         </div>
+        <div style="display: block; width: 100%; margin-top: 20px;">
+          <el-button type="success" class="btn-success-custom">Book</el-button>
+        </div>
+        
       </div>
       <!--  carousels recordnings -->
       <div v-else id="carousel-wrapper">
@@ -108,6 +113,10 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css'
       },
       event: {
         type: Object,
+        required: true
+      },
+      token: {
+        type: String,
         required: true
       }
     },
@@ -199,7 +208,15 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css'
       getVideo(event) {
         var url = event.meta.resource_path
         this.axios
-        .get(url)
+        .get(url,
+          {
+            headers: {
+            'X-Session-Key': this.token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+            }
+          }
+        )
         .then(response => {
           if (response.status === 200) {
             this.video_url = response.data.data.video_recording_url
