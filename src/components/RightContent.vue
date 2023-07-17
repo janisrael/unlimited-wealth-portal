@@ -144,6 +144,10 @@ import CalendarEvents from '../components/modal/CalendarEvents.vue'
         type: String,
         require: true
       },
+      token: {
+        require: true,
+        type: String,
+      }
     },
     data() {
       return {
@@ -162,9 +166,24 @@ import CalendarEvents from '../components/modal/CalendarEvents.vue'
     methods: {
       getEventsDate() {
         var events = []
+        // let config = {
+        //     headers:{
+        //       // 'X-Session-Key:': this.token,
+        //       'Content-Type': 'application/json',
+        //       'Accept': 'application/json'
+        //     }
+        //   };
         var url = 'https://uw-portal-api.tinkerpub.com/api/calendar/' + this.region
         this.axios
-        .get(url)
+        .get(url,
+        {
+          headers: {
+           'X-Session-Key': this.token,
+           'Content-Type': 'application/json',
+           'Accept': 'application/json'
+          }
+        }
+        )
         .then(response => {
           if (response.status === 200) {
             events = response.data.data

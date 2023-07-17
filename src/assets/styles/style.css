@@ -639,3 +639,30 @@ span.modal-span {
   /* background-color: red !important; */
   /* display: none !important; */
 }
+
+.login-wrapper {
+  padding: 20%;
+  /* color: #ffffff; */
+  margin: 0 auto;
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  width: 500px;
+}
+
+.el-form-item__label {
+  color: #ffffff !important;
+}
+
+.el-input__inner {
+
+  color: #b9babc !important;
+  
+}
+
+.btn-success-custom {
+  color: #FFF !important;
+  background-color: #67C23A !important;
+  border-color: #67C23A !important;
+  width: 100%;
+}

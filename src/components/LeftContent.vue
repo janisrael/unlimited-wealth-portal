@@ -42,7 +42,7 @@
 
         
       </el-col>
-      <component :is="currentComponent" :type="type" :event_list="event_list" :event="selected_event" @close="CloseModal()"/>
+      <component :is="currentComponent" :type="type" :event_list="event_list" :event="selected_event" @close="CloseModal()" :token="token"/>
     </el-row>
   </div>
   
@@ -72,6 +72,10 @@
       region: {
         required: true,
         type: String
+      },
+      token: {
+        required: true,
+        type: String
       }
     },
     data() {
@@ -88,9 +92,24 @@
         var url = ''
         var events = []
         if(this.type === 'upcoming') {
+
+          // let config = {
+          //   headers:{
+          //     'X-Session-Key:': 'H6FUE0uSz0vraeJxNLQ5EhNmjYpqQBsbJhN00Zxqw9',
+          //   }
+          // };
           url = 'https://uw-portal-api.tinkerpub.com/api/events/upcoming?region=' + this.region + '&event_type_id=' + event.id
           this.axios
-          .get(url)
+          .get(url,
+          {
+          headers: {
+            'X-Session-Key': this.token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+            }
+          }
+          
+          )
           .then(response => {
             if (response.status === 200) {
               events = response.data.data
@@ -107,7 +126,15 @@
           
           url = 'https://uw-portal-api.tinkerpub.com/api/events/recordings?region=' + this.region + '&event_type_id=' + event.id
           this.axios
-          .get(url)
+          .get(url,
+          {
+            headers: {
+            'X-Session-Key': this.token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+            }
+          }
+          )
           .then(response => (this.event_list = response.data.data))
         }
 

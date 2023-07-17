@@ -26,6 +26,7 @@
     "vue-country-flag": "^2.3.2",
     "vue-lazy-image-loading": "^1.2.1",
     "vue-lazyload": "^3.0.0",
+    "vue-router": "^3.5.3",
     "vue-slick-carousel": "^1.0.6"
   },
   "devDependencies": {
