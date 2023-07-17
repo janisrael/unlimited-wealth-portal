@@ -27,7 +27,7 @@
 
         <div style="  display: inline-block;padding: 0 50px">
           <div style="color: #A2B0D5;font-zie: 12px;">Region:</div>
-          <div style="color: #ffffff;" v-if="event_list.length">{{ event_list[0].region }}</div>
+          <div style="color: #ffffff;" >{{ region }}</div>
         </div>  
 
         <div style="  display: inline-block;padding: 0 50px">
@@ -116,6 +116,10 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css'
         required: true
       },
       token: {
+        type: String,
+        required: true
+      },
+      region: {
         type: String,
         required: true
       }
