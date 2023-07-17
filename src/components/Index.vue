@@ -92,10 +92,17 @@
       }
     },
     mounted () {
+      // window.sessionStorage.removeItem('token')
+      // let url = 'https://uw-portal-api.tinkerpub.com/api/auth/login'
+      // this.axios
+      // .get(url)
+      // .then(response => {
+      //   alert('ok')
+      // })
      this.checkToken()
     },
     beforeCreate () {
-      window.sessionStorage.removeItem('token')
+      // window.sessionStorage.removeItem('token')
     },
     methods: {
       checkToken() {
