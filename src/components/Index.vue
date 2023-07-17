@@ -105,18 +105,21 @@
       checkToken() {
         var current_url = window.location.href
         var substr = current_url.substring(current_url.indexOf("=") + 1);
-
-        this.token = substr
+        // this.token = substr
         if(substr) {
           // check token, 
             let url = 'https://uw-portal-api.tinkerpub.com/api/auth/login'
             this.axios
             .get(url, {
                     token: substr,
-                    // password: 'Smart@123'
                   })
             .then(response => {
               if (response.status === 200) {
+                // alert('naa')
+                  
+                  const sessionStorage = window.sessionStorage
+                  sessionStorage.setItem('token', response.data.app_session.session_key)
+                  this.token = sessionStorage.getItem('token')
                   this.getEvents()
               } else {
                   this.currentRightComponent = null   
@@ -126,15 +129,44 @@
             })
 
         } else {
-          this.currentRightComponent = null
-          this.currentLeftComponent = LoginComponent
+          
+          if(sessionStorage.getItem('token')) {
+            let url = 'https://uw-portal-api.tinkerpub.com/api/auth/login'
+            this.axios
+            .get(url, {
+                    token: sessionStorage.getItem('token'),
+                  })
+            .then(response => {
+              if (response.status === 200) {
+                  const sessionStorage = window.sessionStorage
+                  sessionStorage.setItem('token', response.data.app_session.session_key)
+                  this.token = sessionStorage.getItem('token')
+                  this.getEvents()
+                  // const sessionStorage = window.sessionStorage
+                  // sessionStorage.setItem('token', response.data.app_session.session_key)
+                  
+              } else {
+                  this.currentRightComponent = null   
+                  this.currentLeftComponent = LoginComponent   
+              }
+              
+            })
+         
+          } else {
+            this.currentRightComponent = null
+            this.currentLeftComponent = LoginComponent   
+          }
+
         }
       },
       login(token) {
         // this.token = token
-        var current_url = ''
-        current_url =window.location.href + token
-        window.location.href = current_url
+        // var current_url = ''
+        // current_url =window.location.href + token
+        // window.location.href = current_url
+        window.sessionStorage.removeItem('token')
+        window.sessionStorage.setItem('token', token)
+        this.token = token
         this.checkToken()
       },
       getEvents() {
