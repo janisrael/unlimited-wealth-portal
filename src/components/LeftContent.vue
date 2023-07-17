@@ -42,7 +42,7 @@
 
         
       </el-col>
-      <component :is="currentComponent" :type="type" :event_list="event_list" :event="selected_event" @close="CloseModal()" :token="token"/>
+      <component :is="currentComponent" :type="type" :event_list="event_list" :event="selected_event" @close="CloseModal()" :token="token" :region="region"/>
     </el-row>
   </div>
   

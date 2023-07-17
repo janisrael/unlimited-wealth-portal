@@ -1,7 +1,7 @@
 <template>
   <div class="row full-height">
     <el-row>
-      <el-col :span="24">
+      <el-col v-if="verification === true" :span="24">
         <el-col :span="18" class="right-panel">
           <el-col :span="24" class="panel-header">
             <el-col :span="17">
@@ -41,8 +41,8 @@
           </el-col>
          
           <!-- <MessagePanelComponent/> -->
-          <!-- <LeftContent :type="radio" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region"/> -->
-          <component ref="leftComponent" :is="currentLeftComponent" :type="radio" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region" :token="token" @login="login"/>
+          <LeftContent :type="radio" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region" :token="token" @login="login"/>
+          <!-- <component ref="leftComponent" :is="currentLeftComponent" :type="radio" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region" :token="token" @login="login"/> -->
         </el-col>
         <el-col :span="6" class="left-panel">
           <el-col :span="24" class="panel-header">
@@ -54,6 +54,9 @@
           <component ref="calendarComponent" :is="currentRightComponent" :region="region" :token="token"/>
         </el-col>
 
+      </el-col>
+      <el-col v-else :span="24">
+        <login-component  :token="token" @login="login"/>
       </el-col>
     </el-row>
   </div>
@@ -75,16 +78,17 @@
     data() {
       return {
         search: '',
-        use_region: 'gb',
+        use_region: '',
         radio: 'upcoming',
         events: [],
         recordings: [],
-        selected_region: 'uk',
+        selected_region: '',
         tumbnail_region_title: 'Europe',
-        region: 'uk',
+        region: '',
         currentRightComponent: null,
         currentLeftComponent: null,
-        token: ''
+        token: '',
+        verification: true
       }
     },
     mounted () {
@@ -98,8 +102,8 @@
       
     },
     beforeCreate () {
-     
       // router.push({ path: '/home', replace: true })
+      window.sessionStorage.removeItem('token')
     },
     methods: {
       checkToken() {
@@ -111,19 +115,26 @@
             let url = 'https://uw-portal-api.tinkerpub.com/api/auth/login'
             this.axios
             .get(url, {
-                    token: substr,
+                    token: substr
                   })
             .then(response => {
               if (response.status === 200) {
-                // alert('naa')
-                  
+                  if(response.data.customer.use_region === 'uk') {
+                    this.use_region = 'gb'
+                    this.selected_region = response.data.customer.use_region
+                    this.region = response.data.customer.use_region
+                  }
+                  // this.currentRightComponent = null   
+                  // this.currentLeftComponent = LoginComponent   
                   const sessionStorage = window.sessionStorage
                   sessionStorage.setItem('token', response.data.app_session.session_key)
                   this.token = sessionStorage.getItem('token')
+                  this.verification = true
                   this.getEvents()
               } else {
-                  this.currentRightComponent = null   
-                  this.currentLeftComponent = LoginComponent   
+                  this.verification = false
+                  // this.currentRightComponent = null   
+                  // this.currentLeftComponent = LoginComponent   
               }
               
             })
@@ -138,6 +149,7 @@
                   })
             .then(response => {
               if (response.status === 200) {
+                  this.verification = true
                   const sessionStorage = window.sessionStorage
                   sessionStorage.setItem('token', response.data.app_session.session_key)
                   this.token = sessionStorage.getItem('token')
@@ -146,24 +158,22 @@
                   // sessionStorage.setItem('token', response.data.app_session.session_key)
                   
               } else {
-                  this.currentRightComponent = null   
-                  this.currentLeftComponent = LoginComponent   
+                  this.verification = false
+                  // this.currentRightComponent = null   
+                  // this.currentLeftComponent = LoginComponent   
               }
               
             })
          
           } else {
-            this.currentRightComponent = null
-            this.currentLeftComponent = LoginComponent   
+            this.verification = false
+            // this.currentRightComponent = null
+            // this.currentLeftComponent = LoginComponent   
           }
 
         }
       },
       login(token) {
-        // this.token = token
-        // var current_url = ''
-        // current_url =window.location.href + token
-        // window.location.href = current_url
         window.sessionStorage.removeItem('token')
         window.sessionStorage.setItem('token', token)
         this.token = token
