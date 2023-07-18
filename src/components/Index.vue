@@ -109,6 +109,7 @@
       // .then(response => {
       //   alert('ok')
       // })
+
      this.checkToken()
     },
     beforeCreate () {
