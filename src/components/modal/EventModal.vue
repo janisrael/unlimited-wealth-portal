@@ -65,7 +65,7 @@
           No available dates
         </div>
         <div style="display: block; width: 100%; margin-top: 20px;">
-          <el-button type="success" class="btn-success-custom">Book</el-button>
+          <el-button type="success" :disabled="disable" class="btn-success-custom">Book</el-button>
         </div>
         
       </div>
@@ -141,7 +141,8 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css'
           accessibility: true,
           edgeFriction: 0.35,
         },
-        video_url: ''
+        video_url: '',
+        disable: true
       };
     },
     methods: {
@@ -193,14 +194,18 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css'
           if(this.type === 'upcoming') {
             if(this.event_list[index].selected === true) {
               this.event_list[index].selected = false
+              this.disable = true
             } else {
+              this.disable = false
               this.event_list[index].selected = true
             }
             
           } else {
             this.event_list.forEach((value,index) => {
               value.selected = false
+              this.disable = true
             })
+            this.disable = false
             this.event_list[index].selected = true
           }
           

@@ -136,7 +136,8 @@
                     this.region = response.data.customer.use_region
                   }
                   // const sessionStorage = 
-                  sessionStorage.setItem('token', response.data.app_session.session_key)
+                  // sessionStorage.setItem('token', response.data.app_session.session_key)
+                  sessionStorage.setItem('token', 'crs2w7pUewNQN2B3I1WgmU2vBMjYVmKVVvXCrbQzH8') // static token
                   this.token = window.sessionStorage.getItem('token')
                   this.verification = true
                   this.currentRightComponent = RightContent
@@ -165,7 +166,8 @@
 
                   this.verification = true
                   const sessionStorage = window.sessionStorage
-                  sessionStorage.setItem('token', response.data.app_session.session_key)
+                  // sessionStorage.setItem('token', response.data.app_session.session_key)
+                  sessionStorage.setItem('token', 'crs2w7pUewNQN2B3I1WgmU2vBMjYVmKVVvXCrbQzH8') // static token
                   this.token = sessionStorage.getItem('token')
                   this.getEvents()
                   
@@ -181,7 +183,8 @@
       },
       login(token) {
         window.sessionStorage.removeItem('token')
-        window.sessionStorage.setItem('token', token)
+        // window.sessionStorage.setItem('token', token)
+        window.sessionStorage.setItem('token', 'crs2w7pUewNQN2B3I1WgmU2vBMjYVmKVVvXCrbQzH8') // static token
         this.token = token
         this.checkToken()
       },
@@ -193,7 +196,7 @@
         //       'Accept': 'application/json'
         //     }
         //   };
-        var url = 'https://uw-portal-api.tinkerpub.com/api/event-types'
+        var url = 'https://uw-portal-api.tinkerpub.com/api/event-types/' + this.region
         this.axios
         .get(url, 
         {
