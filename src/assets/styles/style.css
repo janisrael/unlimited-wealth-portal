@@ -662,7 +662,17 @@ span.modal-span {
 
 .btn-success-custom {
   color: #FFF !important;
-  background-color: #67C23A !important;
+  /* background-color: #67C23A !important; */
+  background-image: linear-gradient(#ABD857, #6C9224) !important;
+
   border-color: #67C23A !important;
   width: 100%;
+}
+
+.slick-slider.slick-initialized {
+  min-height: 170px !important;
+}
+
+#carousel-wrapper {
+  min-height: 170px;
 }

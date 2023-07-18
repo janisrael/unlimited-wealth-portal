@@ -4,7 +4,7 @@
       :title="event.name"
       :visible.sync="dialogVisible"
       width="50%"
-      top="5%"
+      top="3%"
       :close-on-click-modal="false"
       :before-close="handleClose">
       <span class="modal-span">{{ event.description }}</span>
@@ -27,7 +27,7 @@
 
         <div style="  display: inline-block;padding: 0 50px">
           <div style="color: #A2B0D5;font-zie: 12px;">Region:</div>
-          <div style="color: #ffffff;" >{{ region }}</div>
+          <div style="color: #ffffff; text-transform: uppercase;" >{{ region }}</div>
         </div>  
 
         <div style="  display: inline-block;padding: 0 50px">
@@ -61,7 +61,7 @@
             </div>
           </div>
         </VueSlickCarousel>
-        <div v-else>
+        <div v-else style="min-height: 170px;">
           No available dates
         </div>
         <div style="display: block; width: 100%; margin-top: 20px;">
