@@ -715,6 +715,10 @@ span.modal-span {
 
 }
 
+.el-dialog__wrapper.locked-modal .el-dialog__body {
+  padding: 10px 20px !important;
+}
+
 /* error overlay */
 iframe#webpack-dev-server-client-overlay {
   display: none !important;
