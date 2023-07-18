@@ -22,7 +22,7 @@
                           <!-- <div class="card-content-title">{{ event.name }}</div>     -->
                           <div class="card-content-title"></div>    
                           <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
-                          <!-- <div class="card-content-sched">Coming up at 3rd April</div>     -->
+                          <div class="card-content-sched">Coming up at 3rd April</div>    
                         </div>
                     </div>
 
