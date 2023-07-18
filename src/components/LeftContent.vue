@@ -4,7 +4,7 @@
       <el-col :span="24" style="padding: 0px 20px !important;">
 
         <el-col v-for="(event, i) in events" :key="i" :span="8" style="padding-right: 20px;padding-top: 20px;" >
-          <div @click="getModal(event)">
+          <div v-if="event.policy.is_visible === true" @click="getModal(event)">
             <el-card class="box-card card-left-panel" shadow="hover" >
               <div slot="header" class="clearfix">
                 <lazy-background
@@ -19,6 +19,10 @@
                     class="card-header-content">
                     <div slot="content">  
                         <div class="card-header-content" >
+                          <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
+                            <i  class="el-icon-lock"></i>
+                          </div>
+                          
                           <!-- <div class="card-content-title">{{ event.name }}</div>     -->
                           <div class="card-content-title"></div>    
                           <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
@@ -88,6 +92,10 @@
     },
     methods: {
       getModal(event) {
+        if(event.policy.is_accessible === false) {
+          console.log('unable to access')
+          return
+        }
         this.selected_event = event
         var url = ''
         var events = []
