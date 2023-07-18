@@ -115,7 +115,7 @@
       // window.sessionStorage.removeItem('token')
     },
     methods: {
-      checkToken() {
+      async checkToken() {
         var current_url = window.location.href
         var substr = ''
         if(current_url.includes('token')) {
@@ -124,6 +124,7 @@
         if(substr) {
           // check token, 
             let url = 'https://uw-portal-api.tinkerpub.com/api/auth/login'
+            
             this.axios
             .get(url, {
                     token: substr
@@ -136,14 +137,15 @@
                     this.region = response.data.customer.use_region
                   }
                   // const sessionStorage = 
-                  // sessionStorage.setItem('token', response.data.app_session.session_key)
-                  sessionStorage.setItem('token', 'crs2w7pUewNQN2B3I1WgmU2vBMjYVmKVVvXCrbQzH8') // static token
+                  sessionStorage.setItem('token', response.data.app_session.session_key)
+                  // sessionStorage.setItem('token', 'n8RwzOAnck4xUS9QrRRYWxzhB13SQ9aNsxIpEmpj4V') // static token
                   this.token = window.sessionStorage.getItem('token')
                   this.verification = true
                   this.currentRightComponent = RightContent
                   this.getEvents()
               } else {
                   this.verification = false
+                  this.currentRightComponent = null
               }
               
             })
@@ -166,8 +168,8 @@
 
                   this.verification = true
                   const sessionStorage = window.sessionStorage
-                  // sessionStorage.setItem('token', response.data.app_session.session_key)
-                  sessionStorage.setItem('token', 'crs2w7pUewNQN2B3I1WgmU2vBMjYVmKVVvXCrbQzH8') // static token
+                  sessionStorage.setItem('token', response.data.app_session.session_key)
+                  // sessionStorage.setItem('token', 'n8RwzOAnck4xUS9QrRRYWxzhB13SQ9aNsxIpEmpj4V') // static token
                   this.token = sessionStorage.getItem('token')
                   this.getEvents()
                   
@@ -183,8 +185,8 @@
       },
       login(token) {
         window.sessionStorage.removeItem('token')
-        // window.sessionStorage.setItem('token', token)
-        window.sessionStorage.setItem('token', 'crs2w7pUewNQN2B3I1WgmU2vBMjYVmKVVvXCrbQzH8') // static token
+        window.sessionStorage.setItem('token', token)
+        // window.sessionStorage.setItem('token', 'n8RwzOAnck4xUS9QrRRYWxzhB13SQ9aNsxIpEmpj4V') // static token
         this.token = token
         this.checkToken()
       },
