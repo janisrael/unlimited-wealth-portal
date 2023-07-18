@@ -227,7 +227,7 @@ div.card-content-sched {
   text-align: left;
   font-weight: 600;
   padding-left: 16px;
-  padding-top: 51px;
+  padding-top: 134px;
   font-size: 12px;
   font-family: sans-serif;
   text-shadow: 2px 3px 5px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a;
@@ -675,4 +675,23 @@ span.modal-span {
 
 #carousel-wrapper {
   min-height: 170px;
+}
+
+.el-popover {
+  background: #16153C !important;
+  border: 1px solid #16153C !important;
+  color: #A2B0D5 !important;
+  word-break: break-word !important;
+
+  width: 300px !important;
+  left: 1153px !important;
+
+}
+
+.el-popover__title {
+  color: #ffffff !important;
+}
+
+.el-popover .popper__arrow { 
+  left: 269px !important;
 }

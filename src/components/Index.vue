@@ -47,7 +47,17 @@
         <el-col :span="6" class="left-panel">
           <el-col :span="24" class="panel-header">
             <h3 style="margin: 0px !important; margin-block-start: 0px !important; margin-block-end: 0px !important;  font-size: 18px;font-weight: 400;display: inline-block;padding-right: 20px;">Events Overview</h3>
-              <i class="el-icon-warning-outline" style="color: #5CE6E6;"></i>
+             <el-popover
+              placement="bottom-end"
+              title="All events in one place"
+              width="200"
+              trigger="hover"
+              content="By clicking with your mouse on a specific date, you can see your booked events and other events, that happen trough-out the current month.">
+              <!-- <el-button >Hover to activate</el-button> -->
+              <i class="el-icon-warning-outline" style="color: #5CE6E6; cursor: pointer;" slot="reference"></i>
+            </el-popover>
+
+              
 
           </el-col>
           <!-- <RightContent :region="region"/> -->
