@@ -19,9 +19,9 @@
                     class="card-header-content">
                     <div slot="content">  
                         <div class="card-header-content" >
-                          <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
+                          <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
                             <i  class="el-icon-lock"></i>
-                          </div>
+                          </div> -->
                           
                           <!-- <div class="card-content-title">{{ event.name }}</div>     -->
                           <div class="card-content-title"></div>    
@@ -55,10 +55,12 @@
 <script>
   
   import EventModal from './modal/EventModal.vue'
+  import LockedEvent from './modal/LockedEvent.vue'
   export default {
     name: 'LeftContent',
     components: {
-      EventModal
+      EventModal,
+      LockedEvent
     },
     props: {
       type: {
@@ -92,11 +94,13 @@
     },
     methods: {
       getModal(event) {
+        
+        this.selected_event = event
+
         if(event.policy.is_accessible === false) {
-          console.log('unable to access')
+          this.currentComponent = LockedEvent
           return
         }
-        this.selected_event = event
         var url = ''
         var events = []
         if(this.type === 'upcoming') {

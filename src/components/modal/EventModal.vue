@@ -46,7 +46,7 @@
       <div v-if="type === 'recording'" class="video-wrapper">
         <div class="player-container">
             <vue-core-video-player @play="handlePLay()" :src="video_url"></vue-core-video-player>
-          </div>
+        </div>
       </div>
 
       <!--  carousels upcoming -->
