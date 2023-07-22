@@ -719,6 +719,14 @@ span.modal-span {
   padding: 10px 20px !important;
 }
 
+.btn-done-booking {
+  border-color: #A4F14A !important;
+  background-color: transparent !important;
+  width: 208px !important;
+  margin-top: 53px !important;
+  margin-bottom: 70px !important;
+}
+
 /* error overlay */
 iframe#webpack-dev-server-client-overlay {
   display: none !important;
