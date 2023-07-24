@@ -20,6 +20,7 @@
       </el-col>
       <el-col :span="24">
         <h4 style="margin-left: 20px;font-size: 14px; font-weight: 600;">My bookings this week</h4>
+          <div v-if="my_events_this_week.length === 0" class="no-booking-caption"> No Bookings for this week </div>
           <el-col v-for="(event, i) in my_events_this_week" :key="i" :span="24" style="margin-bottom: 8px;">
             <div class="events-box">
               <el-col :span="4">
@@ -39,10 +40,12 @@
               </el-col>
             </div>
           </el-col>
+          
       </el-col>
 
       <el-col :span="24">
         <h4 style="margin-left: 20px;font-size: 14px; font-weight: 600;">My bookings next week</h4>
+          <div v-if="my_events_next_week.length === 0" class="no-booking-caption"> No Bookings for next week </div>
           <el-col v-for="(event,i) in my_events_next_week" :key="i" :span="24" style="margin-bottom: 8px;">
             <div class="events-box">
               <el-col :span="4">

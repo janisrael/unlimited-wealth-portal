@@ -41,7 +41,7 @@
           </el-col>
          
           <!-- <MessagePanelComponent/> -->
-          <LeftContent :type="radio" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region" :token="token" @login="login"/>
+          <LeftContent :type="radio" v-looading="loading" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region" :token="token" @login="login"/>
           <!-- <component ref="leftComponent" :is="currentLeftComponent" :type="radio" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region" :token="token" @login="login"/> -->
         </el-col>
         <el-col :span="6" class="left-panel">
@@ -98,20 +98,24 @@
         currentRightComponent: null,
         currentLeftComponent: null,
         token: '',
-        verification: true
+        verification: true,
+        original_data: [],
+        loading: false
       }
     },
     mounted () {
-      // window.sessionStorage.removeItem('token')
-      // let url = 'https://uw-portal-api.tinkerpub.com/api/auth/login'
-      // this.axios
-      // .get(url)
-      // .then(response => {
-      //   alert('ok')
-      // })
-
      this.checkToken()
     },
+     watch: {
+      search: function() {
+        this.loading = true
+        if (this.search.length >= 3) {
+           this.filter_data()
+        } else {
+           this.events =  this.original_data
+        }
+      },
+     },
     beforeCreate () {
       // window.sessionStorage.removeItem('token')
     },
@@ -192,13 +196,7 @@
         this.checkToken()
       },
       getEvents() {
-        // let config = {
-        //     headers:{
-        //       'X-Session-Key:': this.token,
-        //       'Content-Type': 'application/json',
-        //       'Accept': 'application/json'
-        //     }
-        //   };
+        this.loading = true
         var url = 'https://uw-portal-api.tinkerpub.com/api/event-types/' + this.region
         this.axios
         .get(url, 
@@ -210,7 +208,15 @@
           }
         }
         )
-        .then(response => (this.events = response.data.data))
+        .then(response => {
+            if (response.status === 200) {
+              this.events = response.data.data
+              this.original_data = response.data.data
+              this.loading = false
+            } 
+              
+        })
+
         this.currentLeftComponent = LeftContent
         this.currentRightComponent = RightContent
       },
@@ -231,23 +237,31 @@
         
         }
         this.selected_region = command
-        
-
+    
         setTimeout(() => {
           /* eslint-disable */
           this.currentRightComponent = null
           this.getEvents()  
           this.$refs.calendarComponent.getEventsDate()
         }, 100);
-        
-
+    
       },
       getCountryByRegion(region) {
         console.log(region)
       },
       getTypes(type) {
         this.radio = type
-      }
+      },
+      filter_data() {
+        let events = this.events
+        let search = this.search
+
+        let ret = events.filter(function(el) {
+					return el.name.toLowerCase().includes(search.toLowerCase());
+        });
+        
+        this.events = ret
+      },
     },
     
   }
