@@ -50,6 +50,9 @@
               content="By clicking with your mouse on a specific date, you can see your booked events and other events, that happen trough-out the current month.">
               <i class="el-icon-warning-outline" style="color: #5CE6E6; cursor: pointer;" slot="reference"></i>
             </el-popover>
+            <el-tooltip class="item" content="Logout" placement="top">
+              <el-button type="primary" size="mini" icon="el-icon-user-solid" style="position: absolute; right: 10px;" @click="clearSession()"></el-button>
+            </el-tooltip>
           </el-col>
 
           <!-- <RightContent :region="region"/> -->
@@ -112,6 +115,10 @@
       // window.sessionStorage.removeItem('token')
     },
     methods: {
+      clearSession() {
+        window.sessionStorage.removeItem('token')
+        window.location.reload();
+      },
       async checkToken() {
         var current_url = window.location.href
         var substr = ''

@@ -546,6 +546,24 @@ span.modal-span {
   border-right: 10px solid #17153C;
   color: #ffffff;
   cursor: pointer;
+  
+}
+
+.carousel-block .carousel-content-upcoming {
+  height: 80px;
+  text-align: center;
+  padding: 36px 0px;
+  background-color: grey;
+  background: #312B54;
+  display: inline-block;
+  text-align: center;
+  margin: 0 auto;
+  width: -webkit-fill-available;
+  border-top: 20px solid #17153C;
+  border-left: 10px solid #17153C;
+  border-right: 10px solid #17153C;
+  color: #ffffff;
+  cursor: pointer;
 }
 
 #carousel-wrapper {
@@ -732,6 +750,15 @@ span.modal-span {
   text-align: center;
   font-size: 13px;
   color: #8583b8;
+}
+
+span.speaker-name, i.speaker-icon {
+  color: #9690bb;
+  font-size: 12px;
+}
+
+.speaker-wrapper {
+  margin-bottom: -3px;
 }
 
 /* error overlay */

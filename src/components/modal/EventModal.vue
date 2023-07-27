@@ -29,15 +29,11 @@
                   <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
                 </el-avatar>
               </div>
-              <div style="  display: inline-block;">
-                <div style="color: #A2B0D5;font-zie: 12px;">Speaker:</div>
-                <div style="color: #ffffff;">Amy Green</div>
-              </div>  
-
-              <div v-if="type === 'upcoming'" style="  display: inline-block;padding: 0 50px">
+              <!--
+              <div v-if="type === 'upcoming'" style="display: inline-block;padding: 0 50px">
                 <div style="color: #A2B0D5;font-zie: 12px;">Time:</div>
                 <div style="color: #ffffff;">09:00 local</div>
-              </div>  
+              </div>  -->
 
               <div style="  display: inline-block;padding: 0 50px">
                 <div style="color: #A2B0D5;font-zie: 12px;">Region:</div>
@@ -46,11 +42,11 @@
 
               <div style="  display: inline-block;padding: 0 50px">
                 <div style="color: #A2B0D5;font-zie: 12px;">Duration:</div>
-                <div style="color: #ffffff;">30 minutes</div>
+                <div style="color: #ffffff;"> {{ event.typical_duration }}</div>
               </div>  
               <div v-if="type === 'upcoming'" style="  display: inline-block;">
                 <div style="color: #A2B0D5;font-zie: 12px;">Occurrence:</div>
-                <div style="color: #ffffff;">Weekly</div>
+                <div style="color: #ffffff;">{{ event.typical_occurence }} </div>
               </div>  
             </div>
             <span v-if="type === 'recording'" style="color: #ffffff;padding: 30px 0 15px;display: inline-block;">Available past recordings:</span>
@@ -67,11 +63,21 @@
             <div v-if="type === 'upcoming'" id="carousel-wrapper">
               <VueSlickCarousel v-if="event_list.length" ref="slick" v-bind="settings">
                 <div v-for="(event, i) in event_list" :key="i" class="carousel-block">
-                  <div class="carousel-content" @click="getSelected(event, i)">
+                  <div class="carousel-content-upcoming" @click="getSelected(event, i)">
                     <el-checkbox v-model="event.selected" class="carousel-checked"></el-checkbox>
                     <div class="carousel-day">{{ getDate(event.date) }}</div>
                     <div class="carousel-formated-date">{{ getFormatedDate(event.date) }}</div>
                     <div>{{ getMonth(event.date) }}</div>
+                    <div v-if="type === 'upcoming'" style="display: inline-block; margin-top: 10px;">
+                    <!--     <div style="color: #A2B0D5;font-zie: 12px;">Speaker:</div> -->
+                        <div class="speaker-wrapper">
+                          <i class="el-icon-user speaker-icon"></i> <span class="speaker-name">Amy Green</span>
+                        </div>
+                        <div>
+                          <i class="el-icon-alarm-clock speaker-icon"></i> <span class="speaker-name">09:00 local</span>
+                        </div>
+                        
+                    </div>  
                   </div>
                 </div>
               </VueSlickCarousel>
@@ -79,7 +85,7 @@
                 No available dates
               </div>
               <div style="display: block; width: 100%; margin-top: 20px;">
-                <el-button type="success" :disabled="disable" class="btn-success-custom" @click="handleBook()">Book</el-button>
+                <el-button v-loading="loading" type="success" :disabled="disable" class="btn-success-custom" @click="handleBook()">Book</el-button>
               </div>  
             </div>
 
@@ -93,7 +99,7 @@
                     </div>
                   </div>   
                 </VueSlickCarousel>
-              </div>
+            </div>
 
             </el-col>
             <span slot="footer" class="dialog-footer">
@@ -160,7 +166,8 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css'
         video_url: '',
         disable: true,
         selected_events: [],
-        stage: 0
+        stage: 0,
+        loading: false
       };
     },
     beforeDestroy () {
@@ -169,7 +176,39 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css'
     methods: {
       handleBook() {
         if(this.selected_events.length > 0) {
-          this.stage = 1
+          this.loading = true
+          console.log(this.selected_events,'selected')
+          let event_ids = []
+          this.selected_events.forEach((value) => {
+            event_ids.push(value.id)
+          })
+          
+            let url = 'https://uw-portal-api.tinkerpub.com/api/bookings/register'
+            this.axios
+            .post(url, {
+                    event_ids: event_ids
+                },        
+            {
+              headers: {
+              'X-Session-Key': this.token,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+              }
+            })
+            .then(response => {
+              if (response.status === 200) {
+                 console.log(response)
+                 this.stage = 1
+                 this.loading = false
+              } else {
+                 this.loading = false
+              }
+              
+            }).catch(err => {
+              console.log(err)
+              this.stage = 1
+              this.loading = false
+            })
         }
       },
       handleClose() {
