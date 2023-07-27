@@ -9,7 +9,6 @@
       :before-close="handleClose">
       <div v-if="stage > 0">
         <div style="text-align: center">
-          <!-- <i class="el-icon-circle-check"></i> -->
           <img :src="check_icon"/>
         </div>
         <div style="text-align: center">
@@ -26,7 +25,7 @@
 
             <div style="  display: inline-block; width: 100%; text-align: left;  padding: 20px 5px 10px;">
               <div style="  display: inline-block;margin-right: 10px;">
-                <el-avatar :size="30" src="https://empty">
+                <el-avatar :size="30" src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png">
                   <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
                 </el-avatar>
               </div>
@@ -81,9 +80,9 @@
               </div>
               <div style="display: block; width: 100%; margin-top: 20px;">
                 <el-button type="success" :disabled="disable" class="btn-success-custom" @click="handleBook()">Book</el-button>
-              </div>
-              
+              </div>  
             </div>
+
             <!--  carousels recordnings -->
             <div v-else id="carousel-wrapper">
                 <VueSlickCarousel v-if="event_list.length" ref="slick" v-bind="settings">
@@ -111,7 +110,6 @@
 import VueSlickCarousel from 'vue-slick-carousel'
 import 'vue-slick-carousel/dist/vue-slick-carousel.css'
 // import VueCoreVideoPlayer from 'vue-core-video-player'
-  // optional style for arrows & dots
   import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
   export default {
     name: 'EventModal',
@@ -240,8 +238,10 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css'
             this.disable = false
             this.event_list[index].selected = true
           }
+          if(this.type === 'recording') {
+            this.getVideo(event)
+          }
           
-          this.getVideo(event)
           console.log(this.selected_events,'selected_events')
           this.$refs.slick.goTo(index)
         }, 20);

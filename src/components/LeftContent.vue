@@ -2,9 +2,9 @@
   <div class="left-panel-wrapper">
     <el-row>
       <el-col :span="24" style="padding: 0px 20px !important;">
-
-        <el-col v-for="(event, i) in events" :key="i" :span="8" style="padding-right: 20px;padding-top: 20px;" >
-          <div v-if="event.policy.is_visible === true" @click="getModal(event)">
+<!-- eslint-disable -->
+        <el-col v-for="(event, i) in events" v-if="event.policy.is_visible === true" :key="i" :span="8" style="padding-right: 20px;padding-top: 20px;" >
+          <div  @click="getModal(event)">
             <el-card class="box-card card-left-panel" shadow="hover" >
               <div slot="header" class="clearfix">
                 <lazy-background
@@ -22,7 +22,6 @@
                           <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
                             <i  class="el-icon-lock"></i>
                           </div> -->
-                          
                           <!-- <div class="card-content-title">{{ event.name }}</div>     -->
                           <div class="card-content-title"></div>    
                           <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
@@ -94,33 +93,26 @@
     },
     methods: {
       getModal(event) {
-        
         this.selected_event = event
 
         if(event.policy.is_accessible === false) {
           this.currentComponent = LockedEvent
           return
         }
+
         var url = ''
         var events = []
         if(this.type === 'upcoming') {
-
-          // let config = {
-          //   headers:{
-          //     'X-Session-Key:': 'H6FUE0uSz0vraeJxNLQ5EhNmjYpqQBsbJhN00Zxqw9',
-          //   }
-          // };
           url = 'https://uw-portal-api.tinkerpub.com/api/events/upcoming?region=' + this.region + '&event_type_id=' + event.id
           this.axios
           .get(url,
-          {
-          headers: {
-            'X-Session-Key': this.token,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-            }
-          }
-          
+            {
+            headers: {
+              'X-Session-Key': this.token,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+              }
+            }  
           )
           .then(response => {
             if (response.status === 200) {

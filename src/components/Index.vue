@@ -5,8 +5,7 @@
         <el-col :span="18" class="right-panel">
           <el-col :span="24" class="panel-header">
             <el-col :span="17">
-              <!-- <h3 class="selected-menu custom-menu">Upcoming Events</h3>
-              <h3 class="custom-menu">Recordings</h3> -->
+
               <el-radio v-model="radio" label="upcoming" style="margin-left: 48px !important; padding-top: 15px;" @change="getTypes('upcoming')">Upcoming Events</el-radio>
               <el-radio v-model="radio" label="recording" @change="getTypes('recording')">Recordings</el-radio>
 
@@ -34,14 +33,10 @@
                   <template slot="prepend"><i class="el-icon-search"></i></template>
                 </el-input>
               </el-col>
-               <!-- <el-avatar :size="60" src="https://empty" @error="errorHandler" class="avatar-head-panel">
-                  <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
-              </el-avatar> -->
             </el-col>
           </el-col>
          
-          <!-- <MessagePanelComponent/> -->
-          <LeftContent :type="radio" v-looading="loading" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region" :token="token" @login="login"/>
+          <LeftContent :type="radio" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region" :token="token" @login="login"/>
           <!-- <component ref="leftComponent" :is="currentLeftComponent" :type="radio" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region" :token="token" @login="login"/> -->
         </el-col>
         <el-col :span="6" class="left-panel">
@@ -53,13 +48,10 @@
               width="200"
               trigger="hover"
               content="By clicking with your mouse on a specific date, you can see your booked events and other events, that happen trough-out the current month.">
-              <!-- <el-button >Hover to activate</el-button> -->
               <i class="el-icon-warning-outline" style="color: #5CE6E6; cursor: pointer;" slot="reference"></i>
             </el-popover>
-
-              
-
           </el-col>
+
           <!-- <RightContent :region="region"/> -->
           <component v-if="region" ref="calendarComponent" :is="currentRightComponent" :region="region" :token="token"/>
         </el-col>
@@ -141,7 +133,7 @@
                     this.selected_region = 'gb'  
                     this.region = response.data.customer.use_region
                   }
-                  // const sessionStorage = 
+                  
                   sessionStorage.setItem('token', response.data.app_session.session_key)
                   // sessionStorage.setItem('token', 'n8RwzOAnck4xUS9QrRRYWxzhB13SQ9aNsxIpEmpj4V') // static token
                   this.token = window.sessionStorage.getItem('token')
@@ -196,6 +188,13 @@
         this.checkToken()
       },
       getEvents() {
+        const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          // spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+
         this.loading = true
         var url = 'https://uw-portal-api.tinkerpub.com/api/event-types/' + this.region
         this.axios
@@ -213,8 +212,11 @@
               this.events = response.data.data
               this.original_data = response.data.data
               this.loading = false
+              loading.close();
             } 
               
+        }).catch(err => {
+            loading.close();
         })
 
         this.currentLeftComponent = LeftContent
