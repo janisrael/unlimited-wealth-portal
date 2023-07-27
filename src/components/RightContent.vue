@@ -2,7 +2,6 @@
   <div class="right-panel-wrapper">
     <!-- <el-row> -->
       <el-col :span="24">
-      
         <el-calendar>
           <template
             slot="dateCell"
