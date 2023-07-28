@@ -58,8 +58,8 @@
                       <div class="carousel-day">{{ getDate(event.date) }}</div>
                       <div class="carousel-formated-date">{{ getFormatedDate(event.date) }}</div>
                       <div>{{ getMonth(event.date) }}</div>
-                      <div v-if="type === 'upcoming'" style="display: inline-block; margin-top: 10px;">
-                      <!--     <div style="color: #A2B0D5;font-zie: 12px;">Speaker:</div> -->
+                    </div>
+                      <div v-if="type === 'upcoming'" class="sub-wrapper" style="display: inline-block; margin-top: 10px;">
                           <div class="speaker-wrapper">
                             <div style="  display: inline-block;margin-right: 10px;">
                               <el-avatar class="author-avatar" :size="30" src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png">
@@ -74,7 +74,6 @@
                           </div>
                           
                       </div>  
-                    </div>
                   </div>
                 </VueSlickCarousel>
               </div>
