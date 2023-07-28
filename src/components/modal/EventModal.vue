@@ -35,7 +35,8 @@
               </div>  
               <div v-if="type === 'upcoming'" style="  display: inline-block;">
                 <div style="color: #A2B0D5;font-zie: 12px;">Occurrence:</div>
-                <div style="color: #ffffff;">{{ event.typical_occurence }} </div>
+                <div v-if="event.typical_occurence" style="color: #ffffff;">{{ event.typical_occurence }} </div>
+                <div v-else style="color: #ffffff;"> - </div>
               </div>  
             </div>
             <span v-if="type === 'recording'" style="color: #ffffff;padding: 30px 0 15px;display: inline-block;">Available past recordings:</span>
