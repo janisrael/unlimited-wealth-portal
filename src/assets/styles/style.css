@@ -761,14 +761,27 @@ span.speaker-name, i.speaker-icon {
   margin-bottom: -3px;
 }
 
-.slick-list {
+/* .slick-list-upcoming .slick-list {
   height: 170px !important;
-}
+} */
 
-.slick-track {
+.el-loading-mask {
+  background-color: #17153c !important;
+  /* height: 170px !important; */
+}
+/* .slick-list-upcoming .slick-track {
   width: inherit !important;
-}
+} */
 
+.author-avatar {
+  height: 20px !important;
+  width: 20px !important;
+  position: absolute;
+  /* left: 0; */
+  margin-left: -30px;
+  /* position: absolute; */
+  /* left: 22px; */
+}
 /* error overlay */
 iframe#webpack-dev-server-client-overlay {
   display: none !important;

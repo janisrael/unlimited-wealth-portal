@@ -24,18 +24,7 @@
             <el-col :span="24">
 
             <div style="  display: inline-block; width: 100%; text-align: left;  padding: 20px 5px 10px;">
-              <div style="  display: inline-block;margin-right: 10px;">
-                <el-avatar :size="30" src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png">
-                  <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
-                </el-avatar>
-              </div>
-              <!--
-              <div v-if="type === 'upcoming'" style="display: inline-block;padding: 0 50px">
-                <div style="color: #A2B0D5;font-zie: 12px;">Time:</div>
-                <div style="color: #ffffff;">09:00 local</div>
-              </div>  -->
-
-              <div style="  display: inline-block;padding: 0 50px">
+              <div style="  display: inline-block;padding: 0 50px 0 0">
                 <div style="color: #A2B0D5;font-zie: 12px;">Region:</div>
                 <div style="color: #ffffff; text-transform: uppercase;" >{{ region }}</div>
               </div>  
@@ -59,35 +48,39 @@
               </div>
             </div>
 
-            <!--  carousels upcoming -->
-            
-            <div v-if="type === 'upcoming'" id="carousel-wrapper">
-              <VueSlickCarousel v-if="event_list.length" ref="slick" v-bind="settings">
-                <div v-for="(event, i) in event_list" :key="i" class="carousel-block">
-                  <div class="carousel-content-upcoming" @click="getSelected(event, i)">
-                    <el-checkbox v-model="event.selected" class="carousel-checked"></el-checkbox>
-                    <div class="carousel-day">{{ getDate(event.date) }}</div>
-                    <div class="carousel-formated-date">{{ getFormatedDate(event.date) }}</div>
-                    <div>{{ getMonth(event.date) }}</div>
-                    <div v-if="type === 'upcoming'" style="display: inline-block; margin-top: 10px;">
-                    <!--     <div style="color: #A2B0D5;font-zie: 12px;">Speaker:</div> -->
-                        <div class="speaker-wrapper">
-                          <i class="el-icon-user speaker-icon"></i> <span class="speaker-name">Amy Green</span>
-                        </div>
-                        <div>
-                          <i class="el-icon-alarm-clock speaker-icon"></i> <span class="speaker-name">09:00 local</span>
-                        </div>
-                        
-                    </div>  
+            <div v-if="type === 'upcoming'" id="carousel-wrapper" style="height: 170px;">
+              <div v-if="event_list.length" style="min-height: 170px;">
+                <VueSlickCarousel  ref="slick" class="slick-list-upcoming" v-bind="settings">
+                  <div v-for="(event, i) in event_list" :key="i" class="carousel-block">
+                    <div class="carousel-content-upcoming" @click="getSelected(event, i)">
+                      <el-checkbox v-model="event.selected" class="carousel-checked"></el-checkbox>
+                      <div class="carousel-day">{{ getDate(event.date) }}</div>
+                      <div class="carousel-formated-date">{{ getFormatedDate(event.date) }}</div>
+                      <div>{{ getMonth(event.date) }}</div>
+                      <div v-if="type === 'upcoming'" style="display: inline-block; margin-top: 10px;">
+                      <!--     <div style="color: #A2B0D5;font-zie: 12px;">Speaker:</div> -->
+                          <div class="speaker-wrapper">
+                            <div style="  display: inline-block;margin-right: 10px;">
+                              <el-avatar class="author-avatar" :size="30" src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png">
+                                <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
+                              </el-avatar>
+                              <span class="speaker-name">Amy Green</span>
+                            </div>
+                            
+                          </div>
+                          <div>
+                            <i class="el-icon-alarm-clock speaker-icon"></i> <span class="speaker-name">09:00 local</span>
+                          </div>
+                          
+                      </div>  
+                    </div>
                   </div>
-                </div>
-              </VueSlickCarousel>
+                </VueSlickCarousel>
+              </div>
               <div v-else style="min-height: 170px;">
                 No available dates
               </div>
-              <div style="display: block; width: 100%; margin-top: 20px;">
-                <el-button :loading="loading" type="success" :disabled="disable" class="btn-success-custom" @click="handleBook()">Book</el-button>
-              </div>  
+
             </div>
 
             <!--  carousels recordnings -->
@@ -101,7 +94,9 @@
                   </div>   
                 </VueSlickCarousel>
             </div>
-
+            <div v-if="type === 'upcoming'" style="display: block; width: 100%; margin-top: 20px;">
+                <el-button :loading="loading" type="success" :disabled="disable" class="btn-success-custom" @click="handleBook()">Book</el-button>
+            </div>  
             </el-col>
             <span slot="footer" class="dialog-footer">
               <!-- <el-button @click="dialogVisible = false">Cancel</el-button>
@@ -168,12 +163,34 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css'
         disable: true,
         selected_events: [],
         stage: 0,
-        loading: false
+        loading: false,
+        this_load: false
       };
     },
     beforeDestroy () {
       this.stage = 0;
     },
+    mounted () {
+      if(this.event_list.length > 0 ) {
+        this.this_load = true
+      }
+      //   const loading = this.$loading({
+      //     lock: true,
+      //     text: 'Loading',
+      //     // spinner: 'el-icon-loading',
+      //     background: 'rgba(0, 0, 0, 0.7)'
+      //   });
+      // this.this_load = true   
+      // setTimeout(() => {
+      //   /* eslint-disable */
+      //   this.loading = false
+      //   // this.this_load = true
+      //   loading.close()
+      // }, 1000);
+    },
+    // beforeCreate () {
+    //   this.loading = true;
+    // },
     methods: {
       handleBook() {
         if(this.selected_events.length > 0) {
