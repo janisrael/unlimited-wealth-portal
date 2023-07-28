@@ -766,12 +766,19 @@ span.speaker-name, i.speaker-icon {
 } */
 
 .el-loading-mask {
-  background-color: #17153c !important;
+  /* background-color: #17153c !important; */
   /* height: 170px !important; */
 }
 /* .slick-list-upcoming .slick-track {
   width: inherit !important;
 } */
+
+.sub-wrapper {
+  margin-top: -47px;
+  padding: 10px;
+  /* background: red; */
+  text-align: center;
+}
 
 .author-avatar {
   height: 20px !important;
