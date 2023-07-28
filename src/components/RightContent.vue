@@ -19,6 +19,7 @@
       </el-col>
       <el-col :span="24">
         <h4 style="margin-left: 20px;font-size: 14px; font-weight: 600;">My bookings this week</h4>
+        <!-- {{ _myybookings }} -->
           <div v-if="my_events_this_week.length === 0" class="no-booking-caption"> No Bookings for this week </div>
           <el-col v-for="(event, i) in my_events_this_week" :key="i" :span="24" style="margin-bottom: 8px;">
             <div class="events-box">
@@ -104,6 +105,11 @@ import CalendarEvents from '../components/modal/CalendarEvents.vue'
         my_events_upcoming: []
       }
     },
+    computed: {
+      _myybookings() {
+        return this.$store.getters._myybookings
+      },
+    },
     created () {
       this.getEventsDate()
       this.getMyBookings()
@@ -114,13 +120,13 @@ import CalendarEvents from '../components/modal/CalendarEvents.vue'
         var url = 'https://uw-portal-api.tinkerpub.com/api/calendar/' + this.region
         this.axios
         .get(url,
-        {
-          headers: {
-           'X-Session-Key': this.token,
-           'Content-Type': 'application/json',
-           'Accept': 'application/json'
+          {
+            headers: {
+            'X-Session-Key': this.token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+            }
           }
-        }
         )
         .then(response => {
           if (response.status === 200) {
@@ -164,22 +170,59 @@ import CalendarEvents from '../components/modal/CalendarEvents.vue'
         })
         return count
       },
-      getMyBookings() {
-        var url = 'https://uw-portal-api.tinkerpub.com/api/my-account/bookings/upcoming'
-        this.axios
-        .get(url,
-        {
-          headers: {
-           'X-Session-Key': this.token,
-           'Content-Type': 'application/json',
-           'Accept': 'application/json'
-          }
-        }
-        )
-        .then(response => {
-          if (response.status === 200) {
-            this.my_events_upcoming = response.data.data
+      // getUpcomingEvents() {
+      //       let curr = new Date 
+      //       let week = []
+      //       let next_week = []
 
+      //       for (let i = 1; i <= 7; i++) {
+      //         let first = curr.getDate() - curr.getDay() + i 
+      //         let day = new Date(curr.setDate(first)).toISOString().slice(0, 10)
+      //         week.push(day)
+      //       }
+
+      //       //next week
+      //       let next_week_start = new Date(week[week.length - 1]) 
+      //       for (let i = 1; i <= 7; i++) {
+      //         let first_next_week = next_week_start.getDate() - next_week_start.getDay() + i 
+      //         let next_week_day = new Date(next_week_start.setDate(first_next_week)).toISOString().slice(0, 10)
+      //         next_week.push(next_week_day)
+      //       }
+      //     // /* eslint-disable */
+      //       if(this.my_events_upcoming.length > 0) {
+      //         //check events
+      //         this.my_events_upcoming.forEach((value) => {
+      //           week.forEach((value_week) => {
+      //             if(value.start_date === value_week) {
+      //               this.my_events_this_week.push(value)
+      //             }
+      //           })
+      //           next_week.forEach((value_week) => {
+      //             if(value.start_date === value_week) {
+      //               this.my_events_next_week.push(value)
+      //             }
+      //           })
+      //         })
+      //       }
+      //       if(this.my_events_this_week.length > 0) {
+      //         this.my_events_this_week.sort(function(a,b){
+      //           return new Date(a.start_date) - new Date(b.start_date);
+      //         });
+      //       }
+            
+      //       if(this.my_events_next_week.length > 0) {
+      //         this.my_events_next_week.sort(function(a,b){
+      //           return new Date(a.start_date) - new Date(b.start_date);
+      //         });
+      //       }
+      // },
+      getMyBookings() {
+        this.$store.dispatch('getMybookings', this.token).then(response => {
+          if (response.status === 200) {
+            // this.my_events_upcoming = response.data.data
+
+            this.my_events_upcoming = this._myybookings
+            // console.log(this._myybookings,'asdsddfghjk')
             let curr = new Date 
             let week = []
             let next_week = []
@@ -225,9 +268,28 @@ import CalendarEvents from '../components/modal/CalendarEvents.vue'
               });
             }
 
-            // console.log(this.my_events_this_week,'this.my_events_this_week')
+            // console.log(response,'rightcontent')
           }
         })
+
+        // var url = 'https://uw-portal-api.tinkerpub.com/api/my-account/bookings/upcoming'
+        // this.axios
+        // .get(url,
+        // {
+        //   headers: {
+        //    'X-Session-Key': this.token,
+        //    'Content-Type': 'application/json',
+        //    'Accept': 'application/json'
+        //   }
+        // }
+        // )
+        // .then(response => {
+        //   if (response.status === 200) {
+            
+
+            // console.log(this.my_events_this_week,'this.my_events_this_week')
+        //   }
+        // })
       },
       getDateDay(date) {
         var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

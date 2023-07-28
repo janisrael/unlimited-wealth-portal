@@ -19,6 +19,7 @@
     "@fortawesome/vue-fontawesome": "^2.0.6",
     "axios": "^1.4.0",
     "core-js": "^3.8.3",
+    "nodemon": "^3.0.1",
     "npm-watch": "^0.11.0",
     "vue": "^2.6.14",
     "vue-axios": "^3.5.2",
@@ -27,7 +28,9 @@
     "vue-lazy-image-loading": "^1.2.1",
     "vue-lazyload": "^3.0.0",
     "vue-router": "^3.5.3",
-    "vue-slick-carousel": "^1.0.6"
+    "vue-slick-carousel": "^1.0.6",
+    "vuex": "^3.5.1",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

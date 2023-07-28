@@ -60,6 +60,7 @@
             </div>
 
             <!--  carousels upcoming -->
+            
             <div v-if="type === 'upcoming'" id="carousel-wrapper">
               <VueSlickCarousel v-if="event_list.length" ref="slick" v-bind="settings">
                 <div v-for="(event, i) in event_list" :key="i" class="carousel-block">
@@ -85,7 +86,7 @@
                 No available dates
               </div>
               <div style="display: block; width: 100%; margin-top: 20px;">
-                <el-button v-loading="loading" type="success" :disabled="disable" class="btn-success-custom" @click="handleBook()">Book</el-button>
+                <el-button :loading="loading" type="success" :disabled="disable" class="btn-success-custom" @click="handleBook()">Book</el-button>
               </div>  
             </div>
 
@@ -177,12 +178,13 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css'
       handleBook() {
         if(this.selected_events.length > 0) {
           this.loading = true
+          this.disable = true
           console.log(this.selected_events,'selected')
           let event_ids = []
           this.selected_events.forEach((value) => {
             event_ids.push(value.id)
           })
-          
+
             let url = 'https://uw-portal-api.tinkerpub.com/api/bookings/register'
             this.axios
             .post(url, {
@@ -197,17 +199,27 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css'
             })
             .then(response => {
               if (response.status === 200) {
-                 console.log(response)
-                 this.stage = 1
-                 this.loading = false
+                this.stage = 1
+                this.loading = false
+                this.disable = false
+                // this.$store.dispatch('addBooking', this.selected_events).then(response => {
+                //   if (response.status === 200) {
+                //       console.log('addbooking')
+                //       console.log(response)
+                //       this.stage = 1
+                //       this.loading = false
+                //   }
+                // })
               } else {
                  this.loading = false
+                 this.disable = false
               }
               
             }).catch(err => {
               console.log(err)
-              this.stage = 1
+              this.stage = 0
               this.loading = false
+              this.disable = false
             })
         }
       },
