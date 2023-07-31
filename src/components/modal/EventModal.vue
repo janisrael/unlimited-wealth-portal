@@ -226,7 +226,6 @@ export default {
               this.loading = false
               this.disable = false
             }
-
           }).catch(err => {
             console.log(err)
             this.stage = 0
