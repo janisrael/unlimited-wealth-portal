@@ -184,9 +184,6 @@ export default {
     //   loading.close()
     // }, 1000);
   },
-  // beforeCreate () {
-  //   this.loading = true;
-  // },
   methods: {
     handleBook() {
       if (this.selected_events.length > 0) {
