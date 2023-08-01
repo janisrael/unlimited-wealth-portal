@@ -170,19 +170,19 @@ export default {
     if (this.event_list.length > 0) {
       this.this_load = true
     }
-    //   const loading = this.$loading({
-    //     lock: true,
-    //     text: 'Loading',
-    //     // spinner: 'el-icon-loading',
-    //     background: 'rgba(0, 0, 0, 0.7)'
-    //   });
-    // this.this_load = true   
-    // setTimeout(() => {
-    //   /* eslint-disable */
-    //   this.loading = false
-    //   // this.this_load = true
-    //   loading.close()
-    // }, 1000);
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        // spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
+    this.this_load = true   
+    setTimeout(() => {
+      /* eslint-disable */
+      this.loading = false
+      // this.this_load = true
+      loading.close()
+    }, 1000);
   },
   methods: {
     handleBook() {
