@@ -45,7 +45,7 @@
         </div>
 
         <div v-if="type === 'upcoming'" id="carousel-wrapper" style="height: 170px;">
-          <div v-if="event_list.length" style="min-height: 170px;">
+          <div v-if="event_list.length" v-loading="loading" style="min-height: 170px;">
             <el-col :span="24">
               <VueSlickCarousel ref="slick" class="slick-list-upcoming" v-bind="settings">
                 <div v-for="(event, i) in event_list" :key="i" class="carousel-block">
