@@ -65,7 +65,7 @@ const store = new Vuex.Store({
         });
       },
       async addBooking({ commit, state }, value) {
-          console.log(state)
+          console.log(value,state,'add booking')
           commit("ADD_BOOKING", value)
       },
     },

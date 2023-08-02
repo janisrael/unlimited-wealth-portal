@@ -101,6 +101,7 @@ export default {
     }
   },
   mounted() {
+    console.log(process.env,'env')
     this.checkToken()
   },
   watch: {
@@ -141,15 +142,9 @@ export default {
                 this.use_region = 'gb'
                 this.selected_region = 'gb'
                 this.region = response.data.customer.use_region
-              }
-              if (response.data.customer.use_region === 'phl') {
-                this.use_region = 'phl'
-                this.selected_region = 'phl'
-                this.region = response.data.customer.use_region
-              }
-             if (response.data.customer.use_region === 'aus') {
-                this.use_region = 'aus'
-                this.selected_region = 'aus'
+              } else  {
+                this.use_region = response.data.customer.use_region
+                this.selected_region = response.data.customer.use_region
                 this.region = response.data.customer.use_region
               }
               sessionStorage.setItem('token', response.data.app_session.session_key)
@@ -179,18 +174,16 @@ export default {
                   this.use_region = 'gb'
                   this.selected_region = 'gb'
                   this.region = response.data.customer.use_region
+                } else  {
+                  this.use_region = response.data.customer.use_region
+                  this.selected_region = response.data.customer.use_region
+                  this.region = response.data.customer.use_region
                 }
-
-              if (response.data.customer.use_region === 'phl') {
-                this.use_region = 'phl'
-                this.selected_region = 'phl'
-                this.region = response.data.customer.use_region
-              }
-             if (response.data.customer.use_region === 'aus') {
-                this.use_region = 'aus'
-                this.selected_region = 'aus'
-                this.region = response.data.customer.use_region
-              }
+                // if (response.data.customer.use_region === 'aus') {
+                //   this.use_region = 'aus'
+                //   this.selected_region = 'aus'
+                //   this.region = response.data.customer.use_region
+                // }
 
                 this.verification = true
                 const sessionStorage = window.sessionStorage
