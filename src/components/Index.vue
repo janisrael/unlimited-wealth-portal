@@ -156,6 +156,7 @@ export default {
             } else {
               this.verification = false
               this.currentRightComponent = null
+              this.clearSession()
             }
 
           })
@@ -187,6 +188,7 @@ export default {
 
               } else {
                 this.verification = false
+                this.clearSession()
               }
             })
         } else {
