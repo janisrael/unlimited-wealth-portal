@@ -44,8 +44,8 @@
           </div>
         </div>
 
-        <div v-if="type === 'upcoming'" id="carousel-wrapper" style="height: 170px;">
-          <div v-if="event_list.length" v-loading="loading" style="min-height: 170px;">
+        <div v-loading="this_load"  v-if="type === 'upcoming'" id="carousel-wrapper" style="height: 170px;">
+          <div v-if="event_list.length" style="min-height: 170px;">
             <el-col :span="24">
               <VueSlickCarousel ref="slick" class="slick-list-upcoming" v-bind="settings">
                 <div v-for="(event, i) in event_list" :key="i" class="carousel-block">
@@ -160,28 +160,27 @@ export default {
       selected_events: [],
       stage: 0,
       loading: false,
-      this_load: false
+      this_load: true
     };
   },
   beforeDestroy() {
     this.stage = 0;
   },
   mounted() {
-    if (this.event_list.length > 0) {
-      this.this_load = true
-    }
-      const loading = this.$loading({
-        lock: true,
-        text: 'Loading',
-        // spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      });
-    this.this_load = true   
+    // if (this.event_list.length > 0) {
+    //   this.this_load = true
+    // }
+    //   const loading = this.$loading({
+    //     lock: true,
+    //     text: 'Loading',
+    //     // spinner: 'el-icon-loading',
+    //     background: 'rgba(0, 0, 0, 0.7)'
+    //   });
+    // this.this_load = true   
     setTimeout(() => {
       /* eslint-disable */
-      this.loading = false
-      // this.this_load = true
-      loading.close()
+      this.this_load = false
+      // loading.close()
     }, 1000);
   },
   methods: {
@@ -211,14 +210,15 @@ export default {
               this.stage = 1
               this.loading = false
               this.disable = false
-              // this.$store.dispatch('addBooking', this.selected_events).then(response => {
-              //   if (response.status === 200) {
-              //       console.log('addbooking')
-              //       console.log(response)
-              //       this.stage = 1
-              //       this.loading = false
-              //   }
-              // })
+              console.log(this.selected_events,'selected_events')
+              this.$store.dispatch('addBooking', this.selected_events).then(response => {
+                // if (response.status === 200) {
+                //     // console.log('addbooking')
+                //     // console.log(response)
+                //     this.stage = 1
+                //     this.loading = false
+                // }
+              })
             } else {
               this.loading = false
               this.disable = false
