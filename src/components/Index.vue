@@ -161,7 +161,6 @@ export default {
           })
 
       } else {
-
         if (window.sessionStorage.getItem('token')) {
           let url = 'https://uw-portal-api.tinkerpub.com/api/auth/login'
           this.axios
@@ -179,16 +178,10 @@ export default {
                   this.selected_region = response.data.customer.use_region
                   this.region = response.data.customer.use_region
                 }
-                // if (response.data.customer.use_region === 'aus') {
-                //   this.use_region = 'aus'
-                //   this.selected_region = 'aus'
-                //   this.region = response.data.customer.use_region
-                // }
 
                 this.verification = true
                 const sessionStorage = window.sessionStorage
                 sessionStorage.setItem('token', response.data.app_session.session_key)
-                // sessionStorage.setItem('token', 'n8RwzOAnck4xUS9QrRRYWxzhB13SQ9aNsxIpEmpj4V') // static token
                 this.token = sessionStorage.getItem('token')
                 this.getEvents()
 

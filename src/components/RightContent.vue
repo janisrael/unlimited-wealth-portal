@@ -1,8 +1,9 @@
 <template>
 <div class="right-panel-wrapper">
   <!-- <el-row> -->
+  
   <el-col :span="24">
-    <el-calendar>
+    <el-calendar v-model="calendar_date">
       <template slot="dateCell" slot-scope="{ data }">
         <div :class="data.isSelected ? 'is-selected' : ''" class="calendar-date" @click="getDate(data)">
           {{ data.day.split('-').slice(2).join('-') }}
@@ -101,7 +102,14 @@ export default {
       event_on_this_day: [],
       my_events_this_week: [],
       my_events_next_week: [],
-      my_events_upcoming: []
+      my_events_upcoming: [],
+      calendar_date: new Date()
+    }
+  },
+  watch: {
+    calendar_date(newValue, oldValue) {
+      console.log(newValue, oldValue)
+      this.getEventsDate(newValue)
     }
   },
   computed: {
@@ -114,9 +122,20 @@ export default {
     this.getMyBookings()
   },
   methods: {
-    getEventsDate() {
+    getEventsDate(date) {
       var events = []
-      var url = 'https://uw-portal-api.tinkerpub.com/api/calendar/' + this.region
+      var url = ''
+      var month = ''
+
+      if(date) {
+        month = date.getFullYear() + '/' + (parseInt(date.getMonth()) + 1)
+        url = 'https://uw-portal-api.tinkerpub.com/api/calendar/' + this.region + '/' + month
+      } else {
+        month = new Date()
+        let _month = month.getFullYear() + '/' + (parseInt(month.getMonth()) + 1)
+        url = 'https://uw-portal-api.tinkerpub.com/api/calendar/' + this.region + '/' + _month
+      }
+      
       this.axios
         .get(url, {
           headers: {
