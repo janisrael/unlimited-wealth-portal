@@ -242,6 +242,7 @@ div.card-content-sched {
 
 .card-header-content {
   height: 187px !important;
+  background-position: left center !important;
   /* background-color: black; */
 }
 .card-header-content.lazy-background {

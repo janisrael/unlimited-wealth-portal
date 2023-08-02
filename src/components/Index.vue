@@ -142,7 +142,16 @@ export default {
                 this.selected_region = 'gb'
                 this.region = response.data.customer.use_region
               }
-
+              if (response.data.customer.use_region === 'phl') {
+                this.use_region = 'phl'
+                this.selected_region = 'phl'
+                this.region = response.data.customer.use_region
+              }
+             if (response.data.customer.use_region === 'aus') {
+                this.use_region = 'aus'
+                this.selected_region = 'aus'
+                this.region = response.data.customer.use_region
+              }
               sessionStorage.setItem('token', response.data.app_session.session_key)
               // sessionStorage.setItem('token', 'n8RwzOAnck4xUS9QrRRYWxzhB13SQ9aNsxIpEmpj4V') // static token
               this.token = window.sessionStorage.getItem('token')
@@ -171,6 +180,17 @@ export default {
                   this.selected_region = 'gb'
                   this.region = response.data.customer.use_region
                 }
+
+              if (response.data.customer.use_region === 'phl') {
+                this.use_region = 'phl'
+                this.selected_region = 'phl'
+                this.region = response.data.customer.use_region
+              }
+             if (response.data.customer.use_region === 'aus') {
+                this.use_region = 'aus'
+                this.selected_region = 'aus'
+                this.region = response.data.customer.use_region
+              }
 
                 this.verification = true
                 const sessionStorage = window.sessionStorage

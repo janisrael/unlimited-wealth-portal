@@ -7,7 +7,7 @@
         <div @click="getModal(event)">
           <el-card class="box-card card-left-panel" shadow="hover">
             <div slot="header" class="clearfix">
-              <lazy-background :src="event.image_url" @onLoad="onLoad(event.name)" @onError="onError(event)" image-class="cam-viewport" :blur="0" position="top center" size="cover" style="background-size: cover;" class="card-header-content">
+              <lazy-background :src="event.image_url" @onLoad="onLoad(event.name)" @onError="onError(event)" image-class="cam-viewport" :blur="0" position="left center" size="cover" style="background-size: cover;   background-position: left center;" class="card-header-content">
                 <div slot="content">
                   <div class="card-header-content">
                     <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
