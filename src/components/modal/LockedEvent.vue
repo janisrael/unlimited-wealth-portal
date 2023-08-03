@@ -6,7 +6,7 @@
       width="50%"
       top="3%"
       class="locked-modal"
-      :close-on-click-modal="false"
+      :close-on-click-modal="true"
       :before-close="handleClose"
     >
       <el-col :span="24">
