@@ -451,9 +451,14 @@ export default {
         if (this.type === "upcoming") {
           if (this.event_list[index].selected === true) {
             this.event_list[index].selected = false;
-            this.disable = true;
 
-            this.selected_events.splice(index, 1);
+            this.selected_events = this.selected_events.filter(
+              (selected_event) => selected_event.id != event.id
+            );
+
+            if (this.selected_events.length <= 0) {
+              this.disable = true;
+            }
           } else {
             this.disable = false;
             this.event_list[index].selected = true;
@@ -467,6 +472,7 @@ export default {
           this.disable = false;
           this.event_list[index].selected = true;
         }
+
         if (this.type === "recording") {
           this.getVideo(event);
         }
