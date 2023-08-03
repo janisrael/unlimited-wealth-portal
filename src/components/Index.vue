@@ -102,7 +102,11 @@ export default {
   },
   mounted() {
     console.log(process.env,'env')
-    this.checkToken()
+    if(sessionStorage.getItem('token')) {
+      this.verifyToken(sessionStorage.getItem('token'))
+    } else {
+      this.checkToken()
+    }
   },
   watch: {
     search: function () {
@@ -118,23 +122,12 @@ export default {
     // window.sessionStorage.removeItem('token')
   },
   methods: {
-    clearSession() {
-      window.sessionStorage.removeItem('token')
-      window.location.reload();
-    },
-    async checkToken() {
-      var current_url = window.location.href
-      var substr = ''
-      if (current_url.includes('token')) {
-        substr = current_url.substring(current_url.indexOf("=") + 1);
-      }
-      if (substr) {
-        // check token, 
+    verifyToken(token) {
         let url = 'https://uw-portal-api.tinkerpub.com/api/auth/login'
 
         this.axios
           .get(url, {
-            token: substr
+            token: token
           })
           .then(response => {
             if (response.status === 200) {
@@ -159,48 +152,52 @@ export default {
             }
 
           })
-
+    },
+    clearSession() {
+      window.sessionStorage.removeItem('token')
+      window.location.reload();
+    },
+    async checkToken(data) {
+      var current_url = window.location.href
+      var substr = ''
+      if (current_url.includes('token')) {
+        substr = current_url.substring(current_url.indexOf("=") + 1);
+      }
+      if (substr) {
+        this.verifyToken(substr)
       } else {
         if (window.sessionStorage.getItem('token')) {
-          let url = 'https://uw-portal-api.tinkerpub.com/api/auth/login'
-          this.axios
-            .get(url, {
-              token: sessionStorage.getItem('token'),
-            })
-            .then(response => {
-              if (response.status === 200) {
-                if (response.data.customer.use_region === 'uk') {
-                  this.use_region = 'gb'
-                  this.selected_region = 'gb'
-                  this.region = response.data.customer.use_region
-                } else  {
-                  this.use_region = response.data.customer.use_region
-                  this.selected_region = response.data.customer.use_region
-                  this.region = response.data.customer.use_region
-                }
-
-                this.verification = true
-                const sessionStorage = window.sessionStorage
-                sessionStorage.setItem('token', response.data.app_session.session_key)
-                this.token = sessionStorage.getItem('token')
-                this.getEvents()
-
-              } else {
-                this.verification = false
-              }
-            })
+          if(data) {
+            if (data.customer.use_region === 'uk') {
+                this.use_region = 'gb'
+                this.selected_region = 'gb'
+                this.region = data.customer.use_region
+            } else  {
+              this.use_region = data.customer.use_region
+              this.selected_region = data.customer.use_region
+              this.region = data.customer.use_region
+            }
+            this.verification = true
+            // const sessionStorage = window.sessionStorage
+            window.sessionStorage.setItem('token', data.app_session.session_key)
+            this.token = sessionStorage.getItem('token')
+            this.getEvents()
+          } else {
+            this.verification = false
+          }
         } else {
           this.verification = false
         }
 
       }
     },
-    login(token) {
+    login(data) {
+      console.log(data,'---')
       window.sessionStorage.removeItem('token')
-      window.sessionStorage.setItem('token', token)
+      window.sessionStorage.setItem('token', data.app_session.session_key)
       // window.sessionStorage.setItem('token', 'n8RwzOAnck4xUS9QrRRYWxzhB13SQ9aNsxIpEmpj4V') // static token
-      this.token = token
-      this.checkToken()
+      this.token = data.app_session.session_key
+      this.checkToken(data)
     },
     getEvents() {
       const loading = this.$loading({

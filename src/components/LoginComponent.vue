@@ -63,7 +63,7 @@ export default {
                 var session_token = ''
                 session_token = response.data.app_session.session_key
                 if (session_token) {
-                  this.$emit('login', session_token)
+                  this.$emit('login', response.data)
                 }
               }
               //  else {
