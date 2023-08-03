@@ -1,146 +1,178 @@
 <template>
-<div class="left-panel-wrapper">
-  <el-row>
-    <el-col :span="24" style="padding: 0px 20px !important;">
-      <!-- eslint-disable -->
-      <el-col v-for="(event, i) in events" v-if="event.policy.is_visible === true" :key="i" :span="8" style="padding-right: 20px;padding-top: 20px;">
-        <div @click="getModal(event)">
-          <el-card class="box-card card-left-panel" shadow="hover">
-            <div slot="header" class="clearfix">
-              <lazy-background :src="event.image_url" @onLoad="onLoad(event.name)" @onError="onError(event)" image-class="cam-viewport" :blur="0" position="left center" size="cover" style="background-size: cover;   background-position: left center;" class="card-header-content">
-                <div slot="content">
-                  <div class="card-header-content">
-                    <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
+  <div class="left-panel-wrapper">
+    <el-row>
+      <el-col :span="24" style="padding: 0px 20px !important">
+        <!-- eslint-disable -->
+        <el-col
+          v-for="(event, i) in events"
+          v-if="event.policy.is_visible === true"
+          :key="i"
+          :span="8"
+          style="padding-right: 20px; padding-top: 20px"
+        >
+          <div @click="getModal(event)">
+            <el-card class="box-card card-left-panel" shadow="hover">
+              <div slot="header" class="clearfix">
+                <lazy-background
+                  :src="event.image_url"
+                  @onLoad="onLoad(event.name)"
+                  @onError="onError(event)"
+                  image-class="cam-viewport"
+                  :blur="0"
+                  position="left center"
+                  size="cover"
+                  style="
+                    background-size: cover;
+                    background-position: left center;
+                  "
+                  class="card-header-content"
+                >
+                  <div slot="content">
+                    <div class="card-header-content">
+                      <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
                             <i  class="el-icon-lock"></i>
                           </div> -->
-                    <!-- <div class="card-content-title">{{ event.name }}</div>     -->
-                    <div class="card-content-title"></div>
-                    <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
-                    <div class="card-content-sched">Coming up at 3rd April</div>
+                      <!-- <div class="card-content-title">{{ event.name }}</div>     -->
+                      <div class="card-content-title"></div>
+                      <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
+                      <div class="card-content-sched">
+                        Coming up at 3rd April
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </lazy-background>
 
-              </lazy-background>
-
-              <!-- <el-button style="float: right; padding: 3px 0" type="text">Operation button</el-button> -->
-            </div>
-            <div class="text item">
-              <!-- Get ahead of the curve with our early morning briefing. Our trader mentors will help you look trough the markets to see what’s going on and some places that you might want to look for today’s trades.  -->
-              <span v-if="!event.description"> -</span>
-              {{ event.description }}
-            </div>
-          </el-card>
-        </div>
+                <!-- <el-button style="float: right; padding: 3px 0" type="text">Operation button</el-button> -->
+              </div>
+              <div class="text item">
+                <!-- Get ahead of the curve with our early morning briefing. Our trader mentors will help you look trough the markets to see what’s going on and some places that you might want to look for today’s trades.  -->
+                <span v-if="!event.description"> -</span>
+                {{ event.description }}
+              </div>
+            </el-card>
+          </div>
+        </el-col>
       </el-col>
-
-    </el-col>
-    <component :is="currentComponent" :type="type" :event_list="event_list" :event="selected_event" @close="CloseModal()" :token="token" :region="region" />
-  </el-row>
-</div>
+      <component
+        :is="currentComponent"
+        :type="type"
+        :event_list="event_list"
+        :event="selected_event"
+        @close="CloseModal()"
+        :token="token"
+        :region="region"
+      />
+    </el-row>
+  </div>
 </template>
 
 <script>
-import EventModal from './modal/EventModal.vue'
-import LockedEvent from './modal/LockedEvent.vue'
+import EventModal from "./modal/EventModal.vue";
+import LockedEvent from "./modal/LockedEvent.vue";
 export default {
-  name: 'LeftContent',
+  name: "LeftContent",
   components: {
     EventModal,
-    LockedEvent
+    LockedEvent,
   },
   props: {
     type: {
       type: String,
-      required: true
+      required: true,
     },
     events: {
       required: true,
-      type: Array
+      type: Array,
     },
     tumbnail_region_title: {
       required: true,
-      type: String
+      type: String,
     },
     region: {
       required: true,
-      type: String
+      type: String,
     },
     token: {
       required: true,
-      type: String
-    }
+      type: String,
+    },
   },
   data() {
     return {
-      thumbnail_image: require('../assets/images/visual.png'),
+      thumbnail_image: require("../assets/images/visual.png"),
       currentComponent: null,
       event_list: [],
-      selected_event: {}
-    }
+      selected_event: {},
+    };
   },
   methods: {
     getModal(event) {
-      this.selected_event = event
+      this.selected_event = event;
 
       if (event.policy.is_accessible === false) {
-        this.currentComponent = LockedEvent
-        return
+        this.currentComponent = LockedEvent;
+        return;
       }
 
-      var url = ''
-      var events = []
-      if (this.type === 'upcoming') {
-        url =  process.env.VUE_APP_API_URL + '/api/events/upcoming?region=' + this.region + '&event_type_id=' + event.id
+      var url = "";
+      var events = [];
+      if (this.type === "upcoming") {
+        url =
+          process.env.VUE_APP_API_URL +
+          "/api/events/upcoming?region=" +
+          this.region +
+          "&event_type_id=" +
+          event.id;
         this.axios
           .get(url, {
             headers: {
-              'X-Session-Key': this.token,
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            }
+              "X-Session-Key": this.token,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
           })
-          .then(response => {
+          .then((response) => {
             if (response.status === 200) {
-              events = response.data.data
+              events = response.data.data;
               events.forEach((event) => {
-                event['selected'] = false
-              })
-              this.event_list = events
-              console.log(events, 'event list')
+                event["selected"] = false;
+              });
+              this.event_list = events;
+              console.log(events, "event list");
             }
-
-          })
-
+          });
       } else {
-
-        url =  process.env.VUE_APP_API_URL + '/api/events/recordings?region=' + this.region + '&event_type_id=' + event.id
+        url =
+          process.env.VUE_APP_API_URL +
+          "/api/events/recordings?region=" +
+          this.region +
+          "&event_type_id=" +
+          event.id;
         this.axios
           .get(url, {
             headers: {
-              'X-Session-Key': this.token,
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            }
+              "X-Session-Key": this.token,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
           })
-          .then(response => (this.event_list = response.data.data))
+          .then((response) => (this.event_list = response.data.data));
       }
 
-      this.currentComponent = EventModal
+      this.currentComponent = EventModal;
     },
     CloseModal() {
-      this.event_list = []
-      this.currentComponent = null
+      this.event_list = [];
+      this.currentComponent = null;
     },
     onLoad(data) {
-      console.log(data)
+      console.log(data);
     },
     onError(data) {
-      console.log(data)
-    }
+      console.log(data);
+    },
   },
-}
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
