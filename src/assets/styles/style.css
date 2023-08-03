@@ -752,6 +752,9 @@ span.modal-span {
   margin-top: 66px;
 
 }
+.el-dialog__wrapper{
+  backdrop-filter: blur(2px);
+}
 
 .el-dialog__wrapper.locked-modal .el-dialog__body {
   padding: 10px 20px !important;
