@@ -723,7 +723,7 @@ span.modal-span {
   word-break: break-word !important;
 
   width: 300px !important;
-  left: 1153px !important;
+  /* left: 1153px !important; */
 
 }
 
@@ -732,7 +732,7 @@ span.modal-span {
 }
 
 .el-popover .popper__arrow { 
-  left: 269px !important;
+  /* left: 269px !important; */
 }
 
 .lock-wrapper {

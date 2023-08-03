@@ -93,7 +93,7 @@
               Events Overview
             </h3>
             <el-popover
-              placement="bottom-end"
+              placement="bottom-start"
               title="All events in one place"
               width="200"
               trigger="hover"
