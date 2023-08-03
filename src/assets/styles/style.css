@@ -484,7 +484,11 @@ label.el-radio.is-checked span.el-radio__label {
   font-weight: 600;
   font-size: 14px;
 }
+.el-checkbox__input.is-checked .el-checkbox__inner{
+  color: #A4F14A !important;
+  border-color: #A4F14A !important;
 
+}
 span.el-radio__label {
   color: #ffffff !important;
   font-weight: 600;
@@ -559,13 +563,15 @@ span.modal-span {
   display: inline-block;
   text-align: center;
   width: -webkit-fill-available;
-  border-top: 20px solid #17153C;
-  border-left: 10px solid #17153C;
-  border-right: 10px solid #17153C;
   color: #ffffff;
   cursor: pointer;
-  margin-bottom: 25px;
+  margin: 10px 10px 25px;
   position: relative;
+}
+
+.selected-event{
+  border: 1px solid #A4F14A;
+  background: linear-gradient(270deg, #403B62 0%, #3C4F6F 100%) !important;
 }
 
 #carousel-wrapper {
@@ -599,6 +605,15 @@ span.modal-span {
 
 .el-checkbox__inner {
   background-color: #18153C !important;
+  width: 1.5rem!important;
+  height: 1.5rem!important;
+}
+
+.el-checkbox__inner::after {
+  height: 10px !important;
+  left: 8px !important;
+  top: 4px !important;
+  width: 5px !important;
 }
 
 .dot {
@@ -690,7 +705,7 @@ span.modal-span {
   background-image: linear-gradient(#ABD857, #6C9224) !important;
 
   border-color: #67C23A !important;
-  width: 100%;
+  /* width: 100%; */
 }
 
 .slick-slider.slick-initialized {
@@ -708,7 +723,7 @@ span.modal-span {
   word-break: break-word !important;
 
   width: 300px !important;
-  left: 1153px !important;
+  /* left: 1153px !important; */
 
 }
 
@@ -717,7 +732,7 @@ span.modal-span {
 }
 
 .el-popover .popper__arrow { 
-  left: 269px !important;
+  /* left: 269px !important; */
 }
 
 .lock-wrapper {
@@ -736,6 +751,9 @@ span.modal-span {
   border-radius: 50%;
   margin-top: 66px;
 
+}
+.el-dialog__wrapper{
+  backdrop-filter: blur(2px);
 }
 
 .el-dialog__wrapper.locked-modal .el-dialog__body {
@@ -757,7 +775,6 @@ span.modal-span {
 }
 
 .speaker-name, .speaker-icon {
-  color: #9690bb;
   font-size: 12px;
 }
 p.speaker-name{
@@ -787,6 +804,7 @@ p.speaker-name{
 .sub-wrapper {
   padding-top: 10px;
   text-align: center;
+  color: #A2B0D5;
 }
 
 .author-avatar {
