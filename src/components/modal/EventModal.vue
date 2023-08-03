@@ -103,15 +103,15 @@
                   >
                     <div
                       class="carousel-content-upcoming"
+                      :class="{ 'selected-event': event.selected == true }"
                       @click="getSelected(event, i)"
                     >
-                  <div class="carousel-check-wrapper">
-
-                      <el-checkbox
-                        v-model="event.selected"
-                        class="carousel-checked"
-                      ></el-checkbox>
-                    </div>
+                      <div class="carousel-check-wrapper">
+                        <el-checkbox
+                          v-model="event.selected"
+                          class="carousel-checked"
+                        ></el-checkbox>
+                      </div>
 
                       <div class="carousel-day">{{ getDate(event.date) }}</div>
                       <div class="carousel-formated-date">
@@ -120,20 +120,36 @@
                       <div>{{ getMonth(event.date) }}</div>
 
                       <div class="speaker-wrapper">
-                        <el-tooltip class="item speaker-icon" content="Amy Green" placement="top" effect="light">
-                            <el-button icon="el-icon-user" circle size="mini"></el-button>
+                        <el-tooltip
+                          class="item speaker-icon"
+                          content="Amy Green"
+                          placement="top"
+                          effect="light"
+                        >
+                          <el-button
+                            icon="el-icon-user"
+                            circle
+                            size="mini"
+                          ></el-button>
                         </el-tooltip>
                       </div>
 
-                      <el-tooltip class="item speaker-icon" effect="light" :content="getFormatedLocalTime(event.start_at.local)" placement="bottom">
+                      <el-tooltip
+                        class="item speaker-icon"
+                        effect="light"
+                        :content="getFormatedLocalTime(event.start_at.local)"
+                        placement="bottom"
+                      >
                         <div
                           v-if="type === 'upcoming'"
                           class="sub-wrapper"
                           style="display: inline-block; margin-top: 10px"
                         >
-                            <i class="el-icon-alarm-clock speaker-icon"></i>
-                            <span class="speaker-name"> {{ getFormatedTime(event.start_at.local) }}</span>
-                            <p class="speaker-name"> {{ getLocalTimezone() }}</p>
+                          <i class="el-icon-alarm-clock speaker-icon"></i>
+                          <span class="speaker-name">
+                            {{ getFormatedTime(event.start_at.local) }}</span
+                          >
+                          <p class="speaker-name">{{ getLocalTimezone() }}</p>
                         </div>
                       </el-tooltip>
                     </div>
@@ -171,7 +187,8 @@
               :loading="loading"
               type="success"
               :disabled="disable"
-              class="btn-success-custom"
+              style="width: 100%"
+              :class="{ 'btn-success-custom': selected_events.length > 0 }"
               @click="handleBook()"
               >Book</el-button
             >
@@ -243,7 +260,7 @@ export default {
       stage: 0,
       loading: false,
       this_load: true,
-      local_timezone: this.getLocalTimezone()
+      local_timezone: this.getLocalTimezone(),
     };
   },
   beforeDestroy() {
@@ -277,7 +294,7 @@ export default {
           event_ids.push(value.id);
         });
 
-        let url = process.env.VUE_APP_API_URL + '/api/bookings/register'
+        let url = process.env.VUE_APP_API_URL + "/api/bookings/register";
         this.axios
           .post(
             url,
@@ -365,22 +382,21 @@ export default {
       }
       return formated_date;
     },
-    getLocalTimezone(){
-      var timezone = '';
+    getLocalTimezone() {
+      var timezone = "";
 
       switch (this.region) {
         case "uk":
           timezone = "Europe/London";
-        break;
+          break;
         case "aus":
           timezone = "Australia/Sydney";
-        break;
+          break;
         case "phl":
           timezone = "Asia/Manila";
-        break;
+          break;
       }
       return timezone;
-
     },
     getFormatedTime(datetime) {
       var d = new Date(datetime);
@@ -389,12 +405,17 @@ export default {
         hour: "numeric",
         minute: "2-digit",
       });
-    
+
       return time;
     },
     getFormatedLocalTime(datetime) {
-      var gmt = new Date().toLocaleString("en", { timeZone: this.local_timezone, timeZoneName: "short" }).split(" ")[3];
-      var d = (datetime + " " + gmt);
+      var gmt = new Date()
+        .toLocaleString("en", {
+          timeZone: this.local_timezone,
+          timeZoneName: "short",
+        })
+        .split(" ")[3];
+      var d = datetime + " " + gmt;
       var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       var local_date = new Date(d).toLocaleString("default", {
@@ -405,9 +426,9 @@ export default {
         hour: "numeric",
         minute: "2-digit",
         timeZoneName: "short",
-        timeZone: timeZone
+        timeZone: timeZone,
       });
-    
+
       return local_date;
     },
     getDateExt(date) {
@@ -467,6 +488,7 @@ export default {
         .then((response) => {
           if (response.status === 200) {
             this.video_url = response.data.data.video_recording_url;
+            console.log();
           }
         });
     },
