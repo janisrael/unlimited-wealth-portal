@@ -129,11 +129,11 @@ export default {
 
       if(date) {
         month = date.getFullYear() + '/' + (parseInt(date.getMonth()) + 1)
-        url = 'https://uw-portal-api.tinkerpub.com/api/calendar/' + this.region + '/' + month
+        url =  process.env.VUE_APP_API_URL + '/api/calendar/' + this.region + '/' + month
       } else {
         month = new Date()
         let _month = month.getFullYear() + '/' + (parseInt(month.getMonth()) + 1)
-        url = 'https://uw-portal-api.tinkerpub.com/api/calendar/' + this.region + '/' + _month
+        url = process.env.VUE_APP_API_URL + '/api/calendar/' + this.region + '/' + _month
       }
       
       this.axios

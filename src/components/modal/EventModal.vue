@@ -105,10 +105,13 @@
                       class="carousel-content-upcoming"
                       @click="getSelected(event, i)"
                     >
+                  <div class="carousel-check-wrapper">
+
                       <el-checkbox
                         v-model="event.selected"
                         class="carousel-checked"
                       ></el-checkbox>
+                    </div>
 
                       <div class="carousel-day">{{ getDate(event.date) }}</div>
                       <div class="carousel-formated-date">
@@ -274,7 +277,7 @@ export default {
           event_ids.push(value.id);
         });
 
-        let url = "https://uw-portal-api.tinkerpub.com/api/bookings/register";
+        let url = process.env.VUE_APP_API_URL + '/api/bookings/register'
         this.axios
           .post(
             url,

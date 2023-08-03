@@ -1,3 +1,5 @@
+// import 'dotenv/config'
+
 import Vue from 'vue'
 import App from './App.vue'
 import store from "./store";
@@ -18,7 +20,7 @@ import VueLazyImageLoading from "vue-lazy-image-loading";
 
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-
+// require('dotenv').config();
 
 
 /* add font awesome icon component */
