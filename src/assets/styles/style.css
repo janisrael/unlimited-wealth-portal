@@ -551,20 +551,21 @@ span.modal-span {
 }
 
 .carousel-block .carousel-content-upcoming {
-  height: 80px;
+  min-height: 80px;
   text-align: center;
-  padding: 36px 0px;
+  padding: 20px 0px;
   background-color: grey;
   background: #312B54;
   display: inline-block;
   text-align: center;
-  margin: 0 auto;
   width: -webkit-fill-available;
   border-top: 20px solid #17153C;
   border-left: 10px solid #17153C;
   border-right: 10px solid #17153C;
   color: #ffffff;
   cursor: pointer;
+  margin-bottom: 25px;
+  position: relative;
 }
 
 #carousel-wrapper {
@@ -579,8 +580,9 @@ span.modal-span {
 }
 
 .carousel-checked {
-  /* right: -63px;
-  top: -43px; */
+  right: -6px;
+  top: -8px;
+  position: absolute !important;
 }
 
 .icon-play {
@@ -591,8 +593,7 @@ span.modal-span {
 
 .carousel-day {
   /* margin-top: -16px; */
-  margin-top: 24px;
-  font-size: 12px;
+  font-size: 15px;
   color: #A2B0D5;
 }
 
@@ -632,8 +633,9 @@ span.modal-span {
 }
 
 .carousel-formated-date {
-  font-size: 18px; 
+  font-size: 22px; 
   font-weight: 400;
+  padding: 3px;
 }
 
 .slick-slide.slick-active.slick-current .carousel-content {
@@ -754,13 +756,16 @@ span.modal-span {
   color: #8583b8;
 }
 
-span.speaker-name, i.speaker-icon {
+.speaker-name, .speaker-icon {
   color: #9690bb;
   font-size: 12px;
 }
+p.speaker-name{
+  margin: auto;
+}
 
 .speaker-wrapper {
-  margin-bottom: -3px;
+  margin-top: 1.5rem;
 }
 
 /* .slick-list-upcoming .slick-list {
@@ -776,15 +781,11 @@ span.speaker-name, i.speaker-icon {
 
 .carousel-check-wrapper {
   width: 100%;
-  /* background: red; */
-  margin-top: -40px;
   text-align: right;
 }
 
 .sub-wrapper {
-  margin-top: -47px;
-  padding: 10px;
-  /* background: red; */
+  padding-top: 10px;
   text-align: center;
 }
 
