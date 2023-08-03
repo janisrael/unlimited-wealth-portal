@@ -49,8 +49,12 @@
             <el-col :span="24">
               <VueSlickCarousel ref="slick" class="slick-list-upcoming" v-bind="settings">
                 <div v-for="(event, i) in event_list" :key="i" class="carousel-block">
+                
                   <div class="carousel-content-upcoming" @click="getSelected(event, i)">
-                    <el-checkbox v-model="event.selected" class="carousel-checked"></el-checkbox>
+                  <div class="carousel-check-wrapper">
+                    <el-checkbox v-model="event.selected" class="carousel-checked"></el-checkbox>  
+                  </div>
+                  
                     <div class="carousel-day">{{ getDate(event.date) }}</div>
                     <div class="carousel-formated-date">{{ getFormatedDate(event.date) }}</div>
                     <div>{{ getMonth(event.date) }}</div>
@@ -194,7 +198,7 @@ export default {
           event_ids.push(value.id)
         })
 
-        let url = 'https://uw-portal-api.tinkerpub.com/api/bookings/register'
+        let url = process.env.VUE_APP_API_URL + '/api/bookings/register'
         this.axios
           .post(url, {
             event_ids: event_ids

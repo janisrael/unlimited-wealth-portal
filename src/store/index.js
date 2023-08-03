@@ -22,6 +22,7 @@ const store = new Vuex.Store({
         ADD_BOOKING: (state, payload) => {
           console.log(state.myybookings,'first')
           payload.forEach(value => {
+            // sample data to add booking to array
             let event_to_add = {
               "id": value.id,
               "registration_key": "",
@@ -45,7 +46,7 @@ const store = new Vuex.Store({
         console.log(state)
         // state.v_loading = true;
         return new Promise((resolve, reject) => {
-            var url = 'https://uw-portal-api.tinkerpub.com/api/my-account/bookings/upcoming'
+            var url = process.env.VUE_APP_API_URL + '/api/my-account/bookings/upcoming'
             axios.get(url,
               {
                 headers: {

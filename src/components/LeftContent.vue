@@ -90,7 +90,7 @@ export default {
       var url = ''
       var events = []
       if (this.type === 'upcoming') {
-        url = 'https://uw-portal-api.tinkerpub.com/api/events/upcoming?region=' + this.region + '&event_type_id=' + event.id
+        url =  process.env.VUE_APP_API_URL + '/api/events/upcoming?region=' + this.region + '&event_type_id=' + event.id
         this.axios
           .get(url, {
             headers: {
@@ -113,7 +113,7 @@ export default {
 
       } else {
 
-        url = 'https://uw-portal-api.tinkerpub.com/api/events/recordings?region=' + this.region + '&event_type_id=' + event.id
+        url =  process.env.VUE_APP_API_URL + '/api/events/recordings?region=' + this.region + '&event_type_id=' + event.id
         this.axios
           .get(url, {
             headers: {

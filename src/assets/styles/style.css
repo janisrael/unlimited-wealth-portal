@@ -579,8 +579,8 @@ span.modal-span {
 }
 
 .carousel-checked {
-  right: -63px;
-  top: -43px;
+  /* right: -63px;
+  top: -43px; */
 }
 
 .icon-play {
@@ -590,7 +590,8 @@ span.modal-span {
 }
 
 .carousel-day {
-  margin-top: -16px;
+  /* margin-top: -16px; */
+  margin-top: 24px;
   font-size: 12px;
   color: #A2B0D5;
 }
@@ -772,9 +773,13 @@ span.speaker-name, i.speaker-icon {
   /* background-color: #17153c !important; */
   /* height: 170px !important; */
 }
-/* .slick-list-upcoming .slick-track {
-  width: inherit !important;
-} */
+
+.carousel-check-wrapper {
+  width: 100%;
+  /* background: red; */
+  margin-top: -40px;
+  text-align: right;
+}
 
 .sub-wrapper {
   margin-top: -47px;
