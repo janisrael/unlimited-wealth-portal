@@ -553,7 +553,7 @@ span.modal-span {
 .carousel-block .carousel-content-upcoming {
   min-height: 80px;
   text-align: center;
-  padding: 36px 0px;
+  padding: 20px 0px;
   background-color: grey;
   background: #312B54;
   display: inline-block;
@@ -593,8 +593,7 @@ span.modal-span {
 
 .carousel-day {
   /* margin-top: -16px; */
-  margin-top: 16px;
-  font-size: 12px;
+  font-size: 15px;
   color: #A2B0D5;
 }
 
@@ -634,8 +633,9 @@ span.modal-span {
 }
 
 .carousel-formated-date {
-  font-size: 18px; 
+  font-size: 22px; 
   font-weight: 400;
+  padding: 3px;
 }
 
 .slick-slide.slick-active.slick-current .carousel-content {
@@ -765,7 +765,7 @@ p.speaker-name{
 }
 
 .speaker-wrapper {
-  margin-top: -5px;
+  margin-top: 1.5rem;
 }
 
 /* .slick-list-upcoming .slick-list {

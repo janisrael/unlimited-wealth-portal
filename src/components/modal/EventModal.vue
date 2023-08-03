@@ -110,17 +110,18 @@
                         class="carousel-checked"
                       ></el-checkbox>
 
-                      <div class="speaker-wrapper">
-                        <el-tooltip class="item speaker-icon" content="Amy Green" placement="top" effect="light">
-                            <el-button icon="el-icon-user" circle></el-button>
-                        </el-tooltip>
-                      </div>
-
                       <div class="carousel-day">{{ getDate(event.date) }}</div>
                       <div class="carousel-formated-date">
                         {{ getFormatedDate(event.date) }}
                       </div>
                       <div>{{ getMonth(event.date) }}</div>
+
+                      <div class="speaker-wrapper">
+                        <el-tooltip class="item speaker-icon" content="Amy Green" placement="top" effect="light">
+                            <el-button icon="el-icon-user" circle size="mini"></el-button>
+                        </el-tooltip>
+                      </div>
+
                       <el-tooltip class="item speaker-icon" effect="light" :content="getFormatedLocalTime(event.start_at.local)" placement="bottom">
                         <div
                           v-if="type === 'upcoming'"
