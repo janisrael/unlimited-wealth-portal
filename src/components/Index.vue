@@ -101,7 +101,7 @@ export default {
     }
   },
   mounted() {
-    console.log(process.env,'env')
+    console.log(process.env.VUE_APP_API_URL,'env')
     if(sessionStorage.getItem('token')) {
       this.verifyToken(sessionStorage.getItem('token'))
     } else {
@@ -123,7 +123,7 @@ export default {
   },
   methods: {
     verifyToken(token) {
-        let url = 'https://uw-portal-api.tinkerpub.com/api/auth/login'
+        let url = process.env.VUE_APP_API_URL + '/api/auth/login'
 
         this.axios
           .get(url, {
@@ -208,7 +208,7 @@ export default {
       });
 
       this.loading = true
-      var url = 'https://uw-portal-api.tinkerpub.com/api/event-types/' + this.region
+      var url =  process.env.VUE_APP_API_URL + '/api/event-types/' + this.region
       this.axios
         .get(url, {
           headers: {

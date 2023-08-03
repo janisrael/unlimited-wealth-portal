@@ -52,7 +52,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // alert('submit!');
-          let url = 'https://uw-portal-api.tinkerpub.com/api/auth/login'
+          let url =  process.env.VUE_APP_API_URL + '/api/auth/login'
           this.axios
             .post(url, {
               email: this.ruleForm.email,
