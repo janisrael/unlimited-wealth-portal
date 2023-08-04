@@ -105,6 +105,11 @@ export default {
       selected_event: {},
     };
   },
+  computed: {
+    _myybookings() {
+      return this.$store.getters._myybookings;
+    },
+  },
   methods: {
     getModal(event) {
       this.selected_event = event;
@@ -136,7 +141,15 @@ export default {
               events = response.data.data;
               events.forEach((event) => {
                 event["selected"] = false;
+
+                // filter hide events already exist on my up coming bookings
+                this._myybookings.forEach((value) => {
+                  if(value.event_id === event.id && value.event_region === event.region) {
+                    event["hidden"] = true;
+                  }
+                })
               });
+
               this.event_list = events;
               console.log(events, "event list");
             }
