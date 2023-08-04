@@ -144,7 +144,7 @@ export default {
 
                 // filter hide events already exist on my up coming bookings
                 this._myybookings.forEach((value) => {
-                  if(value.event_id === event.id && event.region === value.event_region) {
+                  if(value.event_id === event.id && value.event_region === event.region) {
                     event["hidden"] = true;
                   }
                 })
