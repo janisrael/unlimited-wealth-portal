@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- eslint-disable -->
     <el-dialog
       :title="event.name"
       :visible.sync="dialogVisible"
@@ -99,6 +100,7 @@
                   <div
                     v-for="(event, i) in event_list"
                     :key="i"
+                    v-if="!event.hidden"
                     class="carousel-block"
                   >
                     <div
