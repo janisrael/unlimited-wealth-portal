@@ -57,7 +57,13 @@ const store = new Vuex.Store({
           }
         )
           .then((response) => {
-            commit("SET_MYBOOKINS", response.data.data);
+            let my_bookings = response.data.data
+            var todayDate = new Date().toISOString().slice(0, 10);
+            my_bookings = my_bookings.filter(function(item) {
+              return item.start_date !== todayDate && item.status.toLowerCase() === 'completed'
+            })
+
+            commit("SET_MYBOOKINS", my_bookings);
             resolve(response);
           })
           .catch((error) => {
