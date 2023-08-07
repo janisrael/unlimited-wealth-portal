@@ -6,7 +6,7 @@
       :visible.sync="dialogVisible"
       width="50%"
       top="3%"
-      :close-on-click-modal="true"
+      :close-on-click-modal="false"
       :before-close="handleClose"
     >
       <div v-if="stage > 0">
