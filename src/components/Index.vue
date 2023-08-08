@@ -1,86 +1,56 @@
 <template>
-  <div class="row full-height">
-    <el-row>
-      <el-col v-if="verification === true" :span="24">
-        <el-col :span="18" class="right-panel">
-          <el-col :span="24" class="panel-header">
-            <el-col :span="17">
-              <el-radio
-                v-model="radio"
-                label="upcoming"
-                style="margin-left: 48px !important; padding-top: 15px"
-                @change="getTypes('upcoming')"
-                >Upcoming Events</el-radio
-              >
-              <el-radio
-                v-model="radio"
-                label="recording"
-                @change="getTypes('recording')"
-                >Recordings</el-radio
-              >
-            </el-col>
-            <el-col :span="7">
-              <el-col :span="8">
-                <span
-                  style="
+<div class="row full-height">
+  <el-row>
+    <el-col v-if="verification === true" :span="24">
+      <el-col :span="18" class="right-panel">
+        <el-col :span="24" class="panel-header">
+          <el-col :span="17">
+            <el-radio v-model="radio" label="upcoming" style="margin-left: 48px !important; padding-top: 15px" @change="getTypes('upcoming')">Upcoming Events</el-radio>
+            <el-radio v-model="radio" label="recording" @change="getTypes('recording')">Recordings</el-radio>
+          </el-col>
+          <el-col :span="7">
+            <el-col :span="8">
+              <span style="
                     padding-top: 6px;
                     display: inline-block;
                     font-size: 14px;
-                  "
-                >
-                  Region:
+                  ">
+                Region:
 
-                  <el-dropdown
-                    @command="handleChangeRegion"
-                    style="margin-left: 5px !important"
-                  >
-                    <span class="el-dropdown-link">
-                      <span>
-                        <country-flag
-                          :country="use_region"
-                          size="small"
-                        /> </span
-                      ><i class="el-icon-arrow-down el-icon--right"></i>
-                    </span>
+                <el-dropdown @command="handleChangeRegion" style="margin-left: 5px !important">
+                  <span class="el-dropdown-link">
+                    <span>
+                      <country-flag :country="use_region" size="small" /> </span><i class="el-icon-arrow-down el-icon--right"></i>
+                  </span>
 
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item command="uk">
-                        <country-flag country="gb" size="small" />
-                      </el-dropdown-item>
-                      <el-dropdown-item command="aus">
-                        <country-flag country="au" size="small" />
-                      </el-dropdown-item>
-                      <el-dropdown-item command="phl">
-                        <country-flag country="ph" size="small" />
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown>
-                </span>
-              </el-col>
-              <el-col :span="15">
-                <el-input placeholder="Search" v-model="search" clearable>
-                  <template slot="prepend"
-                    ><i class="el-icon-search"></i
-                  ></template>
-                </el-input>
-              </el-col>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="uk">
+                      <country-flag country="gb" size="small" />
+                    </el-dropdown-item>
+                    <el-dropdown-item command="aus">
+                      <country-flag country="au" size="small" />
+                    </el-dropdown-item>
+                    <el-dropdown-item command="phl">
+                      <country-flag country="ph" size="small" />
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </span>
+            </el-col>
+            <el-col :span="15">
+              <el-input placeholder="Search" v-model="search" clearable>
+                <template slot="prepend"><i class="el-icon-search"></i></template>
+              </el-input>
             </el-col>
           </el-col>
-
-          <LeftContent
-            :type="radio"
-            :events="events"
-            :tumbnail_region_title="tumbnail_region_title"
-            :region="region"
-            :token="token"
-            @login="login"
-          />
-          <!-- <component ref="leftComponent" :is="currentLeftComponent" :type="radio" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region" :token="token" @login="login"/> -->
         </el-col>
-        <el-col :span="6" class="left-panel">
-          <el-col :span="24" class="panel-header">
-            <h3
-              style="
+
+        <LeftContent :type="radio" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region" :token="token" @login="login" />
+        <!-- <component ref="leftComponent" :is="currentLeftComponent" :type="radio" :events="events" :tumbnail_region_title="tumbnail_region_title" :region="region" :token="token" @login="login"/> -->
+      </el-col>
+      <el-col :span="6" class="left-panel">
+        <el-col :span="24" class="panel-header">
+          <h3 style="
                 margin: 0px !important;
                 margin-block-start: 0px !important;
                 margin-block-end: 0px !important;
@@ -88,49 +58,26 @@
                 font-weight: 400;
                 display: inline-block;
                 padding-right: 20px;
-              "
-            >
-              Events Overview
-            </h3>
-            <el-popover
-              placement="bottom-start"
-              title="All events in one place"
-              width="200"
-              trigger="hover"
-              content="By clicking with your mouse on a specific date, you can see your booked events and other events, that happen trough-out the current month."
-            >
-              <i
-                class="el-icon-warning-outline"
-                style="color: #5ce6e6; cursor: pointer"
-                slot="reference"
-              ></i>
-            </el-popover>
-            <el-tooltip class="item" content="Logout" placement="left">
-              <el-button
-                type="primary"
-                size="mini"
-                icon="el-icon-user-solid"
-                style="position: absolute; right: 10px"
-                @click="clearSession()"
-              ></el-button>
-            </el-tooltip>
-          </el-col>
-
-          <!-- <RightContent :region="region"/> -->
-          <component
-            v-if="region"
-            ref="calendarComponent"
-            :is="currentRightComponent"
-            :region="region"
-            :token="token"
-          />
+              ">
+            Events Overview
+          </h3>
+          <el-popover placement="bottom-start" title="All events in one place" width="200" trigger="hover" content="By clicking with your mouse on a specific date, you can see your booked events and other events, that happen trough-out the current month.">
+            <i class="el-icon-warning-outline" style="color: #5ce6e6; cursor: pointer" slot="reference"></i>
+          </el-popover>
+          <el-tooltip class="item" content="Logout" placement="left">
+            <el-button type="primary" size="mini" icon="el-icon-user-solid" style="position: absolute; right: 10px" @click="clearSession()"></el-button>
+          </el-tooltip>
         </el-col>
+
+        <!-- <RightContent :region="region"/> -->
+        <component v-if="region" ref="calendarComponent" :is="currentRightComponent" :region="region" :token="token" />
       </el-col>
-      <el-col v-else :span="24">
-        <login-component :token="token" @login="login" />
-      </el-col>
-    </el-row>
-  </div>
+    </el-col>
+    <el-col v-else :span="24">
+      <login-component :token="token" @login="login" />
+    </el-col>
+  </el-row>
+</div>
 </template>
 
 <script>
@@ -165,7 +112,7 @@ export default {
     };
   },
   mounted() {
-    console.log(process.env.VUE_APP_API_URL, "env");
+    // console.log(process.env.VUE_APP_API_URL, "env");
     if (sessionStorage.getItem("token")) {
       this.verifyToken(sessionStorage.getItem("token"));
     } else {
@@ -260,7 +207,7 @@ export default {
       }
     },
     login(data) {
-      console.log(data, "---");
+      // console.log(data, "---");
       window.sessionStorage.removeItem("token");
       window.sessionStorage.setItem("token", data.app_session.session_key);
       // window.sessionStorage.setItem('token', 'n8RwzOAnck4xUS9QrRRYWxzhB13SQ9aNsxIpEmpj4V') // static token

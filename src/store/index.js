@@ -21,7 +21,7 @@ const store = new Vuex.Store({
       state.myybookings = payload
     },
     ADD_BOOKING: (state, payload) => {
-      console.log(state.myybookings, 'first')
+      // console.log(state.myybookings, 'first')
       payload.forEach(value => {
         // sample data to add booking to array
         let event_to_add = {
@@ -39,12 +39,12 @@ const store = new Vuex.Store({
         state.myybookings.push(event_to_add)
       });
 
-      console.log(state.myybookings, 'second')
+      // console.log(state.myybookings, 'second')
     },
   },
   actions: {
-    async getMybookings({ commit, state }, value) {
-      console.log(state)
+    async getMybookings({ commit }, value) {
+      // console.log(state)
       // state.v_loading = true;
       return new Promise((resolve, reject) => {
         var url = process.env.VUE_APP_API_URL + '/api/my-account/bookings/upcoming'
@@ -63,7 +63,7 @@ const store = new Vuex.Store({
             // filter completed status on current date
             var todayDate = new Date().toISOString().slice(0, 10);
             my_bookings = my_bookings.filter(function(item) {
-              return item.start_date !== todayDate && item.status.toLowerCase() !== 'completed'
+              return item.start_date !== todayDate && item.status.toLowerCase() === 'upcoming'
             })
 
             commit("SET_MYBOOKINS", my_bookings);
