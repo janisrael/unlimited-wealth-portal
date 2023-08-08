@@ -20,110 +20,196 @@
               color: #ffffff;
               margin-top: 40px;
               display: block;
-            ">Your selected events are successfully booked!</span>
+            "
+            >Your selected events are successfully booked!</span
+          >
+        </div>
+        <div style="text-align: center">
+          <el-button
+            type="success"
+            class="btn-done-booking"
+            @click="handleClose()"
+            >Done</el-button
+          >
+        </div>
       </div>
-      <div style="text-align: center">
-        <el-button type="success" class="btn-done-booking" @click="handleClose()">Done</el-button>
-      </div>
-    </div>
-    <div v-else>
-      <span class="modal-span">{{ event.description }}</span>
-      <el-col :span="24">
-        <div style="
+      <div v-else>
+        <span class="modal-span">{{ event.description }}</span>
+        <el-col :span="24">
+          <div
+            style="
               display: inline-block;
               width: 100%;
               text-align: left;
               padding: 20px 5px 10px;
-            ">
-          <div style="display: inline-block; padding: 0 50px 0 0">
-            <div style="color: #a2b0d5; font-zie: 12px">Region:</div>
-            <div style="color: #ffffff; text-transform: uppercase">
-              {{ region }}
-            </div>
-          </div>
-
-          <div style="display: inline-block; padding: 0 50px">
-            <div style="color: #a2b0d5; font-zie: 12px">Duration:</div>
-            <div style="color: #ffffff">{{ event.typical_duration }}</div>
-          </div>
-          <div v-if="type === 'upcoming'" style="display: inline-block">
-            <div style="color: #a2b0d5; font-zie: 12px">Occurrence:</div>
-            <div v-if="event.typical_occurence" style="color: #ffffff">
-              {{ event.typical_occurence }}
-            </div>
-            <div v-else style="color: #ffffff">-</div>
-          </div>
-        </div>
-        <span v-if="type === 'recording'" style="color: #ffffff; padding: 30px 0 15px; display: inline-block">Available past recordings:</span>
-        <span v-else style="color: #ffffff; padding: 30px 0 15px; display: inline-block">Book from available dates:</span>
-
-        <!-- <div v-if="type === 'recording'" class="video-wrapper" :style="{ backgroundImage: 'url(' + thumbnail_image + ')' }"> -->
-        <div v-if="type === 'recording'" class="video-wrapper">
-          <div class="player-container">
-            <vue-core-video-player @play="handlePLay()" :src="video_url"></vue-core-video-player>
-          </div>
-        </div>
-
-        <div v-loading="this_load" v-if="type === 'upcoming'" id="carousel-wrapper" style="height: 170px">
-          <div v-if="event_list.length" style="min-height: 170px">
-            <el-col :span="24">
-              <VueSlickCarousel ref="slick" class="slick-list-upcoming" v-bind="settings">
-                <div v-for="(event, i) in event_list" :key="i" v-if="!event.hidden" class="carousel-block">
-                  <div class="carousel-content-upcoming" :class="{ 'selected-event': event.selected == true }" @click="getSelected(event, i)">
-                    <div class="carousel-check-wrapper">
-                      <el-checkbox v-model="event.selected" class="carousel-checked"></el-checkbox>
-                    </div>
-
-                    <div class="carousel-day">{{ getDate(event.date) }}</div>
-                    <div class="carousel-formated-date">
-                      {{ getFormatedDate(event.date) }}
-                    </div>
-                    <div>{{ getMonth(event.date) }}</div>
-
-                    <div class="speaker-wrapper">
-                      <el-tooltip class="item speaker-icon" content="Amy Green" placement="top" effect="light">
-                        <el-button icon="el-icon-user" circle size="mini"></el-button>
-                      </el-tooltip>
-                    </div>
-
-                    <el-tooltip class="item speaker-icon" effect="light" :content="getFormatedLocalTime(event.start_at.local)" placement="bottom">
-                      <div v-if="type === 'upcoming'" class="sub-wrapper" style="display: inline-block; margin-top: 10px">
-                        <i class="el-icon-alarm-clock speaker-icon"></i>
-                        <span class="speaker-name">
-                          {{ getFormatedTime(event.start_at.local) }}</span>
-                        <p class="speaker-name">{{ getLocalTimezone() }}</p>
-                      </div>
-                    </el-tooltip>
-                  </div>
-                </div>
-              </VueSlickCarousel>
-            </el-col>
-          </div>
-          <div v-else style="min-height: 170px">No available dates</div>
-        </div>
-
-        <!--  carousels recordnings -->
-        <div v-else id="carousel-wrapper">
-          <VueSlickCarousel v-if="event_list.length" ref="slick" v-bind="settings">
-            <div v-for="(event, i) in event_list" :key="i" class="carousel-block">
-              <div class="carousel-content" @click="getSelected(event, i)">
-                {{ getFormatedDate(event.date) }}
-                <div><i class="el-icon-video-play icon-play"></i></div>
+            "
+          >
+            <div style="display: inline-block; padding: 0 50px 0 0">
+              <div style="color: #a2b0d5; font-zie: 12px">Region:</div>
+              <div style="color: #ffffff; text-transform: uppercase">
+                {{ region }}
               </div>
             </div>
-          </VueSlickCarousel>
-        </div>
-        <div v-if="type === 'upcoming'" style="display: block; width: 100%; margin-top: 20px">
-          <el-button :loading="loading" type="success" :disabled="disable" style="width: 100%" :class="{ 'btn-success-custom': selected_events.length > 0 }" @click="handleBook()">Book</el-button>
-        </div>
-      </el-col>
-      <span slot="footer" class="dialog-footer">
-        <!-- <el-button @click="dialogVisible = false">Cancel</el-button>
+
+            <div style="display: inline-block; padding: 0 50px">
+              <div style="color: #a2b0d5; font-zie: 12px">Duration:</div>
+              <div style="color: #ffffff">{{ event.typical_duration }}</div>
+            </div>
+            <div v-if="type === 'upcoming'" style="display: inline-block">
+              <div style="color: #a2b0d5; font-zie: 12px">Occurrence:</div>
+              <div v-if="event.typical_occurence" style="color: #ffffff">
+                {{ event.typical_occurence }}
+              </div>
+              <div v-else style="color: #ffffff">-</div>
+            </div>
+          </div>
+          <span
+            v-if="type === 'recording'"
+            style="color: #ffffff; padding: 30px 0 15px; display: inline-block"
+            >Available past recordings:</span
+          >
+          <span
+            v-else
+            style="color: #ffffff; padding: 30px 0 15px; display: inline-block"
+            >Book from available dates:</span
+          >
+
+          <!-- <div v-if="type === 'recording'" class="video-wrapper" :style="{ backgroundImage: 'url(' + thumbnail_image + ')' }"> -->
+          <div v-if="type === 'recording'" class="video-wrapper">
+            <div class="player-container">
+              <vue-core-video-player
+                @play="handlePLay()"
+                :src="video_url"
+              ></vue-core-video-player>
+            </div>
+          </div>
+
+          <div
+            v-loading="this_load"
+            v-if="type === 'upcoming'"
+            id="carousel-wrapper"
+            style="height: 170px"
+          >
+            <div v-if="event_list.length" style="min-height: 170px">
+              <el-col :span="24">
+                <VueSlickCarousel
+                  ref="slick"
+                  class="slick-list-upcoming"
+                  v-bind="settings"
+                >
+                  <div
+                    v-for="(event, i) in event_list"
+                    :key="i"
+                    v-if="!event.hidden"
+                    class="carousel-block"
+                  >
+                    <div
+                      class="carousel-content-upcoming"
+                      :class="{ 'selected-event': event.selected == true }"
+                      @click="getSelected(event, i)"
+                    >
+                      <div class="carousel-check-wrapper">
+                        <el-checkbox
+                          v-model="event.selected"
+                          class="carousel-checked"
+                        ></el-checkbox>
+                      </div>
+
+                      <div class="carousel-day">{{ getDate(event.date) }}</div>
+                      <div class="carousel-formated-date">
+                        {{ getFormatedDate(event.date) }}
+                      </div>
+                      <div>{{ getMonth(event.date) }}</div>
+
+                      <div class="speaker-wrapper">
+                        <el-tooltip
+                          class="item speaker-icon"
+                          :content="event.speaker.name"
+                          placement="top"
+                          effect="light"
+                        >
+                          <el-avatar
+                            v-if="event.speaker && event.speaker.avatar"
+                            :src="require(`@/assets/images/avatar.png`)"
+                          >
+                            <!-- require(`@/assets/images/${event.speaker.avatar}`) -->
+                          </el-avatar>
+                          <el-button
+                            v-else
+                            icon="el-icon-user"
+                            circle
+                            size="mini"
+                          ></el-button>
+                        </el-tooltip>
+                      </div>
+
+                      <el-tooltip
+                        class="item speaker-icon"
+                        effect="light"
+                        :content="getFormatedLocalTime(event.start_at.local)"
+                        placement="bottom"
+                      >
+                        <div
+                          v-if="type === 'upcoming'"
+                          class="sub-wrapper"
+                          style="display: inline-block; margin-top: 10px"
+                        >
+                          <i class="el-icon-alarm-clock speaker-icon"></i>
+                          <span class="speaker-name">
+                            {{ getFormatedTime(event.start_at.local) }}</span
+                          >
+                          <p class="speaker-name">{{ getLocalTimezone() }}</p>
+                        </div>
+                      </el-tooltip>
+                    </div>
+                  </div>
+                </VueSlickCarousel>
+              </el-col>
+            </div>
+            <div v-else style="min-height: 170px">No available dates</div>
+          </div>
+
+          <!--  carousels recordnings -->
+          <div v-else id="carousel-wrapper">
+            <VueSlickCarousel
+              v-if="event_list.length"
+              ref="slick"
+              v-bind="settings"
+            >
+              <div
+                v-for="(event, i) in event_list"
+                :key="i"
+                class="carousel-block"
+              >
+                <div class="carousel-content" @click="getSelected(event, i)">
+                  {{ getFormatedDate(event.date) }}
+                  <div><i class="el-icon-video-play icon-play"></i></div>
+                </div>
+              </div>
+            </VueSlickCarousel>
+          </div>
+          <div
+            v-if="type === 'upcoming'"
+            style="display: block; width: 100%; margin-top: 20px"
+          >
+            <el-button
+              :loading="loading"
+              type="success"
+              :disabled="disable"
+              style="width: 100%"
+              :class="{ 'btn-success-custom': selected_events.length > 0 }"
+              @click="handleBook()"
+              >Book</el-button
+            >
+          </div>
+        </el-col>
+        <span slot="footer" class="dialog-footer">
+          <!-- <el-button @click="dialogVisible = false">Cancel</el-button>
               <el-button type="primary" @click="dialogVisible = false">Confirm</el-button> -->
-      </span>
-    </div>
-  </el-dialog>
-</div>
+        </span>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -220,9 +306,11 @@ export default {
         let url = process.env.VUE_APP_API_URL + "/api/bookings/register";
         this.axios
           .post(
-            url, {
+            url,
+            {
               event_ids: event_ids,
-            }, {
+            },
+            {
               headers: {
                 "X-Session-Key": this.token,
                 "Content-Type": "application/json",
