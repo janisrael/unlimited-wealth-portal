@@ -117,6 +117,7 @@
       :is="currentComponent"
       :date="date"
       :event_on_this_day="event_on_this_day"
+      :my_events_for_today="my_events_for_today"
       @close="CloseModal()"
     />
   </div>
@@ -151,13 +152,18 @@ export default {
       my_events_this_week: [],
       my_events_next_week: [],
       my_events_upcoming: [],
+      my_events_for_today: [],
       calendar_date: new Date(),
     };
   },
   watch: {
     calendar_date(newValue, oldValue) {
-      console.log(newValue, oldValue);
-      this.getEventsDate(newValue);
+      if (newValue.getMonth() != oldValue.getMonth()) {
+        this.getEventsDate(newValue);
+      }
+    },
+    region() {
+      this.filterMyUpcomingEventsByRegion();
     },
   },
   computed: {
@@ -221,6 +227,7 @@ export default {
       });
       if (this.event_on_this_day.events) {
         this.currentComponent = CalendarEvents;
+        this.getTodaysBookings();
       } else {
         this.$notify.info({
           title: "No Event",
@@ -290,10 +297,9 @@ export default {
     getMyBookings() {
       this.$store.dispatch("getMybookings", this.token).then((response) => {
         if (response.status === 200) {
-          // this.my_events_upcoming = response.data.data
-
           this.my_events_upcoming = this._myybookings;
-          // console.log(this._myybookings,'asdsddfghjk')
+          this.filterMyUpcomingEventsByRegion();
+
           let curr = new Date();
           let week = [];
           let next_week = [];
@@ -416,6 +422,17 @@ export default {
         default:
           return "th";
       }
+    },
+    filterMyUpcomingEventsByRegion() {
+      this.my_events_upcoming = this._myybookings.filter((item) => {
+        return item.event_region === this.region;
+      });
+    },
+    getTodaysBookings() {
+      this.filterMyUpcomingEventsByRegion();
+      this.my_events_for_today = this.my_events_upcoming.filter((item) => {
+        return item.start_date === this.date.day;
+      });
     },
   },
 };
