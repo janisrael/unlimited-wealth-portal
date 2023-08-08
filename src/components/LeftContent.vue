@@ -143,11 +143,22 @@ export default {
                 event["selected"] = false;
 
                 // filter hide events already exist on my up coming bookings
-                this._myybookings.forEach((value) => {
-                  if(value.event_id === event.id && value.event_region === event.region) {
+                var todayDate = new Date().toISOString().slice(0, 10);
+                var myybookings = this._myybookings.filter(function (item) {
+                  return (
+                    item.start_date !== todayDate &&
+                    item.status.toLowerCase() === "upcoming"
+                  );
+                });
+
+                myybookings.forEach((value) => {
+                  if (
+                    value.event_id === event.id &&
+                    value.event_region === event.region
+                  ) {
                     event["hidden"] = true;
                   }
-                })
+                });
               });
 
               this.event_list = events;
