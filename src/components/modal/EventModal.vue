@@ -1,13 +1,21 @@
 <template>
-<div>
-  <!-- eslint-disable -->
-  <el-dialog :title="event.name" :visible.sync="dialogVisible" width="50%" top="3%" :close-on-click-modal="true" :before-close="handleClose">
-    <div v-if="stage > 0">
-      <div style="text-align: center">
-        <img :src="check_icon" />
-      </div>
-      <div style="text-align: center">
-        <span style="
+  <div>
+    <!-- eslint-disable -->
+    <el-dialog
+      :title="event.name"
+      :visible.sync="dialogVisible"
+      width="50%"
+      top="3%"
+      :close-on-click-modal="false"
+      :before-close="handleClose"
+    >
+      <div v-if="stage > 0">
+        <div style="text-align: center">
+          <img :src="check_icon" />
+        </div>
+        <div style="text-align: center">
+          <span
+            style="
               font-size: 28px;
               color: #ffffff;
               margin-top: 40px;
@@ -364,9 +372,14 @@ export default {
         if (this.type === "upcoming") {
           if (this.event_list[index].selected === true) {
             this.event_list[index].selected = false;
-            this.disable = true;
 
-            this.selected_events.splice(index, 1);
+            this.selected_events = this.selected_events.filter(
+              (selected_event) => selected_event.id != event.id
+            );
+
+            if (this.selected_events.length <= 0) {
+              this.disable = true;
+            }
           } else {
             this.disable = false;
             this.event_list[index].selected = true;
@@ -380,6 +393,7 @@ export default {
           this.disable = false;
           this.event_list[index].selected = true;
         }
+
         if (this.type === "recording") {
           this.getVideo(event);
         }
