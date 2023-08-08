@@ -20,8 +20,11 @@
           My events
         </h4>
         <!-- {{ event_on_this_day }} -->
+        <div v-if="myEvents.length === 0" class="no-booking-caption">
+          No bookings for today
+        </div>
         <el-col
-          v-for="(event, i) in event_on_this_day.events"
+          v-for="(event, i) in myEvents"
           :key="i"
           :span="24"
           style="margin-bottom: 8px"
@@ -31,7 +34,7 @@
               <el-avatar
                 :size="40"
                 :src="avatar"
-                @error="errorHandler"
+                @error="true"
                 style="border: 1px solid #248cb3"
               >
                 <img
@@ -64,8 +67,11 @@
         >
           Other events
         </h4>
+        <div v-if="otherEvents.length === 0" class="no-booking-caption">
+          No other events for today
+        </div>
         <el-col
-          v-for="(event, i) in event_on_this_day.events"
+          v-for="(event, i) in otherEvents"
           :key="i"
           :span="24"
           style="margin-bottom: 8px"
@@ -134,7 +140,7 @@
 
 <script>
 export default {
-  name: "CanlendarEvents.vue",
+  name: "CalendarEvents",
   props: {
     date: {
       required: true,
@@ -144,12 +150,32 @@ export default {
       required: true,
       // type: Object
     },
+    my_events_for_today: {
+      required: false,
+    },
   },
   data() {
     return {
       dialogVisible: true,
       avatar: require("../../assets/images/avatar.png"),
     };
+  },
+  computed: {
+    otherEvents() {
+      return this.event_on_this_day.events.filter(
+        (other_event) =>
+          !this.my_events_for_today.find(
+            ({ event_id }) => other_event.id === event_id
+          )
+      );
+    },
+    myEvents() {
+      return this.event_on_this_day.events.filter((other_event) =>
+        this.my_events_for_today.find(
+          ({ event_id }) => other_event.id === event_id
+        )
+      );
+    },
   },
   methods: {
     handleClose() {
