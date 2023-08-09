@@ -647,6 +647,14 @@ span.modal-span {
   margin: 50px 30px 50px auto !important;
 }
 
+.calendar-modal .el-dialog .el-dialog__header {
+  padding: 0 !important;
+}
+.calendar-modal .el-dialog .el-dialog__body {
+  width: auto !important;
+}
+
+
 .carousel-formated-date {
   font-size: 22px; 
   font-weight: 400;
