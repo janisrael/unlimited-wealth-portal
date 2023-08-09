@@ -121,7 +121,10 @@
                       </div>
                       <div>{{ getMonth(event.date) }}</div>
 
-                      <div class="speaker-wrapper">
+                      <div
+                        class="speaker-wrapper"
+                        v-if="event.speaker && event.speaker.avatar"
+                      >
                         <el-tooltip
                           class="item speaker-icon"
                           :content="event.speaker.name"
@@ -129,17 +132,12 @@
                           effect="light"
                         >
                           <el-avatar
-                            v-if="event.speaker && event.speaker.avatar"
-                            :src="require(`@/assets/images/avatar.png`)"
+                            size="small"
+                            :src="
+                              require(`@/assets/images/speakers/${event.speaker.avatar}`)
+                            "
                           >
-                            <!-- require(`@/assets/images/${event.speaker.avatar}`) -->
                           </el-avatar>
-                          <el-button
-                            v-else
-                            icon="el-icon-user"
-                            circle
-                            size="mini"
-                          ></el-button>
                         </el-tooltip>
                       </div>
 
