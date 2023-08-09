@@ -32,15 +32,19 @@
           <div class="events-box" @click="goToModal(event)">
             <el-col :span="4">
               <el-avatar
-                :size="40"
-                :src="avatar"
-                @error="true"
+                v-if="event.speaker && event.speaker.avatar"
                 style="border: 1px solid #248cb3"
+                :size="40"
+                :src="require(`@/assets/images/avatar.png`)"
               >
-                <img
-                  src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
-                />
+                <!-- require(`@/assets/images/${event.speaker.avatar}`) -->
               </el-avatar>
+              <el-button
+                v-else
+                icon="el-icon-user"
+                circle
+                size="mini"
+              ></el-button>
             </el-col>
             <el-col :span="20">
               <div class="bookings-title">
@@ -79,15 +83,19 @@
           <div class="events-box" @click="goToModal(event)">
             <el-col :span="4">
               <el-avatar
-                :size="40"
-                :src="avatar"
-                @error="errorHandler"
+                v-if="event.speaker && event.speaker.avatar"
                 style="border: 1px solid #248cb3"
+                :size="40"
+                :src="require(`@/assets/images/avatar.png`)"
               >
-                <img
-                  src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
-                />
+                <!-- require(`@/assets/images/${event.speaker.avatar}`) -->
               </el-avatar>
+              <el-button
+                v-else
+                icon="el-icon-user"
+                circle
+                size="mini"
+              ></el-button>
             </el-col>
             <el-col :span="20">
               <div class="bookings-title">
