@@ -29,7 +29,7 @@
           :span="24"
           style="margin-bottom: 8px"
         >
-          <div class="events-box">
+          <div class="events-box" @click="goToModal(event)">
             <el-col :span="4">
               <el-avatar
                 :size="40"
@@ -76,7 +76,7 @@
           :span="24"
           style="margin-bottom: 8px"
         >
-          <div class="events-box">
+          <div class="events-box" @click="goToModal(event)">
             <el-col :span="4">
               <el-avatar
                 :size="40"
@@ -256,6 +256,9 @@ export default {
         default:
           return "th";
       }
+    },
+    goToModal(event) {
+      this.$root.$emit("open-upcoming-events-modal", event);
     },
   },
 };

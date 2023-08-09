@@ -105,6 +105,15 @@ export default {
       selected_event: {},
     };
   },
+  beforeMount() {
+    this.$root.$on("open-upcoming-events-modal", (event) => {
+      var clicked_event = this.events.filter((item) => {
+        return item.id === event.event_type_id;
+      });
+
+      this.getModal(clicked_event[0]);
+    });
+  },
   computed: {
     _myybookings() {
       return this.$store.getters._myybookings;
