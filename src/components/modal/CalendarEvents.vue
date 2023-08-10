@@ -30,25 +30,28 @@
           style="margin-bottom: 8px"
         >
           <div class="events-box" @click="goToModal(event)">
-            <el-col :span="4">
-              <el-avatar
-                :size="40"
-                :src="avatar"
-                @error="true"
-                style="border: 1px solid #248cb3"
+            <el-col :span="4" v-if="event.speaker && event.speaker.avatar">
+              <el-tooltip
+                class="item speaker-icon"
+                :content="event.speaker.name"
+                placement="top"
+                effect="light"
               >
-                <img
-                  src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
-                />
-              </el-avatar>
+                <el-avatar
+                  style="border: 1px solid #248cb3"
+                  :size="40"
+                  :src="
+                    require(`@/assets/images/speakers/${event.speaker.avatar}`)
+                  "
+                >
+                </el-avatar>
+              </el-tooltip>
             </el-col>
-            <el-col :span="20">
+            <el-col :span="20" style="padding-top: 5px">
               <div class="bookings-title">
-                <!-- {{ event.name }} -->
                 {{ getName(event.name) }}
               </div>
               <div class="bookings-sub-title">
-                <!-- 12th April, Friday 18:00 - 21:00 -->
                 {{ getDate(event) }}
               </div>
             </el-col>
@@ -77,19 +80,28 @@
           style="margin-bottom: 8px"
         >
           <div class="events-box" @click="goToModal(event)">
-            <el-col :span="4">
-              <el-avatar
-                :size="40"
-                :src="avatar"
-                @error="errorHandler"
-                style="border: 1px solid #248cb3"
+            <el-col
+              :span="4"
+              v-if="event.speaker && event.speaker.avatar"
+              style="padding-top;: 5px"
+            >
+              <el-tooltip
+                class="item speaker-icon"
+                :content="event.speaker.name"
+                placement="top"
+                effect="light"
               >
-                <img
-                  src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
-                />
-              </el-avatar>
+                <el-avatar
+                  style="border: 1px solid #248cb3"
+                  :size="40"
+                  :src="
+                    require(`@/assets/images/speakers/${event.speaker.avatar}`)
+                  "
+                >
+                </el-avatar>
+              </el-tooltip>
             </el-col>
-            <el-col :span="20">
+            <el-col :span="20" style="padding-top: 5px">
               <div class="bookings-title">
                 {{ getName(event.name) }}
               </div>
@@ -99,40 +111,6 @@
             </el-col>
           </div>
         </el-col>
-        <!-- <el-col :span="24" style="margin-bottom: 8px;">
-          <div class="events-box">
-            <el-col :span="4">
-                <el-avatar :size="40" :src="avatar" @error="errorHandler" style="border: 1px solid #248cb3;">
-                  <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
-                </el-avatar>
-            </el-col>
-            <el-col :span="20">
-              <div class="bookings-title">
-              Navigating Volatile Markets
-              </div>
-              <div class="bookings-sub-title">
-              3rd April, Wednesday 18:00 - 21:00
-              </div>
-            </el-col>
-          </div>
-        </el-col>
-        <el-col :span="24" style="margin-bottom: 8px;">
-          <div class="events-box">
-            <el-col :span="4">
-                <el-avatar :size="40" :src="avatar" @error="errorHandler" style="border: 1px solid #248cb3;">
-                  <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
-                </el-avatar>
-            </el-col>
-            <el-col :span="20">
-              <div class="bookings-title">
-              Fast Timeframe Daily Webinar
-              </div>
-              <div class="bookings-sub-title">
-              3rd April, Wednesday 18:00 - 21:00
-              </div>
-            </el-col>
-          </div>
-        </el-col> -->
       </el-col>
     </el-dialog>
   </div>
@@ -157,7 +135,6 @@ export default {
   data() {
     return {
       dialogVisible: true,
-      avatar: require("../../assets/images/avatar.png"),
     };
   },
   computed: {

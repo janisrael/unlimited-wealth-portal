@@ -46,6 +46,8 @@
             <div v-else style="color: #ffffff">-</div>
           </div>
         </div>
+        <!-- <<<<<<< HEAD -->
+        <!-- </div> -->
 
         <!-- active events -->
         <span v-if="type === 'upcoming' && active_events.length > 0" style="color: #ffffff; padding: 20px 0 5px; display: inline-block">My booked events:</span>
@@ -121,9 +123,12 @@
                     </div>
                     <div>{{ getMonth(event.date) }}</div>
 
-                    <div class="speaker-wrapper">
-                      <el-tooltip class="item speaker-icon" content="Amy Green" placement="top" effect="light">
-                        <el-button icon="el-icon-user" circle size="mini"></el-button>
+                    <div class="speaker-wrapper" v-if="event.speaker && event.speaker.avatar">
+                      <el-tooltip class="item speaker-icon" :content="event.speaker.name" placement="top" effect="light">
+                        <el-avatar size="small" :src="
+                              require(`@/assets/images/speakers/${event.speaker.avatar}`)
+                            ">
+                        </el-avatar>
                       </el-tooltip>
                     </div>
 
