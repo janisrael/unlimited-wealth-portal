@@ -1,69 +1,46 @@
 <template>
-  <div class="left-panel-wrapper">
-    <el-row>
-      <el-col :span="24" style="padding: 0px 20px !important">
-        <!-- eslint-disable -->
-        <el-col
-          v-for="(event, i) in events"
-          v-if="event.policy.is_visible === true"
-          :key="i"
-          :span="8"
-          style="padding-right: 20px; padding-top: 20px"
-        >
-          <div @click="getModal(event)">
-            <el-card class="box-card card-left-panel" shadow="hover">
-              <div slot="header" class="clearfix">
-                <lazy-background
-                  :src="event.image_url"
-                  @onLoad="onLoad(event.name)"
-                  @onError="onError(event)"
-                  image-class="cam-viewport"
-                  :blur="0"
-                  position="left center"
-                  size="cover"
-                  style="
+<div class="left-panel-wrapper">
+  <el-row>
+    <el-col :span="24" style="padding: 0px 20px !important">
+      <!-- eslint-disable -->
+      <el-col v-for="(event, i) in events" v-if="event.policy.is_visible === true" :key="i" :span="8" style="padding-right: 20px; padding-top: 20px">
+        <div @click="getModal(event)">
+          <el-card class="box-card card-left-panel" shadow="hover">
+            <div slot="header" class="clearfix">
+              <lazy-background :src="event.image_url" @onLoad="onLoad(event.name)" @onError="onError(event)" image-class="cam-viewport" :blur="0" position="left center" size="cover" style="
                     background-size: cover;
                     background-position: left center;
-                  "
-                  class="card-header-content"
-                >
-                  <div slot="content">
-                    <div class="card-header-content">
-                      <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
+                  " class="card-header-content">
+                <div slot="content">
+                  <div class="card-header-content">
+                    <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
                             <i  class="el-icon-lock"></i>
                           </div> -->
-                      <!-- <div class="card-content-title">{{ event.name }}</div>     -->
-                      <div class="card-content-title"></div>
-                      <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
-                      <div class="card-content-sched">
-                        Coming up at 3rd April
-                      </div>
+                    <!-- <div class="card-content-title">{{ event.name }}</div>     -->
+                    <div class="card-content-title"></div>
+                    <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
+                    <div class="card-content-sched">
+                      Coming up at 3rd April
                     </div>
                   </div>
-                </lazy-background>
+                </div>
+              </lazy-background>
 
-                <!-- <el-button style="float: right; padding: 3px 0" type="text">Operation button</el-button> -->
-              </div>
-              <div class="text item">
-                <!-- Get ahead of the curve with our early morning briefing. Our trader mentors will help you look trough the markets to see what’s going on and some places that you might want to look for today’s trades.  -->
-                <span v-if="!event.description"> -</span>
-                {{ event.description }}
-              </div>
-            </el-card>
-          </div>
-        </el-col>
+              <!-- <el-button style="float: right; padding: 3px 0" type="text">Operation button</el-button> -->
+            </div>
+            <div class="text item">
+              <!-- Get ahead of the curve with our early morning briefing. Our trader mentors will help you look trough the markets to see what’s going on and some places that you might want to look for today’s trades.  -->
+              <span v-if="!event.description"> -</span>
+              {{ event.description }}
+            </div>
+          </el-card>
+        </div>
       </el-col>
-      <component
-        :is="currentComponent"
-        :type="type"
-        :event_list="event_list"
-        :event="selected_event"
-        @close="CloseModal()"
-        :token="token"
-        :region="region"
-      />
-    </el-row>
-  </div>
+    </el-col>
+
+    <component :is="currentComponent" :type="type" :event_list="event_list" :active_events="active_events" :event="selected_event" @close="CloseModal()" @add_events="handleAddEvent" :token="token" :region="region" />
+  </el-row>
+</div>
 </template>
 
 <script>
@@ -103,6 +80,7 @@ export default {
       currentComponent: null,
       event_list: [],
       selected_event: {},
+      active_events: []
     };
   },
   beforeMount() {
@@ -118,6 +96,9 @@ export default {
     _myybookings() {
       return this.$store.getters._myybookings;
     },
+    _my_active_events() {
+      return this.$store.getters._my_active_events;
+    }
   },
   methods: {
     getModal(event) {
@@ -148,30 +129,46 @@ export default {
           .then((response) => {
             if (response.status === 200) {
               events = response.data.data;
-              events.forEach((event) => {
+              var active_events = []
+              var event_type_id = events[0].event_type_id
+              console.log(events[0].event_type_id, 'event_type_id')
+              events.forEach((event, i) => {
                 event["selected"] = false;
-
-                // filter hide events already exist on my up coming bookings
-                var todayDate = new Date().toISOString().slice(0, 10);
-                var myybookings = this._myybookings.filter(function (item) {
-                  return (
-                    item.start_date !== todayDate &&
-                    item.status.toLowerCase() === "upcoming"
-                  );
-                });
-
-                myybookings.forEach((value) => {
-                  if (
-                    value.event_id === event.id &&
-                    value.event_region === event.region
-                  ) {
-                    event["hidden"] = true;
+                /* eslint-disable */
+                this._myybookings.forEach((booking, index) => {
+                  if (booking.event_id === event.id && booking.event_region === event.region) {
+                    active_events.push(event)
+                    events.splice(i, 1)
+                    // event['hidden'] = true
                   }
-                });
+
+                  if (booking.status === 'Booking') {
+                    events.splice(i, 1)
+                  }
+                })
               });
 
-              this.event_list = events;
-              console.log(events, "event list");
+              /* eslint-disable */
+              this._myybookings.forEach((booking, index) => {
+                if (booking.event_id === event_type_id && booking.status === 'Booking') {
+                  active_events.push(booking)
+                  // events.splice(index, 1)
+                }
+              })
+
+              var todayDate = new Date().toISOString().slice(0, 10);
+              var new_event_list = events.filter(function (item) {
+                return (
+                  // item.start_date !== todayDate &&
+                  item.states.progress.toLowerCase() === "upcoming"
+                );
+              });
+
+              this.event_list = []
+              // this.active_events = []
+              this.event_list = new_event_list;
+              this.active_events = active_events
+              this.$store.dispatch("setActiveEvents", this.active_events).then((response) => {})
             }
           });
       } else {
@@ -193,6 +190,34 @@ export default {
       }
 
       this.currentComponent = EventModal;
+    },
+    handleAddEvent(data) {
+      let active_events = this.active_events
+      active_events = active_events.concat(data);
+
+      let event_list = this.event_list
+
+      event_list = event_list.filter(function (obj) {
+        return !this.has(obj.id);
+      }, new Set(data.map(obj => obj.id)));
+
+      // let count = 0
+      // count = this.event_list.length;
+
+      // if(count === 1) {
+      //   this.event_list = []
+      // } else {
+      this.event_list = [] // clearing evelt_list for carousel arrrow to reshow, reload the component
+      this.active_events = [] // clearing evelt_list for carousel arrrow to reshow, reload the component
+
+      this.active_events = active_events
+
+      this.active_events.forEach((event) => {
+        event.selected = false
+      })
+      this.event_list = event_list
+      // }
+
     },
     CloseModal() {
       this.event_list = [];
