@@ -1,21 +1,13 @@
 <template>
-  <div>
-    <!-- eslint-disable -->
-    <el-dialog
-      :title="event.name"
-      :visible.sync="dialogVisible"
-      width="50%"
-      top="3%"
-      :close-on-click-modal="false"
-      :before-close="handleClose"
-    >
-      <div v-if="stage > 0">
-        <div style="text-align: center">
-          <img :src="check_icon" />
-        </div>
-        <div style="text-align: center">
-          <span
-            style="
+<div>
+  <!-- eslint-disable -->
+  <el-dialog :title="event.name" :visible.sync="dialogVisible" width="50%" top="3%" :close-on-click-modal="false" :before-close="handleClose">
+    <div v-if="stage > 0">
+      <div style="text-align: center">
+        <img :src="check_icon" />
+      </div>
+      <div style="text-align: center">
+        <span style="
               font-size: 28px;
               color: #ffffff;
               margin-top: 40px;
@@ -54,6 +46,55 @@
             <div v-else style="color: #ffffff">-</div>
           </div>
         </div>
+
+        <!-- active events -->
+        <span v-if="type === 'upcoming' && active_events.length > 0" style="color: #ffffff; padding: 20px 0 5px; display: inline-block">My booked events:</span>
+
+        <div v-loading="this_load" v-if="type === 'upcoming' && active_events.length > 0" id="carousel-wrapper" style="height: 170px">
+          <div v-if="active_events.length" style="min-height: 170px">
+            <el-col :span="24">
+              <VueSlickCarousel ref="slick1" class="slick-list-upcoming" v-bind="settings">
+                <div v-for="(active_event, i) in active_events" :key="i" class="carousel-block">
+                  <div class="carousel-content-upcoming" :class="{ 'selected-event': active_event.selected == true }">
+                    <!-- <div class="carousel-check-wrapper">
+                      <el-checkbox v-model="active_event.selected" class="carousel-checked"></el-checkbox>
+                    </div> -->
+
+                    <div class="carousel-day">{{ getDate(active_event.date) }}</div>
+                    <div class="carousel-formated-date">
+                      {{ getFormatedDate(active_event.date) }}
+                    </div>
+                    <div>{{ getMonth(active_event.date) }}</div>
+
+                    <div class="speaker-wrapper">
+                      <el-tooltip class="item speaker-icon" content="Amy Green" placement="top" effect="light">
+                        <el-button icon="el-icon-user" circle size="mini"></el-button>
+                      </el-tooltip>
+                    </div>
+
+                    <el-tooltip class="item speaker-icon" effect="light" :content="getFormatedLocalTime(active_event.start_at.local)" placement="bottom">
+                      <div v-if="type === 'upcoming'" class="sub-wrapper" style="display: inline-block; margin-top: 10px">
+                        <i class="el-icon-alarm-clock speaker-icon"></i>
+                        <span class="speaker-name">
+                          {{ getFormatedTime(active_event.start_at.local) }}</span>
+                        <p class="speaker-name">{{ getLocalTimezone() }}</p>
+                      </div>
+                    </el-tooltip>
+                    <div class="cancel-container">
+                      <!-- <el-button disabled type="info" size="mini" plain>{{ active_event.states.progress }}</el-button> -->
+                      <!-- {{ active_event.states.progress }} -->
+                      <el-button v-if="active_event.states.progress === 'Booking'" disabled type="info" size="mini" plain>Booking</el-button>
+                      <el-button v-else type="danger" size="mini" plain>Cancel</el-button>
+                    </div>
+
+                  </div>
+                </div>
+              </VueSlickCarousel>
+            </el-col>
+          </div>
+          <div v-else style="min-height: 170px">No available dates</div>
+        </div>
+
         <span v-if="type === 'recording'" style="color: #ffffff; padding: 30px 0 15px; display: inline-block">Available past recordings:</span>
         <span v-else style="color: #ffffff; padding: 30px 0 15px; display: inline-block">Book from available dates:</span>
 
@@ -158,6 +199,9 @@ export default {
       type: String,
       required: true,
     },
+    active_events: {
+      type: Array
+    }
   },
   data() {
     return {
@@ -211,7 +255,7 @@ export default {
       if (this.selected_events.length > 0) {
         this.loading = true;
         this.disable = true;
-        console.log(this.selected_events, "selected");
+        // console.log(this.selected_events, "selected");
         let event_ids = [];
         this.selected_events.forEach((value) => {
           event_ids.push(value.id);
@@ -232,20 +276,17 @@ export default {
           )
           .then((response) => {
             if (response.status === 200) {
-              this.stage = 1;
+              // this.stage = 1;
               this.loading = false;
               this.disable = false;
-              console.log(this.selected_events, "selected_events");
-              this.$store
-                .dispatch("addBooking", this.selected_events)
-                .then((response) => {
-                  // if (response.status === 200) {
-                  //     // console.log('addbooking')
-                  //     // console.log(response)
-                  //     this.stage = 1
-                  //     this.loading = false
-                  // }
-                });
+              let _selectec_events = this.selected_events
+              this.selected_events = []
+              _selectec_events.forEach((value, index) => {
+                value.states.progress = 'Booking'
+              })
+              this.$emit("add_events", _selectec_events);
+              this.$store.dispatch("addBooking", _selectec_events).then((response) => {})
+
             } else {
               this.loading = false;
               this.disable = false;

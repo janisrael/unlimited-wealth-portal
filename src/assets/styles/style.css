@@ -123,6 +123,16 @@ td {
   cursor: pointer !important;
 }
 
+.cancel-container {
+  display: inline-block;
+  margin-top: 10px;
+}
+.el-button--danger.is-plain {
+  color: #F56C6C !important;
+  background: transparent !important;
+  border-color: #fbc4c4 !important;
+}
+
 .el-button {
   cursor: pointer;
   background: #42427c !important;
