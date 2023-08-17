@@ -440,12 +440,14 @@ export default {
               this.disable = false;
               let _selectec_events = this.selected_events;
               this.selected_events = [];
+              // eslint-disable-next-line no-unused-vars
               _selectec_events.forEach((value, index) => {
                 value.states.progress = "Booking";
               });
               this.$emit("add_events", _selectec_events);
               this.$store
                 .dispatch("addBooking", _selectec_events)
+                // eslint-disable-next-line no-unused-vars
                 .then((response) => {});
             } else {
               this.loading = false;
