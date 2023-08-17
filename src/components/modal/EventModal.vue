@@ -208,7 +208,6 @@
                 :title="event.name"
                 :logo="require(`@/assets/images/speakers/smartcharts.png`)"
                 :src="video_url"
-                :autoplay="false"
               ></vue-core-video-player>
             </div>
           </div>
