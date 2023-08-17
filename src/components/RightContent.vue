@@ -24,14 +24,13 @@
 
     <el-col :span="24">
       <h4 style="margin-left: 20px; font-size: 14px; font-weight: 600">
-        My bookings this week
+        My Upcoming Bookings
       </h4>
-      <!-- {{ _myybookings }} -->
-      <div v-if="my_events_this_week.length === 0" class="no-booking-caption">
-        No Bookings for this week
+      <div v-if="my_events_upcoming.length === 0" class="no-booking-caption">
+        No bookings available
       </div>
       <el-col
-        v-for="(event, i) in my_events_this_week"
+        v-for="(event, i) in my_events_upcoming"
         :key="i"
         :span="24"
         style="margin-bottom: 8px"
@@ -64,46 +63,6 @@
       </el-col>
     </el-col>
 
-    <!-- <el-col :span="24">
-      <h4 style="margin-left: 20px; font-size: 14px; font-weight: 600">
-        My bookings next week
-      </h4>
-      <div v-if="my_events_next_week.length === 0" class="no-booking-caption">
-        No Bookings for next week
-      </div>
-      <el-col
-        v-for="(event, i) in my_events_next_week"
-        :key="i"
-        :span="24"
-        style="margin-bottom: 8px"
-      >
-        <div class="events-box">
-          <el-col :span="4">
-            <el-avatar
-              :size="40"
-              :src="avatar"
-              @error="errorHandler"
-              style="border: 1px solid #248cb3"
-            >
-              <img
-                src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
-              />
-            </el-avatar>
-          </el-col>
-          <el-col :span="20">
-            <div class="bookings-title">
-              {{ event.event_type_name }} -
-              <span style="text-transform: uppercase">{{
-                event.event_region
-              }}</span>
-            </div>
-            <div class="bookings-sub-title">
-              {{ getFormatedDate(event.start_date) }}
-            </div>
-          </el-col>
-        </div>
-      </el-col>
-    </el-col> -->
     <component
       :is="currentComponent"
       :date="date"
@@ -352,6 +311,10 @@ export default {
     filterMyUpcomingEventsByRegion() {
       this.my_events_upcoming = this._myybookings.filter((item) => {
         return item.event_region === this.region;
+      });
+
+      this.my_events_upcoming.sort(function (a, b) {
+        return new Date(a.start_date) - new Date(b.start_date);
       });
     },
     getTodaysBookings() {
