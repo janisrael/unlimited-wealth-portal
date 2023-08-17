@@ -1,46 +1,109 @@
 <template>
-<div class="left-panel-wrapper">
-  <el-row>
-    <el-col :span="24" style="padding: 0px 20px !important">
-      <!-- eslint-disable -->
-      <el-col v-for="(event, i) in events" v-if="event.policy.is_visible === true" :key="i" :span="8" style="padding-right: 20px; padding-top: 20px">
-        <div @click="getModal(event)">
-          <el-card class="box-card card-left-panel" shadow="hover">
-            <div slot="header" class="clearfix">
-              <lazy-background :src="event.image_url" @onLoad="onLoad(event.name)" @onError="onError(event)" image-class="cam-viewport" :blur="0" position="left center" size="cover" style="
+  <div class="left-panel-wrapper">
+    <el-row>
+      <el-col :span="24" style="padding: 0px 20px !important">
+        <!-- eslint-disable -->
+        <el-col
+          v-for="(event, i) in events"
+          v-if="event.policy.is_visible === true && type == 'upcoming'"
+          :key="i"
+          :span="8"
+          style="padding-right: 20px; padding-top: 20px"
+        >
+          <div @click="getModal(event)">
+            <el-card class="box-card card-left-panel" shadow="hover">
+              <div slot="header" class="clearfix">
+                <lazy-background
+                  :src="event.image_url"
+                  @onLoad="onLoad(event.name)"
+                  @onError="onError(event)"
+                  image-class="cam-viewport"
+                  :blur="0"
+                  position="left center"
+                  size="cover"
+                  style="
                     background-size: cover;
                     background-position: left center;
-                  " class="card-header-content">
-                <div slot="content">
-                  <div class="card-header-content">
-                    <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
+                  "
+                  class="card-header-content"
+                >
+                  <div slot="content">
+                    <div class="card-header-content">
+                      <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
                             <i  class="el-icon-lock"></i>
                           </div> -->
-                    <!-- <div class="card-content-title">{{ event.name }}</div>     -->
-                    <div class="card-content-title"></div>
-                    <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
-                    <div class="card-content-sched">
-                      Coming up at 3rd April
+                      <!-- <div class="card-content-title">{{ event.name }}</div>     -->
+                      <div class="card-content-title"></div>
+                      <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
+                      <div class="card-content-sched">
+                        Coming up at 3rd April
+                      </div>
                     </div>
                   </div>
-                </div>
-              </lazy-background>
+                </lazy-background>
 
-              <!-- <el-button style="float: right; padding: 3px 0" type="text">Operation button</el-button> -->
-            </div>
-            <div class="text item">
-              <!-- Get ahead of the curve with our early morning briefing. Our trader mentors will help you look trough the markets to see what’s going on and some places that you might want to look for today’s trades.  -->
-              <span v-if="!event.description"> -</span>
-              {{ event.description }}
-            </div>
-          </el-card>
-        </div>
+                <!-- <el-button style="float: right; padding: 3px 0" type="text">Operation button</el-button> -->
+              </div>
+              <div class="text item">
+                <!-- Get ahead of the curve with our early morning briefing. Our trader mentors will help you look trough the markets to see what’s going on and some places that you might want to look for today’s trades.  -->
+                <span v-if="!event.description"> -</span>
+                {{ event.description }}
+              </div>
+            </el-card>
+          </div>
+        </el-col>
+        <el-col
+          v-for="(recording, i) in recordings"
+          v-if="type == 'recording'"
+          :key="i"
+          :span="8"
+          style="padding-right: 20px; padding-top: 20px"
+        >
+          <div @click="getModal(recording)">
+            <el-card class="box-card card-left-panel" shadow="hover">
+              <div slot="header" class="clearfix">
+                <lazy-background
+                  :src="recording.image_url"
+                  @onLoad="onLoad(recording.name)"
+                  @onError="onError(recording)"
+                  image-class="cam-viewport"
+                  :blur="0"
+                  position="left center"
+                  size="cover"
+                  style="
+                    background-size: cover;
+                    background-position: left center;
+                  "
+                  class="card-header-content"
+                >
+                  <div slot="content">
+                    <div class="card-header-content">
+                      <div class="card-content-title"></div>
+                    </div>
+                  </div>
+                </lazy-background>
+              </div>
+              <div class="text item">
+                {{ recording.description ?? "-" }}
+              </div>
+            </el-card>
+          </div>
+        </el-col>
       </el-col>
-    </el-col>
 
-    <component :is="currentComponent" :type="type" :event_list="event_list" :active_events="active_events" :event="selected_event" @close="CloseModal()" @add_events="handleAddEvent" :token="token" :region="region" />
-  </el-row>
-</div>
+      <component
+        :is="currentComponent"
+        :type="type"
+        :event_list="event_list"
+        :active_events="active_events"
+        :event="selected_event"
+        @close="CloseModal()"
+        @add_events="handleAddEvent"
+        :token="token"
+        :region="region"
+      />
+    </el-row>
+  </div>
 </template>
 
 <script>
@@ -58,6 +121,10 @@ export default {
       required: true,
     },
     events: {
+      required: true,
+      type: Array,
+    },
+    recordings: {
       required: true,
       type: Array,
     },
@@ -80,7 +147,8 @@ export default {
       currentComponent: null,
       event_list: [],
       selected_event: {},
-      active_events: []
+      selected_recordings: {},
+      active_events: [],
     };
   },
   beforeMount() {
