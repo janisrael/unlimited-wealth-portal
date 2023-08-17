@@ -1,7 +1,5 @@
 <template>
   <div class="right-panel-wrapper">
-    <!-- <el-row> -->
-
     <el-col :span="24">
       <el-calendar v-model="calendar_date">
         <template slot="dateCell" slot-scope="{ data }">
@@ -11,7 +9,6 @@
             @click="getDate(data)"
           >
             {{ data.day.split("-").slice(2).join("-") }}
-            <!-- {{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}} -->
             <div style="display: block; width: 100%; margin-top: -7px">
               <span
                 v-for="(dot, index) in getDots(data)"
@@ -60,16 +57,14 @@
               }}</span>
             </div>
             <div class="bookings-sub-title">
-              <!-- {{ event.start_date }} -->
               {{ getFormatedDate(event.start_date) }}
-              <!-- 3rd April, Wednesday 18:00 - 21:00 -->
             </div>
           </el-col>
         </div>
       </el-col>
     </el-col>
 
-    <el-col :span="24">
+    <!-- <el-col :span="24">
       <h4 style="margin-left: 20px; font-size: 14px; font-weight: 600">
         My bookings next week
       </h4>
@@ -97,22 +92,18 @@
           </el-col>
           <el-col :span="20">
             <div class="bookings-title">
-              <!-- LFX Daily webinar - Europe -->
               {{ event.event_type_name }} -
               <span style="text-transform: uppercase">{{
                 event.event_region
               }}</span>
             </div>
             <div class="bookings-sub-title">
-              <!-- 3rd April, Wednesday 18:00 - 21:00 -->
-              <!-- {{ event.start_date }} -->
               {{ getFormatedDate(event.start_date) }}
             </div>
           </el-col>
         </div>
       </el-col>
-    </el-col>
-    <!-- </el-row> -->
+    </el-col> -->
     <component
       :is="currentComponent"
       :date="date"
@@ -248,52 +239,7 @@ export default {
       });
       return count;
     },
-    // getUpcomingEvents() {
-    //       let curr = new Date
-    //       let week = []
-    //       let next_week = []
 
-    //       for (let i = 1; i <= 7; i++) {
-    //         let first = curr.getDate() - curr.getDay() + i
-    //         let day = new Date(curr.setDate(first)).toISOString().slice(0, 10)
-    //         week.push(day)
-    //       }
-
-    //       //next week
-    //       let next_week_start = new Date(week[week.length - 1])
-    //       for (let i = 1; i <= 7; i++) {
-    //         let first_next_week = next_week_start.getDate() - next_week_start.getDay() + i
-    //         let next_week_day = new Date(next_week_start.setDate(first_next_week)).toISOString().slice(0, 10)
-    //         next_week.push(next_week_day)
-    //       }
-    //     // /* eslint-disable */
-    //       if(this.my_events_upcoming.length > 0) {
-    //         //check events
-    //         this.my_events_upcoming.forEach((value) => {
-    //           week.forEach((value_week) => {
-    //             if(value.start_date === value_week) {
-    //               this.my_events_this_week.push(value)
-    //             }
-    //           })
-    //           next_week.forEach((value_week) => {
-    //             if(value.start_date === value_week) {
-    //               this.my_events_next_week.push(value)
-    //             }
-    //           })
-    //         })
-    //       }
-    //       if(this.my_events_this_week.length > 0) {
-    //         this.my_events_this_week.sort(function(a,b){
-    //           return new Date(a.start_date) - new Date(b.start_date);
-    //         });
-    //       }
-
-    //       if(this.my_events_next_week.length > 0) {
-    //         this.my_events_next_week.sort(function(a,b){
-    //           return new Date(a.start_date) - new Date(b.start_date);
-    //         });
-    //       }
-    // },
     getMyBookings() {
       this.$store.dispatch("getMybookings", this.token).then((response) => {
         if (response.status === 200) {
@@ -349,28 +295,8 @@ export default {
               return new Date(a.start_date) - new Date(b.start_date);
             });
           }
-
-          // console.log(response,'rightcontent')
         }
       });
-
-      // var url = 'https://uw-portal-api.tinkerpub.com/api/my-account/bookings/upcoming'
-      // this.axios
-      // .get(url,
-      // {
-      //   headers: {
-      //    'X-Session-Key': this.token,
-      //    'Content-Type': 'application/json',
-      //    'Accept': 'application/json'
-      //   }
-      // }
-      // )
-      // .then(response => {
-      //   if (response.status === 200) {
-
-      // console.log(this.my_events_this_week,'this.my_events_this_week')
-      //   }
-      // })
     },
     getDateDay(date) {
       var days = [
