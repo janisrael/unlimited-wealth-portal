@@ -588,7 +588,7 @@ span.modal-span {
   display: block;
   width: 97%;
   margin-left: 12px;
-  margin-top: 10px;
+  /* margin-top: 10px; */
 }
 
 .el-dialog__body {
@@ -727,11 +727,11 @@ span.modal-span {
 }
 
 .slick-slider.slick-initialized {
-  min-height: 170px !important;
+  /* min-height: 170px !important; */
 }
 
 #carousel-wrapper {
-  min-height: 170px;
+  /* min-height: 170px; */
 }
 
 .el-popover {
