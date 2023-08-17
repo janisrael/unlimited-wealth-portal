@@ -166,7 +166,7 @@ export default {
     },
     _my_active_events() {
       return this.$store.getters._my_active_events;
-    }
+    },
   },
   methods: {
     getModal(event) {
@@ -197,32 +197,38 @@ export default {
           .then((response) => {
             if (response.status === 200) {
               events = response.data.data;
-              var active_events = []
-              var event_type_id = events[0].event_type_id
-              console.log(events[0].event_type_id, 'event_type_id')
+              var active_events = [];
+              var event_type_id = events[0].event_type_id;
+              console.log(events[0].event_type_id, "event_type_id");
               events.forEach((event, i) => {
                 event["selected"] = false;
                 /* eslint-disable */
                 this._myybookings.forEach((booking, index) => {
-                  if (booking.event_id === event.id && booking.event_region === event.region) {
-                    active_events.push(event)
-                    events.splice(i, 1)
+                  if (
+                    booking.event_id === event.id &&
+                    booking.event_region === event.region
+                  ) {
+                    active_events.push(event);
+                    events.splice(i, 1);
                     // event['hidden'] = true
                   }
 
-                  if (booking.status === 'Booking') {
-                    events.splice(i, 1)
+                  if (booking.status === "Booking") {
+                    events.splice(i, 1);
                   }
-                })
+                });
               });
 
               /* eslint-disable */
               this._myybookings.forEach((booking, index) => {
-                if (booking.event_id === event_type_id && booking.status === 'Booking') {
-                  active_events.push(booking)
+                if (
+                  booking.event_id === event_type_id &&
+                  booking.status === "Booking"
+                ) {
+                  active_events.push(booking);
                   // events.splice(index, 1)
                 }
-              })
+              });
 
               var todayDate = new Date().toISOString().slice(0, 10);
               var new_event_list = events.filter(function (item) {
@@ -232,11 +238,13 @@ export default {
                 );
               });
 
-              this.event_list = []
+              this.event_list = [];
               // this.active_events = []
               this.event_list = new_event_list;
-              this.active_events = active_events
-              this.$store.dispatch("setActiveEvents", this.active_events).then((response) => {})
+              this.active_events = active_events;
+              this.$store
+                .dispatch("setActiveEvents", this.active_events)
+                .then((response) => {});
             }
           });
       } else {
@@ -260,14 +268,14 @@ export default {
       this.currentComponent = EventModal;
     },
     handleAddEvent(data) {
-      let active_events = this.active_events
+      let active_events = this.active_events;
       active_events = active_events.concat(data);
 
-      let event_list = this.event_list
+      let event_list = this.event_list;
 
       event_list = event_list.filter(function (obj) {
         return !this.has(obj.id);
-      }, new Set(data.map(obj => obj.id)));
+      }, new Set(data.map((obj) => obj.id)));
 
       // let count = 0
       // count = this.event_list.length;
@@ -275,17 +283,16 @@ export default {
       // if(count === 1) {
       //   this.event_list = []
       // } else {
-      this.event_list = [] // clearing evelt_list for carousel arrrow to reshow, reload the component
-      this.active_events = [] // clearing evelt_list for carousel arrrow to reshow, reload the component
+      this.event_list = []; // clearing evelt_list for carousel arrrow to reshow, reload the component
+      this.active_events = []; // clearing evelt_list for carousel arrrow to reshow, reload the component
 
-      this.active_events = active_events
+      this.active_events = active_events;
 
       this.active_events.forEach((event) => {
-        event.selected = false
-      })
-      this.event_list = event_list
+        event.selected = false;
+      });
+      this.event_list = event_list;
       // }
-
     },
     CloseModal() {
       this.event_list = [];
