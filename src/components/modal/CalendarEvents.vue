@@ -236,6 +236,7 @@ export default {
     },
     goToModal(event) {
       this.$root.$emit("open-upcoming-events-modal", event);
+      this.$root.$emit("set-type", "upcoming");
     },
   },
 };

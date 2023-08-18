@@ -164,6 +164,11 @@ export default {
       loading: false,
     };
   },
+  beforeMount() {
+    this.$root.$on("set-type", (type) => {
+      this.radio = type;
+    });
+  },
   mounted() {
     if (sessionStorage.getItem("token")) {
       this.verifyToken(sessionStorage.getItem("token"));
