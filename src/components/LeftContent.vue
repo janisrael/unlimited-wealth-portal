@@ -125,10 +125,18 @@ export default {
   },
   methods: {
     getModal(event) {
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        // spinner: 'el-icon-loading',
+        background: "rgba(0, 0, 0, 0.7)",
+      });
       this.selected_event = event;
 
       if (event.policy.is_accessible === false) {
         this.currentComponent = LockedEvent;
+        loading.close();
+
         return;
       }
 
@@ -202,6 +210,9 @@ export default {
                 .then((response) => {});
             }
           });
+
+        this.currentComponent = EventModal;
+        loading.close();
       } else {
         url =
           process.env.VUE_APP_API_URL +
