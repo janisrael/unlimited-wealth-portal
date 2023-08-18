@@ -71,8 +71,6 @@
               <div v-else style="color: #ffffff">-</div>
             </div>
           </div>
-          <!-- <<<<<<< HEAD -->
-          <!-- </div> -->
 
           <!-- active events -->
           <span
@@ -222,12 +220,24 @@
             </el-tabs>
             <div class="player-container">
               <vue-core-video-player
+                v-if="video_url"
                 @play="handlePLay()"
                 :cover="event.image_url"
                 :title="event.name"
                 :logo="require(`@/assets/images/speakers/smartcharts.png`)"
                 :src="video_url"
               ></vue-core-video-player>
+              <div v-else style="position: relative">
+                <div
+                  class="bg-image"
+                  :style="`background-image: url(${event.image_url}),linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)); `"
+                ></div>
+                <div class="bg-text">
+                  <p>
+                    Retrieving webinar recording. Video will be availble soon.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -421,8 +431,13 @@ export default {
   // beforeDestroy() {
   //   this.stage = 0;
   // },
-  created() {
-    this.getVideo(this.event_list[0]);
+  watch: {
+    event_list() {
+      console.log(" 2: watch eventmodal: ", this.event_list);
+      if (this.event_list.length > 0) {
+        this.getVideo(this.event_list[0]);
+      }
+    },
   },
   mounted() {
     setTimeout(() => {
@@ -674,7 +689,7 @@ export default {
     getVideo(event) {
       var url = event.meta.resource_path;
 
-      // SAMPLE URL
+      // SAMPLE URL WITH RECORDINGS
       // var url =
       //   "https://uw-portal-api.tinkerpub.com/api/events/a000C000005uXWbQAM";
 

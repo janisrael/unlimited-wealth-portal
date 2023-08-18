@@ -5,7 +5,7 @@
         <!-- eslint-disable -->
         <el-col
           v-for="(event, i) in events"
-          v-if="event.policy.is_visible === true && type == 'upcoming'"
+          v-if="event.policy.is_visible === true"
           :key="i"
           :span="8"
           style="padding-right: 20px; padding-top: 20px"
@@ -35,56 +35,16 @@
                       <!-- <div class="card-content-title">{{ event.name }}</div>     -->
                       <div class="card-content-title"></div>
                       <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
-                      <div class="card-content-sched">
+                      <div class="card-content-sched" v-if="type == 'upcoming'">
                         Coming up at 3rd April
                       </div>
                     </div>
                   </div>
                 </lazy-background>
-
-                <!-- <el-button style="float: right; padding: 3px 0" type="text">Operation button</el-button> -->
               </div>
               <div class="text item">
-                <!-- Get ahead of the curve with our early morning briefing. Our trader mentors will help you look trough the markets to see what’s going on and some places that you might want to look for today’s trades.  -->
                 <span v-if="!event.description"> -</span>
                 {{ event.description }}
-              </div>
-            </el-card>
-          </div>
-        </el-col>
-        <el-col
-          v-for="(recording, i) in recordings"
-          v-if="type == 'recording'"
-          :key="i"
-          :span="8"
-          style="padding-right: 20px; padding-top: 20px"
-        >
-          <div @click="getModal(recording)">
-            <el-card class="box-card card-left-panel" shadow="hover">
-              <div slot="header" class="clearfix">
-                <lazy-background
-                  :src="recording.image_url"
-                  @onLoad="onLoad(recording.name)"
-                  @onError="onError(recording)"
-                  image-class="cam-viewport"
-                  :blur="0"
-                  position="left center"
-                  size="cover"
-                  style="
-                    background-size: cover;
-                    background-position: left center;
-                  "
-                  class="card-header-content"
-                >
-                  <div slot="content">
-                    <div class="card-header-content">
-                      <div class="card-content-title"></div>
-                    </div>
-                  </div>
-                </lazy-background>
-              </div>
-              <div class="text item">
-                {{ recording.description ?? "-" }}
               </div>
             </el-card>
           </div>
@@ -109,11 +69,14 @@
 <script>
 import EventModal from "./modal/EventModal.vue";
 import LockedEvent from "./modal/LockedEvent.vue";
+import NoRecordingModal from "./modal/NoRecordingModal.vue";
+
 export default {
   name: "LeftContent",
   components: {
     EventModal,
     LockedEvent,
+    NoRecordingModal,
   },
   props: {
     type: {
@@ -121,10 +84,6 @@ export default {
       required: true,
     },
     events: {
-      required: true,
-      type: Array,
-    },
-    recordings: {
       required: true,
       type: Array,
     },
@@ -147,7 +106,6 @@ export default {
       currentComponent: null,
       event_list: [],
       selected_event: {},
-      selected_recordings: {},
       active_events: [],
       // ch1: this.$pnGetMessage('customers.001Ae000005mU49IAE.booking'),
     };
@@ -190,10 +148,18 @@ export default {
       .then((response) => {});
     },
     getModal(event) {
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        // spinner: 'el-icon-loading',
+        background: "rgba(0, 0, 0, 0.7)",
+      });
       this.selected_event = event;
 
       if (event.policy.is_accessible === false) {
         this.currentComponent = LockedEvent;
+        loading.close();
+
         return;
       }
 
@@ -270,6 +236,9 @@ export default {
                 .then((response) => {});
             }
           });
+
+        this.currentComponent = EventModal;
+        loading.close();
       } else {
         url =
           process.env.VUE_APP_API_URL +
@@ -285,10 +254,16 @@ export default {
               Accept: "application/json",
             },
           })
-          .then((response) => (this.event_list = response.data.data));
+          .then((response) => {
+            this.event_list = response.data.data;
+            if (this.event_list.length === 0 && this.type === "recording") {
+              this.currentComponent = NoRecordingModal;
+            } else {
+              this.currentComponent = EventModal;
+            }
+            loading.close();
+          });
       }
-
-      this.currentComponent = EventModal;
     },
     handleAddEvent(data) {
       let active_events = this.active_events;

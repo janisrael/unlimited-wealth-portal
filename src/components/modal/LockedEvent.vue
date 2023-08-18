@@ -40,7 +40,7 @@
             <div class="player-container">
               <vue-core-video-player
                 @play="handlePLay()"
-                :src="event.meta.resource_path"
+                src="https://webinar-videos-smartcharts.s3.eu-west-2.amazonaws.com/tem_vid.mp4"
               ></vue-core-video-player>
             </div>
           </div>
