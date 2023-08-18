@@ -208,10 +208,16 @@
                 :logo="require(`@/assets/images/speakers/smartcharts.png`)"
                 :src="video_url"
               ></vue-core-video-player>
-              <div v-else :style="{ 'background-image': event.image_url }">
-                <p>
-                  Retrieving webinar recording. Video will be availble soon.
-                </p>
+              <div v-else>
+                <div
+                  class="bg-image"
+                  :style="`background-image: url(${event.image_url}); `"
+                ></div>
+                <div class="bg-text">
+                  <p>
+                    Retrieving webinar recording. Video will be availble soon.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
