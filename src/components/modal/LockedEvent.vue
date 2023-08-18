@@ -38,10 +38,26 @@
 
           <div class="video-wrapper" style="margin-top: 30px">
             <div class="player-container">
-              <vue-core-video-player
+              <!-- <vue-core-video-player
                 @play="handlePLay()"
                 :src="event.meta.resource_path"
-              ></vue-core-video-player>
+              ></vue-core-video-player> -->
+              <div style="position: relative">
+                <div
+                  class="bg-image"
+                  :style="`background-image: url(${event.image_url}), linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5));     
+                  background-blend-mode: overlay;`"
+                ></div>
+
+                <div class="bg-text" style="background-color: transparent">
+                  <el-button
+                    icon="el-icon-lock"
+                    circle
+                    plain
+                    style="font-size: 50px; padding: 1rem"
+                  ></el-button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

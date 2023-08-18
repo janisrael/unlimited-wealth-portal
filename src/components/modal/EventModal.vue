@@ -208,10 +208,10 @@
                 :logo="require(`@/assets/images/speakers/smartcharts.png`)"
                 :src="video_url"
               ></vue-core-video-player>
-              <div v-else>
+              <div v-else style="position: relative">
                 <div
                   class="bg-image"
-                  :style="`background-image: url(${event.image_url}); `"
+                  :style="`background-image: url(${event.image_url}),linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)); `"
                 ></div>
                 <div class="bg-text">
                   <p>
@@ -410,10 +410,13 @@ export default {
   // beforeDestroy() {
   //   this.stage = 0;
   // },
-  created() {
-    if (this.event_list.length > 0) {
-      this.getVideo(this.event_list[0]);
-    }
+  watch: {
+    event_list() {
+      console.log(" 2: watch eventmodal: ", this.event_list);
+      if (this.event_list.length > 0) {
+        this.getVideo(this.event_list[0]);
+      }
+    },
   },
   mounted() {
     setTimeout(() => {

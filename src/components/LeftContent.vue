@@ -69,11 +69,14 @@
 <script>
 import EventModal from "./modal/EventModal.vue";
 import LockedEvent from "./modal/LockedEvent.vue";
+import NoRecordingModal from "./modal/NoRecordingModal.vue";
+
 export default {
   name: "LeftContent",
   components: {
     EventModal,
     LockedEvent,
+    NoRecordingModal,
   },
   props: {
     type: {
@@ -125,10 +128,18 @@ export default {
   },
   methods: {
     getModal(event) {
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        // spinner: 'el-icon-loading',
+        background: "rgba(0, 0, 0, 0.7)",
+      });
       this.selected_event = event;
 
       if (event.policy.is_accessible === false) {
         this.currentComponent = LockedEvent;
+        loading.close();
+
         return;
       }
 
@@ -202,6 +213,9 @@ export default {
                 .then((response) => {});
             }
           });
+
+        this.currentComponent = EventModal;
+        loading.close();
       } else {
         url =
           process.env.VUE_APP_API_URL +
@@ -217,10 +231,17 @@ export default {
               Accept: "application/json",
             },
           })
-          .then((response) => (this.event_list = response.data.data));
+          .then((response) => {
+            this.event_list = response.data.data;
+            console.log("response: ", response.data.data.length, this.type);
+            if (this.event_list.length === 0 && this.type === "recording") {
+              this.currentComponent = NoRecordingModal;
+            } else {
+              this.currentComponent = EventModal;
+            }
+            loading.close();
+          });
       }
-
-      this.currentComponent = EventModal;
     },
     handleAddEvent(data) {
       let active_events = this.active_events;
