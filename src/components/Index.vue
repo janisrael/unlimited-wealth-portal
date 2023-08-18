@@ -1,5 +1,6 @@
 <template>
   <div class="row full-height">
+  <!-- <p style="color: white;">{{ ch1[2].message }}</p> -->
     <el-row>
       <el-col v-if="verification === true" :span="24">
         <el-col :span="18" class="right-panel">
@@ -164,6 +165,7 @@ export default {
       original_data: [],
       original_data_recordings: [],
       loading: false,
+
     };
   },
   mounted() {
@@ -181,12 +183,13 @@ export default {
       } else {
         this.events = this.original_data;
       }
-    },
+    }
   },
   beforeCreate() {
     // window.sessionStorage.removeItem('token')
   },
   methods: {
+
     verifyToken(token) {
       let url = process.env.VUE_APP_API_URL + "/api/auth/login";
 
@@ -304,33 +307,41 @@ export default {
     getRecordings(loading) {
       this.recordings = [];
       this.original_data_recordings = [];
-      this.events.forEach((event, i) => {
-        var url =
-          process.env.VUE_APP_API_URL +
-          "/api/events/recordings?region=" +
-          this.region +
-          "&event_type_id=" +
-          event.id;
-        this.axios
-          .get(url, {
-            headers: {
-              "X-Session-Key": this.token,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          })
-          .then((response) => {
-            if (response.status === 200 && response.data.data.length > 0) {
-              this.recordings.push(event);
-              this.original_data_recordings.push(event);
-              this.loading = false;
-              loading.close();
-            }
-          })
-          .catch((err) => {
-            loading.close();
-          });
-      });
+      this.loading = false;
+      loading.close();
+       //   /* eslint-disable */
+      // this.events.forEach((event, i) => {
+      //   // setTimeout(() => {
+      //   //   /* eslint-disable */
+      //   //   var url =
+      //   //   process.env.VUE_APP_API_URL +
+      //   //   "/api/events/recordings?region=" +
+      //   //   this.region +
+      //   //   "&event_type_id=" +
+      //   //   event.id;
+      //   // this.axios
+      //   //   .get(url, {
+      //   //     headers: {
+      //   //       "X-Session-Key": this.token,
+      //   //       "Content-Type": "application/json",
+      //   //       Accept: "application/json",
+      //   //     },
+      //   //   })
+      //   //   .then((response) => {
+      //   //     if (response.status === 200 && response.data.data.length > 0) {
+      //   //       this.recordings.push(event);
+      //   //       this.original_data_recordings.push(event);
+      //   //       this.loading = false;
+      //   //       loading.close();
+      //   //     }
+      //   //   })
+      //   //   .catch((err) => {
+      //   //     loading.close();
+      //   //   });
+      //   // }, 2000);
+
+        
+      // });
     },
     handleChangeRegion(command) {
       if (command) {

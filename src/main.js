@@ -17,7 +17,7 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import VueLazyload from "vue-lazyload";
 import VueLazyImageLoading from "vue-lazy-image-loading";
-
+import PubNubVue from 'pubnub-vue';
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 // require('dotenv').config();
@@ -36,10 +36,19 @@ Vue.use(ElementUI, { locale });
 Vue.component('country-flag', CountryFlag)
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
+
+
+Vue.use(PubNubVue, { 
+    subscribeKey: 'sub-c-c02c8970-4729-4e8c-ae32-8e66935e2014',
+    publishKey: 'pub-c-c78be85e-c4e2-4e03-b862-ca9674005d70' 
+  }
+);
+
 // const router = new VueRouter({
 //   routes,
 //   mode: "hash",
 // });
+
 
 new Vue({
   render: h => h(App),

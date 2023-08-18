@@ -122,11 +122,19 @@ td {
   border: none !important;
   cursor: pointer !important;
 }
-
+.booking-failed-container {
+  border: 1px solid #F56C6C !important;
+}
 .cancel-container {
   display: inline-block;
   margin-top: 10px;
 }
+button.el-button.btn-failed.el-button--info.el-button--mini.is-plain {
+  color: #F56C6C !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
 .el-button--danger.is-plain {
   color: #F56C6C !important;
   background: transparent !important;

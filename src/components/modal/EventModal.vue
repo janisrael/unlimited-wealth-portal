@@ -80,7 +80,7 @@
             style="color: #ffffff; padding: 20px 0 5px; display: inline-block"
             >My booked events:</span
           >
-
+      <!-- {{ ch1[1].message }} -->
           <div
             v-loading="this_load"
             v-if="type === 'upcoming' && active_events.length > 0"
@@ -91,19 +91,19 @@
               <el-col :span="24">
                 <VueSlickCarousel
                   ref="slick1"
+                  id="mybooking"
                   class="slick-list-upcoming"
                   v-bind="settings"
                 >
                   <div
                     v-for="(active_event, i) in active_events"
+                    :id="active_event.id + '_active_id'"
                     :key="i"
                     class="carousel-block"
                   >
                     <div
                       class="carousel-content-upcoming"
-                      :class="{
-                        'selected-event': active_event.selected == true,
-                      }"
+                      :class="[{'selected-event': active_event.selected == true}, {'booking-failed-container': getListener(active_event).is_booking_succesfull === 'false'}]"
                     >
                       <!-- <div class="carousel-check-wrapper">
                       <el-checkbox v-model="active_event.selected" class="carousel-checked"></el-checkbox>
@@ -154,20 +154,39 @@
                           <p class="speaker-name">{{ getLocalTimezone() }}</p>
                         </div>
                       </el-tooltip>
-                      <div class="cancel-container">
+                      <div class="cancel-container"
+                      v-if="active_event.states.progress== 'Booking'"
+                      >
+                      
+                        <div v-if="getListener(active_event).is_booking_succesfull === 'true'">
+                          <el-button type="danger" size="mini" plain
+                            @click="cancelBooking(active_event)">Cancel</el-button
+                          >
+                        </div>
+                        <div v-else-if="getListener(active_event).is_booking_succesfull === 'false'">
+                          
+                          <el-button type="info" size="mini" plain class="btn-failed">Failed</el-button
+                          >
+                        </div>
+                        <div v-else>Booking...</div>
+
                         <!-- <el-button disabled type="info" size="mini" plain>{{ active_event.states.progress }}</el-button> -->
                         <!-- {{ active_event.states.progress }} -->
-                        <el-button
+                        <!-- <el-button
                           v-if="active_event.states.progress === 'Booking'"
                           disabled
                           type="info"
                           size="mini"
                           plain
-                          >Booking</el-button
-                        >
-                        <el-button v-else type="danger" size="mini" plain
-                          >Cancel</el-button
-                        >
+                          >  {{ getListener(active_event).status }}</el-button
+                        > -->
+                        
+                      </div>
+                      <div class="cancel-container"
+                      v-else>
+                        <el-button type="danger" size="mini" plain
+                            @click="cancelBooking(active_event)">Cancel</el-button>
+                    
                       </div>
                     </div>
                   </div>
@@ -395,6 +414,8 @@ export default {
       loading: false,
       this_load: true,
       local_timezone: this.getLocalTimezone(),
+      ch1: this.$pnGetMessage('customers.001Ae000005mU49IAE.booking', null),
+      // selected_id: ''
     };
   },
   // beforeDestroy() {
@@ -409,6 +430,51 @@ export default {
     }, 1000);
   },
   methods: {
+    /* eslint-disable */
+    cancelBooking(active_event) {
+      // NOTE:: search from upcoming bookings where event_id = id, parameter active_event.id
+      console.log(active_event.id)
+      // console.log(this.$store.getters._myybookings,'return this.$store.getters._myybookings;')
+      var my_bookings = this.$store.getters._myybookings
+      var booking = my_bookings.filter((item) => {
+        return item.event_id === active_event.id;
+      });
+      console.log(booking,'result')
+      // NOTE:: post to api for cancel: params: booking.id
+    },
+    getListener(data) {
+      // let channel = 'customers.001Ae000005mU49IAE.book-event.' + data.id
+      let channel = 'customers.001Ae000005mU49IAE.booking'
+      let result = {
+        'is_booking_succesfull': 'booking'
+      }      
+
+      this.$pnSubscribe({ channels: [channel] });
+      
+      let ch1 = this.ch1
+      if(ch1.length > 0) {
+        // let lastElement = ch1[ch1.length - 1]; // get last data from array
+        let userObj = JSON.parse(ch1[0].message);
+        if(userObj.data.event_id === data.id) {
+            //return userObj.data
+
+            if (userObj.type === 'booking.confirmed') { //Booking success
+              
+              //insert userObj.data to upcoming booking list
+              result['button_text'] = 'Cancel';
+              result['is_booking_succesfull'] = 'true';
+              
+              
+            } else { //Booking failed
+              result['is_booking_succesfull'] = 'false';
+              console.log('sd')
+
+            }
+            
+        }
+      }
+      return result
+    },
     handleBook() {
       if (this.selected_events.length > 0) {
         this.loading = true;
@@ -449,6 +515,7 @@ export default {
                 .dispatch("addBooking", _selectec_events)
                 // eslint-disable-next-line no-unused-vars
                 .then((response) => {});
+                // this.getListener(this.selected_events[0])
             } else {
               this.loading = false;
               this.disable = false;

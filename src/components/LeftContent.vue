@@ -149,6 +149,7 @@ export default {
       selected_event: {},
       selected_recordings: {},
       active_events: [],
+      // ch1: this.$pnGetMessage('customers.001Ae000005mU49IAE.booking'),
     };
   },
   beforeMount() {
@@ -168,7 +169,26 @@ export default {
       return this.$store.getters._my_active_events;
     },
   },
+  mounted () {
+    // this.$pnSubscribe({ channels: ['customers.001Ae000005mU49IAE.booking'] });
+  },
+  watch: {
+    // ch1(newValue, oldValue) {
+    //   console.log(newValue, oldValue,'newValue, oldValue')
+    //   // if (newValue.getMonth() != oldValue.getMonth()) {
+    //   //   this.getEventsDate(newValue);
+    //   // }
+    //   this.listenData(newValue)
+    // },
+  },
   methods: {
+    listenData(data) {
+
+      this.$store
+      .dispatch("addBooking", data)
+      // eslint-disable-next-line no-unused-vars
+      .then((response) => {});
+    },
     getModal(event) {
       this.selected_event = event;
 
@@ -208,6 +228,8 @@ export default {
                     booking.event_id === event.id &&
                     booking.event_region === event.region
                   ) {
+                    // console.log(booking,'events')
+                    event['booking_id'] = booking.id
                     active_events.push(event);
                     events.splice(i, 1);
                     // event['hidden'] = true
@@ -221,6 +243,7 @@ export default {
 
               /* eslint-disable */
               this._myybookings.forEach((booking, index) => {
+                console.log(booking,'booking')
                 if (
                   booking.event_id === event_type_id &&
                   booking.status === "Booking"
