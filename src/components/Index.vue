@@ -70,7 +70,6 @@
           <LeftContent
             :type="radio"
             :events="events"
-            :recordings="recordings"
             :tumbnail_region_title="tumbnail_region_title"
             :region="region"
             :token="token"
@@ -162,9 +161,13 @@ export default {
       token: "",
       verification: true,
       original_data: [],
-      original_data_recordings: [],
       loading: false,
     };
+  },
+  beforeMount() {
+    this.$root.$on("set-type", (type) => {
+      this.radio = type;
+    });
   },
   mounted() {
     if (sessionStorage.getItem("token")) {
@@ -289,9 +292,8 @@ export default {
           if (response.status === 200) {
             this.events = response.data.data;
             this.original_data = response.data.data;
-            // this.loading = false;
-            // loading.close();
-            this.getRecordings(loading);
+            this.loading = false;
+            loading.close();
           }
         })
         .catch((err) => {
@@ -300,37 +302,6 @@ export default {
 
       this.currentLeftComponent = LeftContent;
       this.currentRightComponent = RightContent;
-    },
-    getRecordings(loading) {
-      this.recordings = [];
-      this.original_data_recordings = [];
-      this.events.forEach((event, i) => {
-        var url =
-          process.env.VUE_APP_API_URL +
-          "/api/events/recordings?region=" +
-          this.region +
-          "&event_type_id=" +
-          event.id;
-        this.axios
-          .get(url, {
-            headers: {
-              "X-Session-Key": this.token,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          })
-          .then((response) => {
-            if (response.status === 200 && response.data.data.length > 0) {
-              this.recordings.push(event);
-              this.original_data_recordings.push(event);
-              this.loading = false;
-              loading.close();
-            }
-          })
-          .catch((err) => {
-            loading.close();
-          });
-      });
     },
     handleChangeRegion(command) {
       if (command) {
