@@ -233,7 +233,6 @@ export default {
           })
           .then((response) => {
             this.event_list = response.data.data;
-            console.log("response: ", response.data.data.length, this.type);
             if (this.event_list.length === 0 && this.type === "recording") {
               this.currentComponent = NoRecordingModal;
             } else {

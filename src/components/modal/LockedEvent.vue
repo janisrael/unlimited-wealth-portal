@@ -42,22 +42,6 @@
                 @play="handlePLay()"
                 src="https://webinar-videos-smartcharts.s3.eu-west-2.amazonaws.com/tem_vid.mp4"
               ></vue-core-video-player>
-              <!-- <div style="position: relative">
-                <div
-                  class="bg-image"
-                  :style="`background-image: url(${event.image_url}), linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5));     
-                  background-blend-mode: overlay;`"
-                ></div>
-
-                <div class="bg-text" style="background-color: transparent">
-                  <el-button
-                    icon="el-icon-lock"
-                    circle
-                    plain
-                    style="font-size: 50px; padding: 1rem"
-                  ></el-button>
-                </div>
-              </div> -->
             </div>
           </div>
         </div>
