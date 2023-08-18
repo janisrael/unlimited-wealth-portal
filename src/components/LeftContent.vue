@@ -35,7 +35,7 @@
                       <!-- <div class="card-content-title">{{ event.name }}</div>     -->
                       <div class="card-content-title"></div>
                       <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
-                      <div class="card-content-sched">
+                      <div class="card-content-sched" v-if="type == 'upcoming'">
                         Coming up at 3rd April
                       </div>
                     </div>
