@@ -30,7 +30,7 @@
         No bookings available
       </div>
       <el-col
-        v-for="(event, i) in my_events_upcoming"
+        v-for="(event, i) in all_bookings"
         :key="i"
         :span="24"
         style="margin-bottom: 8px"
@@ -47,8 +47,24 @@
                 src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
               />
             </el-avatar>
+
+            <!-- <el-tooltip
+              class="item speaker-icon"
+              :content="event.speaker.name"
+              placement="top"
+              effect="light"
+            >
+              <el-avatar
+                style="border: 1px solid #248cb3"
+                :size="40"
+                :src="
+                  require(`@/assets/images/speakers/${event.speaker.avatar}`)
+                "
+              >
+              </el-avatar>
+            </el-tooltip> -->
           </el-col>
-          <el-col :span="20">
+          <el-col :span="20" style="padding-top: 5px">
             <div class="bookings-title">
               {{ event.event_type_name }} -
               <span style="text-transform: uppercase">{{
@@ -98,6 +114,7 @@ export default {
       date: {},
       // region: 'phl',
       event_list: [],
+      all_bookings: [],
       event_on_this_day: [],
       my_events_this_week: [],
       my_events_next_week: [],
@@ -204,6 +221,11 @@ export default {
         if (response.status === 200) {
           this.my_events_upcoming = this._myybookings;
           this.filterMyUpcomingEventsByRegion();
+
+          this.all_bookings = this._myybookings;
+          this.all_bookings.sort(function (a, b) {
+            return new Date(a.start_date) - new Date(b.start_date);
+          });
 
           let curr = new Date();
           let week = [];
