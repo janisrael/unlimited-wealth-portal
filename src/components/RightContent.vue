@@ -37,20 +37,9 @@
       >
         <div class="events-box">
           <el-col :span="4">
-            <el-avatar
-              :size="40"
-              :src="avatar"
-              @error="errorHandler"
-              style="border: 1px solid #248cb3"
-            >
-              <img
-                src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
-              />
-            </el-avatar>
-
-            <!-- <el-tooltip
+            <el-tooltip
               class="item speaker-icon"
-              :content="event.speaker.name"
+              :content="event.speaker ? event.speaker.name : 'Smartcharts'"
               placement="top"
               effect="light"
             >
@@ -58,11 +47,13 @@
                 style="border: 1px solid #248cb3"
                 :size="40"
                 :src="
-                  require(`@/assets/images/speakers/${event.speaker.avatar}`)
+                  require(`@/assets/images/speakers/${
+                    event.speaker ? event.speaker.avatar : 'smartcharts.png'
+                  }`)
                 "
               >
               </el-avatar>
-            </el-tooltip> -->
+            </el-tooltip>
           </el-col>
           <el-col :span="20" style="padding-top: 5px">
             <div class="bookings-title">
