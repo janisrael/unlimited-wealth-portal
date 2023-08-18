@@ -26,7 +26,7 @@
       <h4 style="margin-left: 20px; font-size: 14px; font-weight: 600">
         My Upcoming Bookings
       </h4>
-      <div v-if="my_events_upcoming.length === 0" class="no-booking-caption">
+      <div v-if="all_bookings.length === 0" class="no-booking-caption">
         No bookings available
       </div>
       <el-col
