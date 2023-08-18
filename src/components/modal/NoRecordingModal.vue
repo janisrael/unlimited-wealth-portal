@@ -17,13 +17,8 @@
                   background-blend-mode: overlay;`"
           ></div>
 
-          <div class="bg-text" style="background-color: transparent">
-            <el-button
-              icon="el-icon-lock"
-              circle
-              plain
-              style="font-size: 50px; padding: 1rem"
-            ></el-button>
+          <div class="bg-text">
+            <p>No past recordings to show.</p>
           </div>
         </div>
       </el-col>
