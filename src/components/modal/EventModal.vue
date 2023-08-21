@@ -2,7 +2,7 @@
   <div>
     <!-- eslint-disable -->
     <el-dialog
-      :title="event.name"
+      :title="event_type.name"
       :visible.sync="dialog_visible"
       width="50%"
       top="3%"
@@ -36,9 +36,9 @@
       <div v-else>
         <span
           class="modal-span"
-          v-if="event.description"
+          v-if="event_type.description"
           style="padding-bottom: 20px"
-          >{{ event.description }}</span
+          >{{ event_type.description }}</span
         >
         <el-col :span="24">
           <div
@@ -58,84 +58,87 @@
 
             <div
               style="display: inline-block; padding: 0 50px"
-              v-if="event.typical_duration"
+              v-if="event_type.typical_duration"
             >
               <div style="color: #a2b0d5; font-zie: 12px">Duration:</div>
-              <div style="color: #ffffff">{{ event.typical_duration }}</div>
+              <div style="color: #ffffff">
+                {{ event_type.typical_duration }}
+              </div>
             </div>
             <div v-if="type === 'upcoming'" style="display: inline-block">
               <div style="color: #a2b0d5; font-zie: 12px">Occurrence:</div>
-              <div v-if="event.typical_occurence" style="color: #ffffff">
-                {{ event.typical_occurence }}
+              <div v-if="event_type.typical_occurence" style="color: #ffffff">
+                {{ event_type.typical_occurence }}
               </div>
               <div v-else style="color: #ffffff">-</div>
             </div>
           </div>
 
-          <!-- active events -->
+          <!-----My bookings---->
           <span
-            v-if="type === 'upcoming' && active_events.length > 0"
+            v-if="type === 'upcoming'"
             style="color: #ffffff; padding: 20px 0 5px; display: inline-block"
             >My booked events:</span
           >
-      <!-- {{ ch1[1].message }} -->
+
           <div
             v-loading="this_load"
-            v-if="type === 'upcoming' && active_events.length > 0"
+            v-if="type === 'upcoming'"
             id="carousel-wrapper"
             style="height: 170px"
           >
-            <div v-if="active_events.length" style="min-height: 170px">
+            <div v-if="countBooked > 0" style="min-height: 170px">
               <el-col :span="24">
                 <VueSlickCarousel
-                  ref="slick1"
-                  id="mybooking"
+                  ref="slickBooked"
                   class="slick-list-upcoming"
                   v-bind="settings"
                 >
+                  <!--   -->
                   <div
-                    v-for="(active_event, i) in active_events"
-                    :id="active_event.id + '_active_id'"
+                    v-for="(event, i) in event_list"
                     :key="i"
+                    v-if="
+                      event._related_booking.progress !== undefined &&
+                      !event.hidden
+                    "
                     class="carousel-block"
                   >
                     <div
                       class="carousel-content-upcoming"
-                      :class="[{'selected-event': active_event.selected == true}, {'booking-failed-container': getListener(active_event).is_booking_succesfull === 'false'}]"
+                      :class="{ 'selected-event': event.selected == true }"
                     >
-                      <!-- <div class="carousel-check-wrapper">
-                      <el-checkbox v-model="active_event.selected" class="carousel-checked"></el-checkbox>
-                    </div> -->
+                      <div class="carousel-check-wrapper">X</div>
 
-                      <div class="carousel-day">
-                        {{ getDate(active_event.date) }}
-                      </div>
+                      <div class="carousel-day">{{ getDate(event.date) }}</div>
                       <div class="carousel-formated-date">
-                        {{ getFormatedDate(active_event.date) }}
+                        {{ getFormatedDate(event.date) }}
                       </div>
-                      <div>{{ getMonth(active_event.date) }}</div>
-
-                      <div class="speaker-wrapper">
+                      <div>{{ getMonth(event.date) }}</div>
+                      <div
+                        class="speaker-wrapper"
+                        v-if="event.speaker && event.speaker.avatar"
+                      >
                         <el-tooltip
                           class="item speaker-icon"
-                          content="Amy Green"
+                          :content="event.speaker.name"
                           placement="top"
                           effect="light"
                         >
-                          <el-button
-                            icon="el-icon-user"
-                            circle
-                            size="mini"
-                          ></el-button>
+                          <el-avatar
+                            size="small"
+                            :src="
+                              require(`@/assets/images/speakers/${event.speaker.avatar}`)
+                            "
+                          >
+                          </el-avatar>
                         </el-tooltip>
                       </div>
 
                       <el-tooltip
                         class="item speaker-icon"
                         effect="light"
-                        :content="
-                          getFormatedLocalTime(active_event.start_at.local)
-                        "
+                        :content="getFormatedLocalTime(event.start_at.local)"
                         placement="bottom"
                       >
                         <div
@@ -145,47 +148,11 @@
                         >
                           <i class="el-icon-alarm-clock speaker-icon"></i>
                           <span class="speaker-name">
-                            {{
-                              getFormatedTime(active_event.start_at.local)
-                            }}</span
+                            {{ getFormatedTime(event.start_at.local) }}</span
                           >
                           <p class="speaker-name">{{ getLocalTimezone() }}</p>
                         </div>
                       </el-tooltip>
-                      <div class="cancel-container"
-                      v-if="active_event.states.progress== 'Booking'"
-                      >
-                      
-                        <div v-if="getListener(active_event).is_booking_succesfull === 'true'">
-                          <el-button type="danger" size="mini" plain
-                            @click="cancelBooking(active_event)">Cancel</el-button
-                          >
-                        </div>
-                        <div v-else-if="getListener(active_event).is_booking_succesfull === 'false'">
-                          
-                          <el-button type="info" size="mini" plain class="btn-failed">Failed</el-button
-                          >
-                        </div>
-                        <div v-else>Booking...</div>
-
-                        <!-- <el-button disabled type="info" size="mini" plain>{{ active_event.states.progress }}</el-button> -->
-                        <!-- {{ active_event.states.progress }} -->
-                        <!-- <el-button
-                          v-if="active_event.states.progress === 'Booking'"
-                          disabled
-                          type="info"
-                          size="mini"
-                          plain
-                          >  {{ getListener(active_event).status }}</el-button
-                        > -->
-                        
-                      </div>
-                      <div class="cancel-container"
-                      v-else>
-                        <el-button type="danger" size="mini" plain
-                            @click="cancelBooking(active_event)">Cancel</el-button>
-                    
-                      </div>
                     </div>
                   </div>
                 </VueSlickCarousel>
@@ -193,6 +160,7 @@
             </div>
             <div v-else style="min-height: 170px">No available dates</div>
           </div>
+          <!-----end my bookings-->
 
           <span
             v-if="type === 'recording'"
@@ -222,15 +190,15 @@
               <vue-core-video-player
                 v-if="video_url"
                 @play="handlePLay()"
-                :cover="event.image_url"
-                :title="event.name"
+                :cover="event_type.image_url"
+                :title="event_type.name"
                 :logo="require(`@/assets/images/speakers/smartcharts.png`)"
                 :src="video_url"
               ></vue-core-video-player>
               <div v-else style="position: relative">
                 <div
                   class="bg-image"
-                  :style="`background-image: url(${event.image_url}),linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)); `"
+                  :style="`background-image: url(${event_type.image_url}),linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)); `"
                 ></div>
                 <div class="bg-text">
                   <p>
@@ -247,17 +215,21 @@
             id="carousel-wrapper"
             style="height: 170px"
           >
-            <div v-if="event_list.length" style="min-height: 170px">
+            <div v-if="countAvailableToBook > 0" style="min-height: 170px">
               <el-col :span="24">
                 <VueSlickCarousel
                   ref="slick"
                   class="slick-list-upcoming"
                   v-bind="settings"
                 >
+                  <!--   -->
                   <div
                     v-for="(event, i) in event_list"
                     :key="i"
-                    v-if="!event.hidden"
+                    v-if="
+                      event._related_booking.progress === undefined &&
+                      !event.hidden
+                    "
                     class="carousel-block"
                   >
                     <div
@@ -277,7 +249,6 @@
                         {{ getFormatedDate(event.date) }}
                       </div>
                       <div>{{ getMonth(event.date) }}</div>
-
                       <div
                         class="speaker-wrapper"
                         v-if="event.speaker && event.speaker.avatar"
@@ -383,6 +354,10 @@ export default {
     },
     event: {
       type: Object,
+      required: false,
+    },
+    event_type: {
+      type: Object,
       required: true,
     },
     token: {
@@ -394,6 +369,12 @@ export default {
       required: true,
     },
     active_events: {
+      type: Array,
+    },
+    filtered_bookings: {
+      type: Array,
+    },
+    event_type_bookings: {
       type: Array,
     },
   },
@@ -424,7 +405,7 @@ export default {
       loading: false,
       this_load: true,
       local_timezone: this.getLocalTimezone(),
-      ch1: this.$pnGetMessage('customers.001Ae000005mU49IAE.booking', null),
+      // ch1: this.$pnGetMessage('customers.001Ae000005mU49IAE.booking', null),
       // selected_id: ''
     };
   },
@@ -432,63 +413,69 @@ export default {
   //   this.stage = 0;
   // },
   watch: {
-    event_list() {
-      console.log(" 2: watch eventmodal: ", this.event_list);
-      if (this.event_list.length > 0) {
-        this.getVideo(this.event_list[0]);
-      }
+    // event_list() {
+    //   console.log(" 2: watch eventmodal: ", this.event_list);
+    //   if (this.event_list.length > 0) {
+    //     this.getVideo(this.event_list[0]);
+    //   }
+    // },
+  },
+  computed: {
+    countBooked() {
+      var booked = this.event_list.filter(function (e) {
+        return e._related_booking.progress !== undefined;
+      });
+
+      return booked.length;
+    },
+    countAvailableToBook() {
+      return this.event_list.length - this.countBooked;
     },
   },
   mounted() {
     setTimeout(() => {
       this.this_load = false;
+      if (this.event_list.length > 0) {
+        this.getVideo(this.event_list[0]);
+      }
     }, 1000);
   },
   methods: {
     /* eslint-disable */
     cancelBooking(active_event) {
       // NOTE:: search from upcoming bookings where event_id = id, parameter active_event.id
-      console.log(active_event.id)
+      console.log(active_event.id);
       // console.log(this.$store.getters._myybookings,'return this.$store.getters._myybookings;')
-      var my_bookings = this.$store.getters._myybookings
+      var my_bookings = this.$store.getters._myybookings;
       var booking = my_bookings.filter((item) => {
         return item.event_id === active_event.id;
       });
-      console.log(booking,'result')
+      console.log(booking, "result");
       // NOTE:: post to api for cancel: params: booking.id
     },
     getListener(data) {
-      // let channel = 'customers.001Ae000005mU49IAE.book-event.' + data.id
-      let channel = 'customers.001Ae000005mU49IAE.booking'
-      let result = {
-        'is_booking_succesfull': 'booking'
-      }      
-
-      this.$pnSubscribe({ channels: [channel] });
-      
-      let ch1 = this.ch1
-      if(ch1.length > 0) {
-        // let lastElement = ch1[ch1.length - 1]; // get last data from array
-        let userObj = JSON.parse(ch1[0].message);
-        if(userObj.data.event_id === data.id) {
-            //return userObj.data
-
-            if (userObj.type === 'booking.confirmed') { //Booking success
-              
-              //insert userObj.data to upcoming booking list
-              result['button_text'] = 'Cancel';
-              result['is_booking_succesfull'] = 'true';
-              
-              
-            } else { //Booking failed
-              result['is_booking_succesfull'] = 'false';
-              console.log('sd')
-
-            }
-            
-        }
-      }
-      return result
+      // // let channel = 'customers.001Ae000005mU49IAE.book-event.' + data.id
+      // let channel = 'customers.001Ae000005mU49IAE.booking'
+      // let result = {
+      //   'is_booking_succesfull': 'booking'
+      // }
+      // this.$pnSubscribe({ channels: [channel] });
+      // let ch1 = this.ch1
+      // if (ch1.length > 0) {
+      //   // let lastElement = ch1[ch1.length - 1]; // get last data from array
+      //   let userObj = JSON.parse(ch1[0].message);
+      //   if (userObj.data.event_id === data.id) {
+      //     //return userObj.data
+      //     if (userObj.type === 'booking.confirmed') { //Booking success
+      //       //insert userObj.data to upcoming booking list
+      //       result['button_text'] = 'Cancel';
+      //       result['is_booking_succesfull'] = 'true';
+      //     } else { //Booking failed
+      //       result['is_booking_succesfull'] = 'false';
+      //     }
+      //   }
+      //}
+      //return result
     },
     handleBook() {
       if (this.selected_events.length > 0) {
@@ -517,20 +504,23 @@ export default {
           .then((response) => {
             if (response.status === 200) {
               // this.stage = 1;
+              // this.loading = false;
+              // this.disable = false;
+              // let _selectec_events = this.selected_events;
+              // this.selected_events = [];
+              // // eslint-disable-next-line no-unused-vars
+              // _selectec_events.forEach((value, index) => {
+              //   value.states.progress = "Booking";
+              // });
+              // this.$emit("add_events", _selectec_events);
+              let selected = this.selected_events;
+              this.selected_events = [];
+              this.$emit("book_events", selected);
+              // eslint-disable-next-line no-unused-vars
+              // .then((response) => { });
               this.loading = false;
               this.disable = false;
-              let _selectec_events = this.selected_events;
-              this.selected_events = [];
-              // eslint-disable-next-line no-unused-vars
-              _selectec_events.forEach((value, index) => {
-                value.states.progress = "Booking";
-              });
-              this.$emit("add_events", _selectec_events);
-              this.$store
-                .dispatch("addBooking", _selectec_events)
-                // eslint-disable-next-line no-unused-vars
-                .then((response) => {});
-                // this.getListener(this.selected_events[0])
+              // this.getListener(this.selected_events[0])
             } else {
               this.loading = false;
               this.disable = false;
@@ -671,6 +661,7 @@ export default {
             this.selected_events.push(this.event_list[index]);
           }
         } else {
+          
           this.event_list.forEach((value, index) => {
             value.selected = false;
             this.disable = true;
@@ -688,7 +679,7 @@ export default {
     },
     getVideo(event) {
       var url = event.meta.resource_path;
-
+      console.log(event, '----selected recording----')
       // SAMPLE URL WITH RECORDINGS
       // var url =
       //   "https://uw-portal-api.tinkerpub.com/api/events/a000C000005uXWbQAM";
@@ -703,7 +694,7 @@ export default {
         })
         .then((response) => {
           if (response.status === 200) {
-            this.video_url =
+            this.video_url = 
               response.data.data.recordings.length > 0
                 ? response.data.data.recordings[0]
                 : null;
@@ -715,7 +706,7 @@ export default {
                 ? response.data.data.recordings
                 : [];
 
-            console.log("video url: ", response.data);
+            // console.log("video url: ", response.data);
           }
         });
     },

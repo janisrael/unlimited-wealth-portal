@@ -3,30 +3,17 @@
     <el-row>
       <el-col :span="24" style="padding: 0px 20px !important">
         <!-- eslint-disable -->
-        <el-col
-          v-for="(event, i) in events"
-          v-if="event.policy.is_visible === true"
-          :key="i"
-          :span="8"
-          style="padding-right: 20px; padding-top: 20px"
-        >
-          <div @click="getModal(event)">
+        <el-col v-for="(event_type, i) in event_types" v-if="event_type.policy.is_visible === true" :key="i" :span="8"
+          style="padding-right: 20px; padding-top: 20px">
+          <div @click="getModal(event_type)">
             <el-card class="box-card card-left-panel" shadow="hover">
               <div slot="header" class="clearfix">
-                <lazy-background
-                  :src="event.image_url"
-                  @onLoad="onLoad(event.name)"
-                  @onError="onError(event)"
-                  image-class="cam-viewport"
-                  :blur="0"
-                  position="left center"
-                  size="cover"
+                <lazy-background :src="event_type.image_url" @onLoad="onLoad(event_type.name)"
+                  @onError="onError(event_type)" image-class="cam-viewport" :blur="0" position="left center" size="cover"
                   style="
                     background-size: cover;
                     background-position: left center;
-                  "
-                  class="card-header-content"
-                >
+                  " class="card-header-content">
                   <div slot="content">
                     <div class="card-header-content">
                       <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
@@ -43,25 +30,17 @@
                 </lazy-background>
               </div>
               <div class="text item">
-                <span v-if="!event.description"> -</span>
-                {{ event.description }}
+                <span v-if="!event_type.description"> -</span>
+                {{ event_type.description }}
               </div>
             </el-card>
           </div>
         </el-col>
       </el-col>
 
-      <component
-        :is="currentComponent"
-        :type="type"
-        :event_list="event_list"
-        :active_events="active_events"
-        :event="selected_event"
-        @close="CloseModal()"
-        @add_events="handleAddEvent"
-        :token="token"
-        :region="region"
-      />
+      <component :is="currentComponent" :type="type" :event_list="event_list" :active_events="active_events"
+        :event_type="selected_event_type" :event_types="event_types" @close="CloseModal()" @add_events="handleAddEvent"
+        @book_events="handleBookEvents" :token="token" :region="region" />
     </el-row>
   </div>
 </template>
@@ -70,7 +49,7 @@
 import EventModal from "./modal/EventModal.vue";
 import LockedEvent from "./modal/LockedEvent.vue";
 import NoRecordingModal from "./modal/NoRecordingModal.vue";
-
+/* eslint-disable */
 export default {
   name: "LeftContent",
   components: {
@@ -83,10 +62,14 @@ export default {
       type: String,
       required: true,
     },
-    events: {
-      required: true,
+    event_types: {
       type: Array,
+      required: true,
     },
+    // events: {
+    //   required: true,
+    //   type: Array,
+    // },
     tumbnail_region_title: {
       required: true,
       type: String,
@@ -105,18 +88,18 @@ export default {
       thumbnail_image: require("../assets/images/visual.png"),
       currentComponent: null,
       event_list: [],
-      selected_event: {},
+      selected_event_type: {},
       active_events: [],
       // ch1: this.$pnGetMessage('customers.001Ae000005mU49IAE.booking'),
     };
   },
   beforeMount() {
     this.$root.$on("open-upcoming-events-modal", (event) => {
-      var clicked_event = this.events.filter((item) => {
+      var clicked_event_type = this.event_types.filter((item) => {
         return item.id === event.event_type_id;
       });
 
-      this.getModal(clicked_event[0]);
+      this.getModal(clicked_event_type[0]);
     });
   },
   computed: {
@@ -127,36 +110,74 @@ export default {
       return this.$store.getters._my_active_events;
     },
   },
-  mounted () {
-    // this.$pnSubscribe({ channels: ['customers.001Ae000005mU49IAE.booking'] });
-  },
-  watch: {
-    // ch1(newValue, oldValue) {
-    //   console.log(newValue, oldValue,'newValue, oldValue')
-    //   // if (newValue.getMonth() != oldValue.getMonth()) {
-    //   //   this.getEventsDate(newValue);
-    //   // }
-    //   this.listenData(newValue)
-    // },
-  },
+  mounted() { },
+  watch: {},
   methods: {
-    listenData(data) {
+    withBooking(events) {
+      var type = this.type;
+      var related_booking;
 
-      this.$store
-      .dispatch("addBooking", data)
-      // eslint-disable-next-line no-unused-vars
-      .then((response) => {});
+      if (this.type === "upcoming") {
+        events.forEach((event) => {
+          related_booking = this.$store.getters._myybookings.find(
+            (b) => b.event_id === event.id
+          );
+
+          let related = {
+            id: undefined,
+            progress: undefined
+          };
+
+          if (related_booking) {
+            related.id = related_booking.id;
+            related.progress = 'pending';
+
+            if (related_booking.status === 'Attending') {
+              related.progress = 'confirmed';
+            }
+
+            console.log(
+              related_booking.event_id + "<->" + event.id,
+              "related_booking.event_id <-> event.id"
+            );
+          } else {
+            console.log("no related_booking.event_id");
+          }
+
+          event._related_booking = related;
+          event.selected = false;
+        });
+      }
+
+      return events;
     },
-    getModal(event) {
+    listenData(data) {
+      this.$store
+        .dispatch("addBooking", data)
+        // eslint-disable-next-line no-unused-vars
+        .then((response) => { });
+    },
+    getBookingProgress() {
+      let msg = [];
+
+      if (payload.type === 'booking.confirmed') {
+        let booking = this.$store.getters._myybookings.find(b => b.event_id === payload.data.event_id);
+        // Update booking;
+
+        //e-refresh ang this.event_list 
+        //this.event_list = withBooking(this.event_list);
+      }
+    },
+    getModal(event_type) {
       const loading = this.$loading({
         lock: true,
         text: "Loading",
         // spinner: 'el-icon-loading',
         background: "rgba(0, 0, 0, 0.7)",
       });
-      this.selected_event = event;
+      this.selected_event_type = event_type;
 
-      if (event.policy.is_accessible === false) {
+      if (event_type.policy.is_accessible === false) {
         this.currentComponent = LockedEvent;
         loading.close();
 
@@ -171,7 +192,7 @@ export default {
           "/api/events/upcoming?region=" +
           this.region +
           "&event_type_id=" +
-          event.id;
+          event_type.id;
         this.axios
           .get(url, {
             headers: {
@@ -183,69 +204,24 @@ export default {
           .then((response) => {
             if (response.status === 200) {
               events = response.data.data;
-              var active_events = [];
-              var event_type_id = events[0].event_type_id;
-              console.log(events[0].event_type_id, "event_type_id");
-              events.forEach((event, i) => {
-                event["selected"] = false;
-                /* eslint-disable */
-                this._myybookings.forEach((booking, index) => {
-                  if (
-                    booking.event_id === event.id &&
-                    booking.event_region === event.region
-                  ) {
-                    // console.log(booking,'events')
-                    event['booking_id'] = booking.id
-                    active_events.push(event);
-                    events.splice(i, 1);
-                    // event['hidden'] = true
-                  }
-
-                  if (booking.status === "Booking") {
-                    events.splice(i, 1);
-                  }
-                });
-              });
-
-              /* eslint-disable */
-              this._myybookings.forEach((booking, index) => {
-                console.log(booking,'booking')
-                if (
-                  booking.event_id === event_type_id &&
-                  booking.status === "Booking"
-                ) {
-                  active_events.push(booking);
-                  // events.splice(index, 1)
-                }
-              });
-
-              var todayDate = new Date().toISOString().slice(0, 10);
-              var new_event_list = events.filter(function (item) {
-                return (
-                  // item.start_date !== todayDate &&
-                  item.states.progress.toLowerCase() === "upcoming"
-                );
-              });
 
               this.event_list = [];
-              // this.active_events = []
-              this.event_list = new_event_list;
-              this.active_events = active_events;
-              this.$store
-                .dispatch("setActiveEvents", this.active_events)
-                .then((response) => {});
+
+              this.event_list = this.withBooking(events);
+
             }
           });
 
         this.currentComponent = EventModal;
         loading.close();
+
       } else {
         url =
           process.env.VUE_APP_API_URL +
           "/api/events/recordings?region=" +
           this.region +
           "&event_type_id=" +
-          event.id;
+          event_type.id;
         this.axios
           .get(url, {
             headers: {
@@ -256,6 +232,7 @@ export default {
           })
           .then((response) => {
             this.event_list = response.data.data;
+            console.log(this.event_list, '----recordings----')
             if (this.event_list.length === 0 && this.type === "recording") {
               this.currentComponent = NoRecordingModal;
             } else {
@@ -292,12 +269,21 @@ export default {
       this.event_list = event_list;
       // }
     },
+    handleBookEvents(events) {
+      this.$store.dispatch("addBooking", events);
+      this.rebuildEventList()
+    },
+    rebuildEventList() {
+      let freshList = this.withBooking(this.event_list);
+      this.event_list = [];
+      this.event_list = freshList;
+    },
     CloseModal() {
       this.event_list = [];
       this.currentComponent = null;
     },
     onLoad(data) {
-      console.log(data);
+      //console.log(data);
     },
     onError(data) {
       console.log(data);

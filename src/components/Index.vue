@@ -70,7 +70,7 @@
 
           <LeftContent
             :type="radio"
-            :events="events"
+            :event_types="event_types"
             :tumbnail_region_title="tumbnail_region_title"
             :region="region"
             :token="token"
@@ -152,7 +152,7 @@ export default {
       search: "",
       use_region: "",
       radio: "upcoming",
-      events: [],
+      event_types: [],
       recordings: [],
       selected_region: "",
       tumbnail_region_title: "Europe",
@@ -163,7 +163,6 @@ export default {
       verification: true,
       original_data: [],
       loading: false,
-
     };
   },
   beforeMount() {
@@ -184,7 +183,7 @@ export default {
       if (this.search.length >= 3) {
         this.filter_data();
       } else {
-        this.events = this.original_data;
+        this.event_types = this.original_data;
       }
     }
   },
@@ -192,7 +191,6 @@ export default {
     // window.sessionStorage.removeItem('token')
   },
   methods: {
-
     verifyToken(token) {
       let url = process.env.VUE_APP_API_URL + "/api/auth/login";
 
@@ -218,7 +216,7 @@ export default {
             this.token = window.sessionStorage.getItem("token");
             this.verification = true;
             this.currentRightComponent = RightContent;
-            this.getEvents();
+            this.getEventTypes();
           } else {
             this.verification = false;
             this.currentRightComponent = null;
@@ -256,7 +254,7 @@ export default {
               data.app_session.session_key
             );
             this.token = sessionStorage.getItem("token");
-            this.getEvents();
+            this.getEventTypes();
           } else {
             this.verification = false;
           }
@@ -273,7 +271,7 @@ export default {
       this.token = data.app_session.session_key;
       this.checkToken(data);
     },
-    getEvents() {
+    getEventTypes() {
       const loading = this.$loading({
         lock: true,
         text: "Loading",
@@ -293,7 +291,7 @@ export default {
         })
         .then((response) => {
           if (response.status === 200) {
-            this.events = response.data.data;
+            this.event_types = response.data.data;
             this.original_data = response.data.data;
             this.loading = false;
             loading.close();
@@ -306,48 +304,6 @@ export default {
       this.currentLeftComponent = LeftContent;
       this.currentRightComponent = RightContent;
     },
-<<<<<<< HEAD
-    getRecordings(loading) {
-      this.recordings = [];
-      this.original_data_recordings = [];
-      this.loading = false;
-      loading.close();
-       //   /* eslint-disable */
-      // this.events.forEach((event, i) => {
-      //   // setTimeout(() => {
-      //   //   /* eslint-disable */
-      //   //   var url =
-      //   //   process.env.VUE_APP_API_URL +
-      //   //   "/api/events/recordings?region=" +
-      //   //   this.region +
-      //   //   "&event_type_id=" +
-      //   //   event.id;
-      //   // this.axios
-      //   //   .get(url, {
-      //   //     headers: {
-      //   //       "X-Session-Key": this.token,
-      //   //       "Content-Type": "application/json",
-      //   //       Accept: "application/json",
-      //   //     },
-      //   //   })
-      //   //   .then((response) => {
-      //   //     if (response.status === 200 && response.data.data.length > 0) {
-      //   //       this.recordings.push(event);
-      //   //       this.original_data_recordings.push(event);
-      //   //       this.loading = false;
-      //   //       loading.close();
-      //   //     }
-      //   //   })
-      //   //   .catch((err) => {
-      //   //     loading.close();
-      //   //   });
-      //   // }, 2000);
-
-        
-      // });
-    },
-=======
->>>>>>> dev
     handleChangeRegion(command) {
       if (command) {
         if (command === "uk") {
@@ -368,7 +324,7 @@ export default {
       setTimeout(() => {
         /* eslint-disable */
         this.currentRightComponent = null;
-        this.getEvents();
+        this.getEventTypes();
         this.$refs.calendarComponent.getEventsDate();
       }, 100);
     },
@@ -379,14 +335,14 @@ export default {
       this.radio = type;
     },
     filter_data() {
-      let events = this.events;
+      let event_types = this.event_types;
       let search = this.search;
 
-      let ret = events.filter(function (el) {
+      let ret = event_types.filter(function (el) {
         return el.name.toLowerCase().includes(search.toLowerCase());
       });
 
-      this.events = ret;
+      this.event_types = ret;
     },
   },
 };

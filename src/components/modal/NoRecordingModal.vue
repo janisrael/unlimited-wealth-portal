@@ -13,7 +13,7 @@
         <div style="position: relative; padding: 20px 0">
           <div
             class="bg-image"
-            :style="`background-image: url(${event.image_url}), linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5));     
+            :style="`background-image: url(${event_type.image_url}), linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5));     
                   background-blend-mode: overlay;`"
           ></div>
 
@@ -30,7 +30,7 @@
 export default {
   name: "NoRecordingModal",
   props: {
-    event: {
+    event_type: {
       type: Object,
     },
   },

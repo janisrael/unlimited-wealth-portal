@@ -44,11 +44,6 @@ Vue.use(PubNubVue, {
   }
 );
 
-// const router = new VueRouter({
-//   routes,
-//   mode: "hash",
-// });
-
 
 new Vue({
   render: h => h(App),

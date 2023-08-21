@@ -29,29 +29,20 @@ const store = new Vuex.Store({
       // console.log(state.myybookings, 'first')
       payload.forEach(value => {
         // sample data to add booking to array
-        let event_to_add = {
-          "id": value.id,
-          "event_id": value.event_type_id,
-          "registration_key": "",
-          "start_at": {
-            "local": value.start_at.local
-          },
-          "date": value.start_at.local,
-          "status": "Booking",
-          "states": {
-            "progress": "Booking"
-          },
-          "event_type_name": value.name,
-          "join_url": "",
+        let new_booking = {
+          "id": "",
+          "event_id": value.id,
           "event_region": value.region,
-          "meta": {
-            "resource_path": "https://uw-portal-api.tinkerpub.com/api/bookings/a03Ae000003sNNhIAM"
-          }
+          "event_type_name": "",
+          "join_url": "",
+          "meta": {},
+          "registration_key":"",
+          "start_date": value.start_at.local,
+          "status": "Progress",
         }
-        state.myybookings.push(event_to_add)
+        state.myybookings.push(new_booking)
       });
 
-      console.log(state.myybookings,'state.myybookings')
 
       // console.log(state.myybookings, 'second')
     },

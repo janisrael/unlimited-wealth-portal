@@ -12,6 +12,24 @@ export default {
   components: {
     Index,
   },
+  data() {
+    return {
+      ch1: this.$pnGetMessage('customers.001Ae000005mU49IAE.booking'),
+    }
+  },
+  mounted() {
+
+    this.$pnSubscribe({ channels: ['customers.001Ae000005mU49IAE.booking'] });
+    console.log(this.ch1, '-----published mounted-----');
+    console.log(this.$pnSubscribe({ channels: ['customers.001Ae000005mU49IAE.booking'] }),'sbscrube');
+  },
+  watch: {
+    ch1: function () {
+      console.log(this.ch1, '-----published watching-----');
+      return this.ch1;
+    }
+  }
+  
 };
 </script>
 
