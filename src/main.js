@@ -50,43 +50,24 @@ const router = new Router({
 
 });
 
-var appEnv = process.env.VUE_APP_ENV; //production or development. Please dont use this at local
+//production and development only. Please dont use this at local
+var appEnv = process.env.VUE_APP_ENV; 
 
 if ( appEnv === 'production' || appEnv === 'development') {
 
   var appApiUrl = process.env.VUE_APP_API_URL;
   var dsn = process.env.SENTRY_DSN;
   var tracesSampleRate = 0.6;
-  // var replaysSessionSampleRate = 0.1;
-  // var replaysOnErrorSampleRate = 1.0;
- ///var prefix = 'stg_';
-  //var app_name = "uw-portal-app";
-
-  if (appEnv === 'production') {
-    //prefix = 'prod';
-  }
-
-
-  //let reldate = new Date();
-  //let relTimestamp = reldate / 1;
 
   Sentry.init({
-    // Passing in `Vue` is optional, if you do not pass it `window.Vue` must be present.
     Vue: Vue,
     dsn: dsn,
-  
-    // This enables automatic instrumentation (highly recommended),
-    // but is not necessary for purely manual usage
-    // If you only want to use custom instrumentation:
-    // * Remove the `BrowserTracing` integration
-    // * add `Sentry.addTracingExtensions()` above your Sentry.init() call
+    release: process.env.RELEASE,
     integrations: [new Sentry.BrowserTracing()],
-  
-    // We recommend adjusting this value in production, or using tracesSampler
-    // for finer control
+
     tracesSampleRate: tracesSampleRate,
     // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
-    tracePropagationTargets: [appEnv, appApiUrl],
+    tracePropagationTargets: [appEnv, appApiUrl + "/api"],
   });
 
 
