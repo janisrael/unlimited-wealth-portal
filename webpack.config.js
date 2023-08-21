@@ -7,7 +7,8 @@ module.exports = {
     sentryWebpackPlugin({
       authToken: process.env.SENTRY_AUTH_TOKEN,
       org: "datageniq",
-      project: "uw-portal-app",  
+      project: "uw-portal-app",
+      release: process.env.RELEASE,
     }),
   ],
 };
