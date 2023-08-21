@@ -55,7 +55,7 @@ var appEnv = process.env.VUE_APP_ENV; //production or development. Please dont u
 if ( appEnv === 'production' || appEnv === 'development') {
 
   var appApiUrl = process.env.VUE_APP_API_URL;
-  var dsn = "https://780768fc3191363a7cd598458ec0cf9d@o4504668158230528.ingest.sentry.io/4505742276689920";
+  var dsn = process.env.SENTRY_DSN;
   var tracesSampleRate = 0.6;
   // var replaysSessionSampleRate = 0.1;
   // var replaysOnErrorSampleRate = 1.0;
