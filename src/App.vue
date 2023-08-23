@@ -27,7 +27,7 @@ export default {
   },
   watch: {
     ch1: function () {
-      console.log(this.ch1, '-----published watching-----');
+      // console.log(this.ch1, '-----published watching-----');
       let ch1 = this.ch1
       if (ch1.length > 0) {
         let userObj = JSON.parse(ch1[0].message);
