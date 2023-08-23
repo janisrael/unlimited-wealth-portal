@@ -1,5 +1,6 @@
 <template>
   <div class="row full-height">
+  <!-- <p style="color: white;">{{ ch1[2].message }}</p> -->
     <el-row>
       <el-col v-if="verification === true" :span="24">
         <el-col :span="18" class="right-panel">
@@ -69,7 +70,7 @@
 
           <LeftContent
             :type="radio"
-            :events="events"
+            :event_types="event_types"
             :tumbnail_region_title="tumbnail_region_title"
             :region="region"
             :token="token"
@@ -151,7 +152,7 @@ export default {
       search: "",
       use_region: "",
       radio: "upcoming",
-      events: [],
+      event_types: [],
       recordings: [],
       selected_region: "",
       tumbnail_region_title: "Europe",
@@ -182,9 +183,9 @@ export default {
       if (this.search.length >= 3) {
         this.filter_data();
       } else {
-        this.events = this.original_data;
+        this.event_types = this.original_data;
       }
-    },
+    }
   },
   beforeCreate() {
     // window.sessionStorage.removeItem('token')
@@ -215,7 +216,7 @@ export default {
             this.token = window.sessionStorage.getItem("token");
             this.verification = true;
             this.currentRightComponent = RightContent;
-            this.getEvents();
+            this.getEventTypes();
           } else {
             this.verification = false;
             this.currentRightComponent = null;
@@ -253,7 +254,7 @@ export default {
               data.app_session.session_key
             );
             this.token = sessionStorage.getItem("token");
-            this.getEvents();
+            this.getEventTypes();
           } else {
             this.verification = false;
           }
@@ -270,7 +271,7 @@ export default {
       this.token = data.app_session.session_key;
       this.checkToken(data);
     },
-    getEvents() {
+    getEventTypes() {
       const loading = this.$loading({
         lock: true,
         text: "Loading",
@@ -290,7 +291,7 @@ export default {
         })
         .then((response) => {
           if (response.status === 200) {
-            this.events = response.data.data;
+            this.event_types = response.data.data;
             this.original_data = response.data.data;
             this.loading = false;
             loading.close();
@@ -323,7 +324,7 @@ export default {
       setTimeout(() => {
         /* eslint-disable */
         this.currentRightComponent = null;
-        this.getEvents();
+        this.getEventTypes();
         this.$refs.calendarComponent.getEventsDate();
       }, 100);
     },
@@ -334,14 +335,14 @@ export default {
       this.radio = type;
     },
     filter_data() {
-      let events = this.events;
+      let event_types = this.event_types;
       let search = this.search;
 
-      let ret = events.filter(function (el) {
+      let ret = event_types.filter(function (el) {
         return el.name.toLowerCase().includes(search.toLowerCase());
       });
 
-      this.events = ret;
+      this.event_types = ret;
     },
   },
 };
