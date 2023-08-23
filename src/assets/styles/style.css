@@ -757,6 +757,9 @@ span.modal-span {
   border-color: #67C23A !important;
   /* width: 100%; */
 }
+.carousel-checked i.el-icon-circle-close {
+  font-size: 20px !important;
+}
 
 .slick-slider.slick-initialized {
   /* min-height: 170px !important; */

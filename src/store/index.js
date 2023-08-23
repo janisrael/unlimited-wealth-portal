@@ -26,7 +26,6 @@ const store = new Vuex.Store({
       state.active_events = payload
     }, 
     ADD_BOOKING: (state, payload) => {
-      // console.log(state.myybookings, 'first')
       payload.forEach(value => {
         // sample data to add booking to array
         let new_booking = {
@@ -42,10 +41,18 @@ const store = new Vuex.Store({
         }
         state.myybookings.push(new_booking)
       });
-
-
-      // console.log(state.myybookings, 'second')
     },
+    UPDATE_BOOKING: (state, payload) => {
+      state.myybookings.forEach((event) => {
+        if(event.event_id === payload.data.event_id) {
+          event.status = payload.data.status
+          event.event_type_name = payload.data.event_type_name
+          event.id = payload.data.id
+          console.log(event,'updated event')
+        }
+        
+      });
+    }
   },
   actions: {
     async getMybookings({ commit }, value) {
@@ -87,6 +94,12 @@ const store = new Vuex.Store({
       console.log(value, state, 'add booking')
       commit("ADD_BOOKING", value)
     },
+    /* eslint-disable */ 
+    async updateBooking({ commit, state }, value) {
+      console.log(value, state, 'update booking')
+      commit("UPDATE_BOOKING", value)
+    },
+    
   },
   getters: {
     _myybookings: (state) => state.myybookings,
