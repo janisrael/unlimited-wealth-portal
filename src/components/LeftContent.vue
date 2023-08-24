@@ -34,7 +34,8 @@
             </el-col>
         </el-col>
 
-        <component :is="currentComponent" :type="type" :event_list="event_list" :active_events="active_events" :event_type="selected_event_type" :event_types="event_types" @close="CloseModal()" @add_events="handleAddEvent" @book_events="handleBookEvents" @cancel_events="handleCancelEvent" :token="token" :region="region" />
+        <component :is="currentComponent" :type="type" :event_list="event_list" :active_events="active_events" :event_type="selected_event_type" :event_types="event_types" @close="CloseModal()" @add_events="handleAddEvent" @book_events="handleBookEvents" @cancel_events="handleCancelEvent"
+            :token="token" :region="region" />
     </el-row>
 </div>
 </template>
@@ -256,7 +257,7 @@ export default {
             // });
             // this.event_list = event_list;        
             this.$store.dispatch("cancelBooking", data);
-            this.rebuildEventList()  
+            this.rebuildEventList()
         },
         handleAddEvent(data) {
             let active_events = this.active_events;

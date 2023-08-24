@@ -19,14 +19,15 @@ const store = new Vuex.Store({
   },
   mutations: {
     SET_MYBOOKINS: (state, payload) => {
-      // console.log(payload)
+      
       state.myybookings = payload
     },
     SET_ACTIVE_EVENTS: (state, payload) => {
-      // console.log(payload)
+
       state.active_events = payload
     }, 
     ASSIGN_CUSTOMER: (state, payload) => {
+
       state.customer = payload
       window.sessionStorage.setItem(
         "customer_id",
@@ -35,7 +36,7 @@ const store = new Vuex.Store({
     },
     ADD_BOOKING: (state, payload) => {
       payload.forEach(value => {
-        // sample data to add booking to array
+
         let new_booking = {
           "id": "",
           "event_id": value.id,
