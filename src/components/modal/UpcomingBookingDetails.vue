@@ -23,9 +23,8 @@
       <span slot="footer" class="dialog-footer" style="font-size: 12px">
         <el-row :gutter="20">
           <el-col :span="18" style="text-align: left" class="gray-text">
-            Booking ID: {{ selected_booking.id }} &nbsp; Date:{{
-              selected_booking.start_date
-            }}
+            Booking ID: {{ selected_booking.id }} &nbsp; Date:
+            {{ getFormatedDate(selected_booking.start_date) }}
           </el-col>
           <el-col :span="6" style="text-align: right">
             <el-tooltip class="item" content="Coming soon" placement="top">
@@ -129,6 +128,14 @@ export default {
           break;
       }
       return timezone;
+    },
+    getFormatedDate(date) {
+      var formated_date = new Date(date).toLocaleString("default", {
+        month: "numeric",
+        day: "numeric",
+        year: "numeric",
+      });
+      return formated_date;
     },
   },
   computed: {
