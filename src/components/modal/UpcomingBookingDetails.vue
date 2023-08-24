@@ -28,9 +28,11 @@
             }}
           </el-col>
           <el-col :span="6" style="text-align: right">
-            <el-button type="danger" plain class="cancel-booking"
-              >Cancel Booking</el-button
-            >
+            <el-tooltip class="item" content="Coming soon" placement="top">
+              <el-button type="danger" plain class="cancel-booking"
+                >Cancel Booking</el-button
+              >
+            </el-tooltip>
           </el-col>
         </el-row>
       </span>
@@ -66,10 +68,21 @@
               <p class="gray-text">
                 {{ getFormatedLocalTime }}
               </p>
-              <el-button type="success" style="width: 90%; margin-top: 10px"
-                >JOIN</el-button
+              <el-tooltip
+                class="item"
+                content="Coming soon"
+                placement="top"
+                :disabled="!can_join_booking"
               >
-              <!-- :disabled="disable" :class="{ 'btn-success-custom': selected_events.length > 0 }" @click="handleBook()" -->
+                <el-button
+                  type="success"
+                  style="width: 90%; margin-top: 10px"
+                  :disabled="!can_join_booking"
+                  :class="{ 'btn-success-custom': can_join_booking }"
+                  >{{ getCountdownDate }}</el-button
+                >
+                <!--  @click="handleBook()" -->
+              </el-tooltip>
             </div>
           </div>
         </el-card>
