@@ -39,7 +39,6 @@ Vue.component('country-flag', CountryFlag)
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
 
-
 Vue.use(PubNubVue, { 
     subscribeKey: 'sub-c-c02c8970-4729-4e8c-ae32-8e66935e2014',
     publishKey: 'pub-c-c78be85e-c4e2-4e03-b862-ca9674005d70',
@@ -53,9 +52,9 @@ const router = new Router({
 });
 
 //production and development only. Please dont use this at local
-var appEnv = process.env.VUE_APP_ENV; 
+var appEnv = process.env.VUE_APP_ENV;
 
-if ( appEnv === 'production' || appEnv === 'development') {
+if (appEnv === 'production' || appEnv === 'development') {
 
   var appApiUrl = process.env.VUE_APP_API_URL;
   var dsn = process.env.SENTRY_DSN;
@@ -92,7 +91,7 @@ if ( appEnv === 'production' || appEnv === 'development') {
   //   replaysSessionSampleRate: replaysSessionSampleRate, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
   //   replaysOnErrorSampleRate: replaysOnErrorSampleRate, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
   // });
-} 
+}
 
 
 
