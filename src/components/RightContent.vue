@@ -35,7 +35,7 @@
         :span="24"
         style="margin-bottom: 8px"
       >
-        <div class="events-box">
+        <div class="events-box" @click="getBookingDetails(event)">
           <el-col :span="4">
             <el-tooltip
               class="item speaker-icon"
@@ -63,7 +63,7 @@
               }}</span>
             </div>
             <div class="bookings-sub-title">
-              {{ getFormatedDate(event.start_date) }}
+              {{ getFormatedLocalTime(event) }}
             </div>
           </el-col>
         </div>
@@ -75,6 +75,7 @@
       :date="date"
       :event_on_this_day="event_on_this_day"
       :my_events_for_today="my_events_for_today"
+      :selected_booking="selected_booking"
       @close="CloseModal()"
     />
   </div>
@@ -82,10 +83,12 @@
 
 <script>
 import CalendarEvents from "../components/modal/CalendarEvents.vue";
+import UpcomingBookingDetails from "../components/modal/UpcomingBookingDetails.vue";
 export default {
   name: "RightContent",
   components: {
     CalendarEvents,
+    UpcomingBookingDetails,
   },
   props: {
     region: {
@@ -112,6 +115,7 @@ export default {
       my_events_upcoming: [],
       my_events_for_today: [],
       calendar_date: new Date(),
+      selected_booking: {},
     };
   },
   watch: {
@@ -308,6 +312,45 @@ export default {
       }
       return formated_date;
     },
+    getFormatedLocalTime(event) {
+      var gmt = new Date()
+        .toLocaleString("en", {
+          timeZone: this.getLocalTimezone(event.event_region),
+          timeZoneName: "short",
+        })
+        .split(" ")[3];
+      var d = event.start_at.local + " " + gmt;
+      var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      var local_date = new Date(d).toLocaleString("default", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour12: true,
+        hour: "numeric",
+        minute: "2-digit",
+        timeZoneName: "short",
+        timeZone: timeZone,
+      });
+
+      return local_date;
+    },
+    getLocalTimezone(region) {
+      var timezone = "";
+
+      switch (region) {
+        case "uk":
+          timezone = "Europe/London";
+          break;
+        case "aus":
+          timezone = "Australia/Sydney";
+          break;
+        case "phl":
+          timezone = "Asia/Manila";
+          break;
+      }
+      return timezone;
+    },
     getDateExt(date) {
       if (date > 3 && date < 21) return "th";
       switch (date % 10) {
@@ -335,6 +378,46 @@ export default {
       this.my_events_for_today = this.my_events_upcoming.filter((item) => {
         return item.start_date === this.date.day;
       });
+    },
+    getBookingDetails(event) {
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        // spinner: 'el-icon-loading',
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+
+      var url = event.meta.resource_path;
+
+      this.axios
+        .get(url, {
+          headers: {
+            "X-Session-Key": this.token,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            this.currentComponent = UpcomingBookingDetails;
+            this.selected_booking = response.data.data;
+            loading.close();
+          } else {
+            loading.close();
+            this.$notify.warning({
+              title: "Oops!",
+              message: "Something went wrong fetching the booking details.",
+            });
+          }
+        })
+        .catch((err) => {
+          loading.close();
+          console.log("Error Booking details: ", err);
+          this.$notify.warning({
+            title: "Oops!",
+            message: "Something went wrong fetching the booking details.",
+          });
+        });
     },
   },
 };

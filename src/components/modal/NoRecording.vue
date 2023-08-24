@@ -28,7 +28,7 @@
 
 <script>
 export default {
-  name: "NoRecordingModal",
+  name: "NoRecording",
   props: {
     event_type: {
       type: Object,
