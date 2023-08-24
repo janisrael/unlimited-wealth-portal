@@ -24,7 +24,7 @@ const store = new Vuex.Store({
     SET_ACTIVE_EVENTS: (state, payload) => {
       // console.log(payload)
       state.active_events = payload
-    }, 
+    },
     ADD_BOOKING: (state, payload) => {
       payload.forEach(value => {
         // sample data to add booking to array
@@ -32,10 +32,10 @@ const store = new Vuex.Store({
           "id": "",
           "event_id": value.id,
           "event_region": value.region,
-          "event_type_name": "",
+          "event_type_name": value.name.split(",")[0], //initial event name only to display on My Upcoming Bookings 
           "join_url": "",
           "meta": {},
-          "registration_key":"",
+          "registration_key": "",
           "start_date": value.start_at.local,
           "status": "Progress",
         }
@@ -44,13 +44,13 @@ const store = new Vuex.Store({
     },
     UPDATE_BOOKING: (state, payload) => {
       state.myybookings.forEach((event) => {
-        if(event.event_id === payload.data.event_id) {
+        if (event.event_id === payload.data.event_id) {
           event.status = payload.data.status
           event.event_type_name = payload.data.event_type_name
           event.id = payload.data.id
-          console.log(event,'updated event')
+          console.log(event, 'updated event')
         }
-        
+
       });
     }
   },
@@ -71,13 +71,13 @@ const store = new Vuex.Store({
         )
           .then((response) => {
             let my_bookings = response.data.data
-            
+
             // var todayDate = new Date().toISOString().slice(0, 10);
             // my_bookings = my_bookings.filter(function(item) {
             //   // return item.start_date !== todayDate && item.status.toLowerCase() !== 'completed'
             //   return item.start_date !== todayDate && item.status.toLowerCase() === 'upcoming'
             // })
-            
+
             commit("SET_MYBOOKINS", my_bookings);
             resolve(response);
           })
@@ -94,12 +94,12 @@ const store = new Vuex.Store({
       console.log(value, state, 'add booking')
       commit("ADD_BOOKING", value)
     },
-    /* eslint-disable */ 
+    /* eslint-disable */
     async updateBooking({ commit, state }, value) {
       console.log(value, state, 'update booking')
       commit("UPDATE_BOOKING", value)
     },
-    
+
   },
   getters: {
     _myybookings: (state) => state.myybookings,
