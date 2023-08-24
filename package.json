@@ -25,6 +25,7 @@
     "dotenv": "^16.3.1",
     "nodemon": "^3.0.1",
     "npm-watch": "^0.11.0",
+    "pluralize": "^8.0.0",
     "pubnub-vue": "^1.0.1",
     "vue": "^2.6.14",
     "vue-axios": "^3.5.2",
