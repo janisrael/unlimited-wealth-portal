@@ -40,8 +40,16 @@
         <el-card :body-style="{ padding: '0px', background: 'transparent' }">
           <img
             :src="selected_booking.event.event_type.image_url"
+            style="display: none"
+          />
+
+          <img
+            :src="selected_booking.event.event_type.image_url"
             class="image"
-            style="width: 100%"
+            style="width: 100%; height: auto"
+            :alt="selected_booking.event.name"
+            width="550"
+            height="300"
           />
           <div
             style="
@@ -50,7 +58,7 @@
               border-bottom: 1px solid #a1a0b2;
             "
           >
-            <div style="position: absolute; top: -40%; right: 38%">
+            <div style="position: absolute; top: -30%; right: 38%">
               <el-avatar
                 :size="100"
                 fit="cover"
