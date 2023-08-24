@@ -62,7 +62,10 @@ const store = new Vuex.Store({
                     event.event_type_name = payload.data.event_type_name;
                     event.id = payload.data.id;
                     console.log(event, "updated event");
-                    // state.myybookings.splice(index, 1)
+                    if (event.status.toLowerCase() === "cancelled") {
+                        console.log("canceled");
+                        state.myybookings.splice(index, 1);
+                    }
                 }
             });
         },

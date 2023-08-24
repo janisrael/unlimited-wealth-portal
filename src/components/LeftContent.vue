@@ -36,7 +36,11 @@
                       <div class="card-content-title"></div>
                       <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
                       <div class="card-content-sched" v-if="type == 'upcoming'">
-                        Coming up at 3rd April
+                        <div v-if="event_type.upcoming_event">
+                          Coming up at
+                          {{ getFormatedDate(event_type.upcoming_event) }}
+                        </div>
+                        <div v-else>-</div>
                       </div>
                     </div>
                   </div>
@@ -234,6 +238,9 @@ export default {
               this.event_list = [];
 
               this.event_list = this.withBooking(events);
+              this.event_list.sort(function (a, b) {
+                return new Date(a.start_at.local) - new Date(b.start_at.local);
+              });
             }
           });
 
@@ -302,6 +309,50 @@ export default {
     CloseModal() {
       this.event_list = [];
       this.currentComponent = null;
+    },
+    getFormatedDate(date) {
+      console.log(date, "date");
+      var d = new Date(date);
+      var month = d.toLocaleString("default", {
+        month: "short",
+      });
+      var this_date = d.getDate();
+      var dateExt = this.getDateExt(this_date);
+
+      var formated_date = "";
+      if (this.type === "upcoming") {
+        formated_date = this_date + dateExt + " " + month;
+      } else {
+        formated_date = this_date + dateExt + " " + month;
+      }
+      return formated_date;
+    },
+    getDateExt(date) {
+      if (date > 3 && date < 21) return "th";
+      switch (date % 10) {
+        case 1:
+          return "st";
+        case 2:
+          return "nd";
+        case 3:
+          return "rd";
+        default:
+          return "th";
+      }
+    },
+    getDate(date) {
+      var days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+      var d = new Date(date);
+      var dayName = days[d.getDay()];
+      return dayName;
     },
     onLoad(data) {
       //console.log(data);

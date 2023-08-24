@@ -85,7 +85,7 @@
             v-loading="this_load"
             v-if="type === 'upcoming'"
             id="carousel-wrapper"
-            style="height: 170px"
+            style="height: 240px"
           >
             <div v-if="countBooked > 0" style="min-height: 170px">
               <el-col :span="24">
@@ -220,7 +220,7 @@
             v-loading="this_load"
             v-if="type === 'upcoming'"
             id="carousel-wrapper"
-            style="height: 170px"
+            style="height: 240px"
           >
             <div v-if="countAvailableToBook > 0" style="min-height: 170px">
               <el-col :span="24">

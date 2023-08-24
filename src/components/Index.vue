@@ -1,6 +1,6 @@
 <template>
   <div class="row full-height">
-  <!-- <p style="color: white;">{{ ch1[2].message }}</p> -->
+    <!-- <p style="color: white;">{{ ch1[2].message }}</p> -->
     <el-row>
       <el-col v-if="verification === true" :span="24">
         <el-col :span="18" class="right-panel">
@@ -186,14 +186,14 @@ export default {
       } else {
         this.event_types = this.original_data;
       }
-    }
+    },
   },
   beforeCreate() {
     // window.sessionStorage.removeItem('token')
   },
   methods: {
     rebuild() {
-      this.$refs.leftComponent.rebuildEventList()
+      this.$refs.leftComponent.rebuildEventList();
     },
     verifyToken(token) {
       let url = process.env.VUE_APP_API_URL + "/api/auth/login";
@@ -218,7 +218,7 @@ export default {
               "token",
               response.data.app_session.session_key
             );
-            
+
             this.token = window.sessionStorage.getItem("token");
             this.verification = true;
             this.currentRightComponent = RightContent;
@@ -297,10 +297,54 @@ export default {
         })
         .then((response) => {
           if (response.status === 200) {
-            this.event_types = response.data.data;
-            this.original_data = response.data.data;
-            this.loading = false;
-            loading.close();
+            var url =
+              process.env.VUE_APP_API_URL +
+              "/api/events/upcoming?region=" +
+              this.region;
+            this.axios
+              .get(url, {
+                headers: {
+                  "X-Session-Key": this.token,
+                  "Content-Type": "application/json",
+                  Accept: "application/json",
+                },
+              })
+              .then((res) => {
+                if (res.status === 200) {
+                  console.log(response, "response");
+                  this.event_types = response.data.data;
+
+                  this.original_data = response.data.data;
+
+                  let related_events = res.data.data;
+
+                  this.event_types.forEach((event_type) => {
+                    let filteredEvents = related_events.filter((item) => {
+                      return item.event_type_id === event_type.id;
+                    });
+
+                    if (filteredEvents.length > 0) {
+                      filteredEvents.sort(function (a, b) {
+                        return (
+                          new Date(a.start_at.local) -
+                          new Date(b.start_at.local)
+                        );
+                      });
+
+                      event_type["upcoming_event"] =
+                        filteredEvents[0].start_at.local;
+                    }
+                    console.log(filteredEvents, "filteredEvents");
+                  });
+
+                  console.log(this.event_types, "this.event_types");
+                  this.loading = false;
+                  loading.close();
+                }
+              })
+              .catch((err) => {
+                loading.close();
+              });
           }
         })
         .catch((err) => {
