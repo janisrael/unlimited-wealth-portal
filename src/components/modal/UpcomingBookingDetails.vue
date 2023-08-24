@@ -90,6 +90,8 @@ export default {
   data() {
     return {
       dialogVisible: true,
+      can_join_booking: false,
+      start_local_date: null,
     };
   },
   methods: {
@@ -134,8 +136,8 @@ export default {
         day: "numeric",
         year: "numeric",
         hour12: true,
-        hour: "",
-        minute: "",
+        hour: "numeric",
+        minute: "2-digit",
       });
 
       var end_local_date = new Date(end).toLocaleString("default", {
@@ -148,8 +150,120 @@ export default {
         timeZoneName: "short",
         timeZone: timeZone,
       });
+      if (
+        new Date(start_local_date).toDateString() ===
+        new Date(end_local_date).toDateString()
+      ) {
+        //same day
+        end_local_date = new Date(end).toLocaleString("default", {
+          hour12: true,
+          hour: "numeric",
+          minute: "2-digit",
+          timeZoneName: "short",
+          timeZone: timeZone,
+        });
+      }
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.start_local_date = start_local_date;
 
       return start_local_date + " to " + end_local_date;
+    },
+    getCountdownDate() {
+      let pluralize = require("pluralize");
+
+      var countdowndate = new Date(
+        this.selected_booking.start_at.local
+      ).getTime();
+
+      //FOR TESTING ONLY
+      // countdowndate = new Date("August 2, 2023 18:59:00").getTime();
+
+      var now = new Date().getTime();
+      var timetodate = countdowndate - now;
+
+      //--------- COMPUTATION----------
+      var months = Math.floor(timetodate / (1000 * 60 * 60 * 24 * 31));
+      var weeks = Math.floor(
+        (timetodate % (1000 * 60 * 60 * 24 * 31)) / (1000 * 60 * 60 * 24 * 7)
+      );
+      var days = Math.floor(
+        (timetodate % (1000 * 60 * 60 * 24 * 7)) / (1000 * 60 * 60 * 24)
+      );
+      var hours = Math.floor(
+        (timetodate % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
+      var minutes = Math.floor((timetodate % (1000 * 60 * 60)) / (1000 * 60));
+      //--------- COMPUTATION----------
+
+      console.log("months ", months);
+      console.log("weeks ", weeks);
+      console.log("days ", days);
+      console.log("hours", hours);
+      console.log("minutes ", minutes);
+
+      if (months > 0) {
+        //more than a month
+        if (weeks > 0) {
+          return `Event starts in ${pluralize(
+            "month",
+            months,
+            true
+          )} ${pluralize("week", Math.round(weeks), true)}`;
+        } else {
+          return `Event starts in ${pluralize("month", months, true)}`;
+        }
+      } else {
+        //less than a month
+        if (weeks > 0) {
+          //more than a week
+          if (days > 0) {
+            return `Event starts in ${pluralize(
+              "week",
+              weeks,
+              true
+            )} ${pluralize("day", days, true)}`;
+          } else {
+            return `Event starts in ${pluralize("week", weeks, true)}`;
+          }
+        } else {
+          //less than a week
+          if (days > 0) {
+            //more than a day
+            if (hours > 0) {
+              return `Event starts in ${pluralize(
+                "day",
+                days,
+                true
+              )} ${pluralize("hour", hours, true)}`;
+            } else {
+              return `Event starts in ${pluralize("day", days, true)}`;
+            }
+          } else {
+            //less than a day
+            if (hours > 0) {
+              //more than an hour
+              if (minutes > 0) {
+                return `Event starts in ${pluralize(
+                  "day",
+                  days,
+                  true
+                )} ${pluralize("hour", hours, true)}`;
+              } else {
+                return `Event starts in ${pluralize("day", days, true)}`;
+              }
+            } else {
+              //less than an hour and more than 15mins
+              if (minutes > 0 && minutes > 15) {
+                return `Event starts in ${pluralize("minute", minutes, true)}`;
+              } else {
+                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                this.can_join_booking = true;
+                return `JOIN`;
+              }
+            }
+          }
+        }
+      }
     },
   },
 };
