@@ -58,17 +58,21 @@
               border-bottom: 1px solid #a1a0b2;
             "
           >
-            <div style="position: absolute; top: -30%; right: 38%">
-              <el-avatar
-                :size="100"
-                fit="cover"
-                :src="
-                  require(`@/assets/images/speakers/${selected_booking.event.speaker.avatar}`)
-                "
-              ></el-avatar>
-            </div>
+            <el-avatar
+              style="
+                position: absolute;
+                top: 0;
+                right: 50%;
+                transform: translate(50%, -50%);
+              "
+              :size="100"
+              fit="cover"
+              :src="
+                require(`@/assets/images/speakers/${selected_booking.event.speaker.avatar}`)
+              "
+            ></el-avatar>
 
-            <div style="text-align: center; padding-top: 1rem; font-size: 12px">
+            <div style="text-align: center; padding-top: 2rem; font-size: 12px">
               <p class="speaker--name">
                 {{ selected_booking.event.speaker.name }}
               </p>
