@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
 Vue.use(Vuex);
-
+/* eslint-disable */ 
 const store = new Vuex.Store({
   namespaced: true,
   // modules: {
@@ -14,7 +14,8 @@ const store = new Vuex.Store({
     myybookings: [],
     myybooking_this_week: [],
     myybooking_next_week: [],
-    my_active_events: []
+    my_active_events: [],
+    customer: {}
   },
   mutations: {
     SET_MYBOOKINS: (state, payload) => {
@@ -25,6 +26,13 @@ const store = new Vuex.Store({
       // console.log(payload)
       state.active_events = payload
     }, 
+    ASSIGN_CUSTOMER: (state, payload) => {
+      state.customer = payload
+      window.sessionStorage.setItem(
+        "customer_id",
+        payload.customer.id
+      );
+    },
     ADD_BOOKING: (state, payload) => {
       payload.forEach(value => {
         // sample data to add booking to array
@@ -42,22 +50,37 @@ const store = new Vuex.Store({
         state.myybookings.push(new_booking)
       });
     },
+    CANCEL_BOOKING: (state, payload) => {
+      state.myybookings.forEach((event, i) => {
+        if(event.event_id === payload.id) {
+          console.log('event cancelation found', event)
+          event.status = "Cancelled"
+          event.event_type_name = payload.name
+          event.id = payload.id
+          state.myybookings.splice(i, 1)
+        }
+        
+      });
+    },
     UPDATE_BOOKING: (state, payload) => {
-      state.myybookings.forEach((event) => {
+      //       booking = mybook_id = data.event_id)ings.find(b => b.event
+      //       //update booking
+      state.myybookings.forEach((event, index) => {
         if(event.event_id === payload.data.event_id) {
           event.status = payload.data.status
           event.event_type_name = payload.data.event_type_name
           event.id = payload.data.id
           console.log(event,'updated event')
+          state.myybookings.splice(index, 1)
         }
         
       });
+
     }
   },
   actions: {
     async getMybookings({ commit }, value) {
       // console.log(state)
-      // state.v_loading = true;
       return new Promise((resolve, reject) => {
         var url = process.env.VUE_APP_API_URL + '/api/my-account/bookings/upcoming'
         axios.get(url,
@@ -71,7 +94,6 @@ const store = new Vuex.Store({
         )
           .then((response) => {
             let my_bookings = response.data.data
-            
             // var todayDate = new Date().toISOString().slice(0, 10);
             // my_bookings = my_bookings.filter(function(item) {
             //   // return item.start_date !== todayDate && item.status.toLowerCase() !== 'completed'
@@ -87,23 +109,31 @@ const store = new Vuex.Store({
       });
     },
     async setActiveEvents({ commit, state }, value) {
-      console.log(value, state, 'set active event')
       commit("SET_ACTIVE_EVENTS", value)
     },
     async addBooking({ commit, state }, value) {
       console.log(value, state, 'add booking')
       commit("ADD_BOOKING", value)
     },
-    /* eslint-disable */ 
+    
     async updateBooking({ commit, state }, value) {
       console.log(value, state, 'update booking')
       commit("UPDATE_BOOKING", value)
+    },
+    async cancelBooking({ commit, state }, value) {
+      console.log(value, state, 'cancel booking')
+      commit("CANCEL_BOOKING", value)
+    },
+    async assignCustomer({ commit, state }, value) {
+      console.log(value, state, 'update customer details')
+      commit("ASSIGN_CUSTOMER", value)
     },
     
   },
   getters: {
     _myybookings: (state) => state.myybookings,
-    _my_active_events: (state) => state.my_active_events
+    _my_active_events: (state) => state.my_active_events,
+    _customer: (state) => state.customer
   },
 });
 

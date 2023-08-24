@@ -69,6 +69,7 @@ export default {
             })
             .then((response) => {
               if (response.status === 200) {
+                this.$store.dispatch("assignCustomer", response.data);
                 var session_token = "";
                 session_token = response.data.app_session.session_key;
                 if (session_token) {

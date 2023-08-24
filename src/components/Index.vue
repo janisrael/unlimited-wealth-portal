@@ -69,6 +69,7 @@
           </el-col>
 
           <LeftContent
+            ref="leftComponent"
             :type="radio"
             :event_types="event_types"
             :tumbnail_region_title="tumbnail_region_title"
@@ -191,6 +192,9 @@ export default {
     // window.sessionStorage.removeItem('token')
   },
   methods: {
+    rebuild() {
+      this.$refs.leftComponent.rebuildEventList()
+    },
     verifyToken(token) {
       let url = process.env.VUE_APP_API_URL + "/api/auth/login";
 
@@ -200,6 +204,7 @@ export default {
         })
         .then((response) => {
           if (response.status === 200) {
+            this.$store.dispatch("assignCustomer", response.data);
             if (response.data.customer.use_region === "uk") {
               this.use_region = "gb";
               this.selected_region = "gb";
@@ -213,6 +218,7 @@ export default {
               "token",
               response.data.app_session.session_key
             );
+            
             this.token = window.sessionStorage.getItem("token");
             this.verification = true;
             this.currentRightComponent = RightContent;

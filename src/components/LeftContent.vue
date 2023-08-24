@@ -34,8 +34,7 @@
             </el-col>
         </el-col>
 
-        <component :is="currentComponent" :type="type" :event_list="event_list" :active_events="active_events" :event_type="selected_event_type" :event_types="event_types" @close="CloseModal()" @add_events="handleAddEvent" @book_events="handleBookEvents" :token="token"
-            :region="region" />
+        <component :is="currentComponent" :type="type" :event_list="event_list" :active_events="active_events" :event_type="selected_event_type" :event_types="event_types" @close="CloseModal()" @add_events="handleAddEvent" @book_events="handleBookEvents" @cancel_events="handleCancelEvent" :token="token" :region="region" />
     </el-row>
 </div>
 </template>
@@ -237,6 +236,28 @@ export default {
                     });
             }
         },
+        handleCancelEvent(data) {
+            // let active_events = this.active_events;
+            // // active_events = active_events.concat(data);
+
+            // let event_list = this.event_list;
+
+            // event_list = event_list.filter(function(obj) {
+            //     return !this.has(obj.id);
+            // }, new Set(data.map((obj) => obj.id)));
+
+            // this.event_list = []; // clearing evelt_list for carousel arrrow to reshow, reload the component
+            // this.active_events = []; // clearing evelt_list for carousel arrrow to reshow, reload the component
+
+            // this.active_events = active_events;
+
+            // this.active_events.forEach((event) => {
+            //     event.selected = false;
+            // });
+            // this.event_list = event_list;        
+            this.$store.dispatch("cancelBooking", data);
+            this.rebuildEventList()  
+        },
         handleAddEvent(data) {
             let active_events = this.active_events;
             active_events = active_events.concat(data);
@@ -247,12 +268,6 @@ export default {
                 return !this.has(obj.id);
             }, new Set(data.map((obj) => obj.id)));
 
-            // let count = 0
-            // count = this.event_list.length;
-
-            // if(count === 1) {
-            //   this.event_list = []
-            // } else {
             this.event_list = []; // clearing evelt_list for carousel arrrow to reshow, reload the component
             this.active_events = []; // clearing evelt_list for carousel arrrow to reshow, reload the component
 
@@ -262,13 +277,13 @@ export default {
                 event.selected = false;
             });
             this.event_list = event_list;
-            // }
         },
         handleBookEvents(events) {
             this.$store.dispatch("addBooking", events);
             this.rebuildEventList()
         },
         rebuildEventList() {
+            console.log('rebuild event')
             let freshList = this.withBooking(this.event_list);
             this.event_list = [];
             this.event_list = freshList;

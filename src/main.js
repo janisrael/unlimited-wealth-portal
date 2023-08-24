@@ -42,13 +42,11 @@ Vue.use(VueAxios, axios)
 
 Vue.use(PubNubVue, { 
     subscribeKey: 'sub-c-c02c8970-4729-4e8c-ae32-8e66935e2014',
-    publishKey: 'pub-c-c78be85e-c4e2-4e03-b862-ca9674005d70' 
+    publishKey: 'pub-c-c78be85e-c4e2-4e03-b862-ca9674005d70',
+    userId: '35467812y8u390129ui3',
+    restore: true
   }
 );
-
-
-
-
 //Sentry integration
 const router = new Router({
 
@@ -109,10 +107,3 @@ new Vue({
 //   require("./App.vue").default
 // );
 
-// new Vue({
-//   el: "#app",
-//   router,
-//   // data: {
-//   //   messages: [],
-//   // },
-// });
