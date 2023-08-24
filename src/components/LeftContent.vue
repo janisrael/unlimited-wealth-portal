@@ -61,6 +61,7 @@
         @close="CloseModal()"
         @add_events="handleAddEvent"
         @book_events="handleBookEvents"
+        @cancel_events="handleCancelEvent"
         :token="token"
         :region="region"
       />
@@ -265,6 +266,10 @@ export default {
           });
       }
     },
+    handleCancelEvent(data) {
+      this.$store.dispatch("cancelBooking", data);
+      this.rebuildEventList();
+    },
     handleAddEvent(data) {
       let active_events = this.active_events;
       active_events = active_events.concat(data);
@@ -275,12 +280,6 @@ export default {
         return !this.has(obj.id);
       }, new Set(data.map((obj) => obj.id)));
 
-      // let count = 0
-      // count = this.event_list.length;
-
-      // if(count === 1) {
-      //   this.event_list = []
-      // } else {
       this.event_list = []; // clearing evelt_list for carousel arrrow to reshow, reload the component
       this.active_events = []; // clearing evelt_list for carousel arrrow to reshow, reload the component
 
@@ -290,7 +289,6 @@ export default {
         event.selected = false;
       });
       this.event_list = event_list;
-      // }
     },
     handleBookEvents(events) {
       this.$store.dispatch("addBooking", events);

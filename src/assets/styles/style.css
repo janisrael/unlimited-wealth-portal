@@ -857,7 +857,8 @@ p.speaker-name{
 
 #carousel-wrapper .el-loading-mask {
   background-color: #17153c !important;
-  min-height: 172px !important;
+  /* min-height: 172px !important; */
+  min-height: 226px !important;
   /* background-color: #17153c !important; */
   /* height: 170px !important; */
 }

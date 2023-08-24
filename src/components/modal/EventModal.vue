@@ -110,7 +110,10 @@
                     >
                       <div class="carousel-check-wrapper">
                         <div class="carousel-checked">
-                          <i class="el-icon-circle-close"></i>
+                          <i
+                            @click="cancelBooking(event)"
+                            class="el-icon-circle-close"
+                          ></i>
                         </div>
                       </div>
 
@@ -449,41 +452,48 @@ export default {
     cancelBooking(active_event) {
       // NOTE:: search from upcoming bookings where event_id = id, parameter active_event.id
       console.log(active_event.id);
-      // console.log(this.$store.getters._myybookings,'return this.$store.getters._myybookings;')
-      var my_bookings = this.$store.getters._myybookings;
-      var booking = my_bookings.filter((item) => {
-        return item.event_id === active_event.id;
-      });
-      console.log(booking, "result");
-      // NOTE:: post to api for cancel: params: booking.id
-    },
-    getListener(data) {
-      // // let channel = 'customers.001Ae000005mU49IAE.book-event.' + data.id
-      // let channel = 'customers.001Ae000005mU49IAE.booking'
-      // let result = {
-      //   'is_booking_succesfull': 'booking'
-      // }
-      // this.$pnSubscribe({ channels: [channel] });
-      // let ch1 = this.ch1
-      // if (ch1.length > 0) {
-      //   // let lastElement = ch1[ch1.length - 1]; // get last data from array
-      //   let userObj = JSON.parse(ch1[0].message);
-      //   if (userObj.data.event_id === data.id) {
-      //     //return userObj.data
-      //     if (userObj.type === 'booking.confirmed') { //Booking success
-      //       //insert userObj.data to upcoming booking list
-      //       result['button_text'] = 'Cancel';
-      //       result['is_booking_succesfull'] = 'true';
-      //     } else { //Booking failed
-      //       result['is_booking_succesfull'] = 'false';
-      //     }
-      //   }
-      //}
-      //return result
+      console.log(active_event, "result");
+      this.loading = true;
+      this.this_load = true;
+      this.disable = true;
+
+      let url =
+        process.env.VUE_APP_API_URL +
+        "/api/account/booking/" +
+        active_event._related_booking.id +
+        "/cancel";
+      this.axios
+        .post(url, null, {
+          headers: {
+            "X-Session-Key": this.token,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            this.$emit("cancel_events", active_event);
+            this.loading = false;
+            this.this_load = false;
+            this.disable = false;
+          } else {
+            this.loading = false;
+            this.this_load = false;
+            this.disable = false;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.stage = 0;
+          this.loading = false;
+          this.this_load = false;
+          this.disable = false;
+        });
     },
     handleBook() {
       if (this.selected_events.length > 0) {
         this.loading = true;
+        this.this_load = true;
         this.disable = true;
         let event_ids = [];
         this.selected_events.forEach((value) => {
@@ -523,10 +533,11 @@ export default {
               // eslint-disable-next-line no-unused-vars
               // .then((response) => { });
               this.loading = false;
+              this.this_load = false;
               this.disable = false;
-              // this.getListener(this.selected_events[0])
             } else {
               this.loading = false;
+              this.this_load = false;
               this.disable = false;
             }
           })
@@ -534,6 +545,7 @@ export default {
             console.log(err);
             this.stage = 0;
             this.loading = false;
+            this.this_load = false;
             this.disable = false;
           });
       }
@@ -708,7 +720,6 @@ export default {
               response.data.data.recordings.length > 0
                 ? response.data.data.recordings
                 : [];
-
             // console.log("video url: ", response.data);
           }
         });
