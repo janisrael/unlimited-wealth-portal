@@ -63,7 +63,7 @@
               }}</span>
             </div>
             <div class="bookings-sub-title">
-              {{ getFormatedDate(event.start_date) }}
+              {{ getFormatedLocalTime(event) }}
             </div>
           </el-col>
         </div>
@@ -311,6 +311,45 @@ export default {
         formated_date = this_date + dateExt + " " + month + " " + day;
       }
       return formated_date;
+    },
+    getFormatedLocalTime(event) {
+      var gmt = new Date()
+        .toLocaleString("en", {
+          timeZone: this.getLocalTimezone(event.event_region),
+          timeZoneName: "short",
+        })
+        .split(" ")[3];
+      var d = event.start_at.local + " " + gmt;
+      var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      var local_date = new Date(d).toLocaleString("default", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour12: true,
+        hour: "numeric",
+        minute: "2-digit",
+        timeZoneName: "short",
+        timeZone: timeZone,
+      });
+
+      return local_date;
+    },
+    getLocalTimezone(region) {
+      var timezone = "";
+
+      switch (region) {
+        case "uk":
+          timezone = "Europe/London";
+          break;
+        case "aus":
+          timezone = "Australia/Sydney";
+          break;
+        case "phl":
+          timezone = "Asia/Manila";
+          break;
+      }
+      return timezone;
     },
     getDateExt(date) {
       if (date > 3 && date < 21) return "th";
