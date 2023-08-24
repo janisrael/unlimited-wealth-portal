@@ -319,7 +319,9 @@ export default {
           timeZoneName: "short",
         })
         .split(" ")[3];
-      var d = event.start_at.local + " " + gmt;
+      var d = event.start_at
+        ? event.start_at.local
+        : event.start_date + " " + gmt;
       var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       var local_date = new Date(d).toLocaleString("default", {
