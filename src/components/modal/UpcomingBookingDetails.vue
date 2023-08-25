@@ -3,7 +3,7 @@
     <el-dialog
       title=""
       :visible.sync="dialogVisible"
-      width="35%"
+      width="25%"
       top="3%"
       :before-close="handleClose"
       class="upcoming-booking-modal"
@@ -21,17 +21,26 @@
       </span>
 
       <span slot="footer" class="dialog-footer" style="font-size: 12px">
-        <el-row :gutter="20">
-          <el-col :span="18" style="text-align: left" class="gray-text">
-            Booking ID: {{ selected_booking.id }} &nbsp; Date:
-            {{ getFormatedDate(selected_booking.start_date) }}
+        <el-row :gutter="20" type="flex" justify="space-between">
+          <el-col :span="6" style="text-align: left" class="gray-text">
+            <div class="grid-content">
+              Booking ID: {{ selected_booking.id }}
+            </div>
           </el-col>
-          <el-col :span="6" style="text-align: right">
-            <el-tooltip class="item" content="Coming soon" placement="top">
-              <el-button type="danger" plain class="cancel-booking"
-                >Cancel Booking</el-button
-              >
-            </el-tooltip>
+          <el-col :span="4" style="text-align: left" class="gray-text">
+            <div class="grid-content">
+              Date:
+              {{ getFormatedDate(selected_booking.start_date) }}
+            </div>
+          </el-col>
+          <el-col :span="8" style="text-align: right">
+            <div class="grid-content">
+              <el-tooltip class="item" content="Coming soon" placement="top">
+                <el-button type="danger" plain class="cancel-booking"
+                  >Cancel Booking</el-button
+                >
+              </el-tooltip>
+            </div>
           </el-col>
         </el-row>
       </span>
@@ -65,14 +74,14 @@
                 right: 50%;
                 transform: translate(50%, -50%);
               "
-              :size="100"
+              :size="130"
               fit="cover"
               :src="
                 require(`@/assets/images/speakers/${selected_booking.event.speaker.avatar}`)
               "
             ></el-avatar>
 
-            <div style="text-align: center; padding-top: 2rem; font-size: 12px">
+            <div style="text-align: center; padding-top: 3rem; font-size: 12px">
               <p class="speaker--name">
                 {{ selected_booking.event.speaker.name }}
               </p>
