@@ -248,4 +248,7 @@ export default {
   font-weight: 600;
   color: #ffffff;
 }
+.el-dialog__wrapper {
+  backdrop-filter: none !important;
+}
 </style>

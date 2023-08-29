@@ -329,4 +329,7 @@ export default {
 .gray-text {
   color: #a1a0b2;
 }
+.el-dialog__wrapper {
+  backdrop-filter: none !important;
+}
 </style>
