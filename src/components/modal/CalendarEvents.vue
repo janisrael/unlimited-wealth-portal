@@ -6,6 +6,7 @@
       width="30%"
       top="3%"
       :before-close="handleClose"
+      :modal="false"
       class="calendar-modal"
     >
       <el-col :span="24">

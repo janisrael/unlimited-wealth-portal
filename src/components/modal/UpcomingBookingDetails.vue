@@ -6,6 +6,7 @@
       width="25%"
       top="3%"
       :before-close="handleClose"
+      :modal="false"
       class="upcoming-booking-modal"
     >
       <span slot="title" style="font-size: 14px; font-weight: 600">
