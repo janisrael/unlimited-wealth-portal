@@ -6,6 +6,7 @@
       width="30%"
       top="3%"
       :before-close="handleClose"
+      :modal="false"
       class="calendar-modal"
     >
       <el-col :span="24">
@@ -247,5 +248,8 @@ export default {
   font-size: 14px;
   font-weight: 600;
   color: #ffffff;
+}
+.el-dialog__wrapper {
+  backdrop-filter: none !important;
 }
 </style>

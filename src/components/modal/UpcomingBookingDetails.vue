@@ -6,6 +6,7 @@
       width="25%"
       top="3%"
       :before-close="handleClose"
+      :modal="false"
       class="upcoming-booking-modal"
     >
       <span slot="title" style="font-size: 14px; font-weight: 600">
@@ -328,5 +329,8 @@ export default {
 }
 .gray-text {
   color: #a1a0b2;
+}
+.el-dialog__wrapper {
+  backdrop-filter: none !important;
 }
 </style>

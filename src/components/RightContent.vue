@@ -24,7 +24,8 @@
 
     <el-col :span="24">
       <h4 style="margin-left: 20px; font-size: 14px; font-weight: 600">
-        My Upcoming Bookings
+        My Upcoming Bookings &nbsp;
+        <span v-loading="loading" element-loading-background="#2D2953"></span>
       </h4>
       <div v-if="all_bookings.length === 0" class="no-booking-caption">
         No bookings available
@@ -116,6 +117,7 @@ export default {
       my_events_for_today: [],
       calendar_date: new Date(),
       selected_booking: {},
+      loading: false,
     };
   },
   watch: {
@@ -382,13 +384,7 @@ export default {
       });
     },
     getBookingDetails(event) {
-      const loading = this.$loading({
-        lock: true,
-        text: "Loading",
-        // spinner: 'el-icon-loading',
-        background: "rgba(0, 0, 0, 0.7)",
-      });
-
+      this.loading = true;
       var url = event.meta.resource_path;
 
       this.axios
@@ -403,9 +399,9 @@ export default {
           if (response.status === 200) {
             this.currentComponent = UpcomingBookingDetails;
             this.selected_booking = response.data.data;
-            loading.close();
+            this.loading = false;
           } else {
-            loading.close();
+            this.loading = false;
             this.$notify.warning({
               title: "Oops!",
               message: "Something went wrong fetching the booking details.",
@@ -413,7 +409,7 @@ export default {
           }
         })
         .catch((err) => {
-          loading.close();
+          this.loading = false;
           console.log("Error Booking details: ", err);
           this.$notify.warning({
             title: "Oops!",
