@@ -7,7 +7,10 @@
           v-for="(event_type, i) in event_types"
           v-if="event_type.policy.is_visible === true"
           :key="i"
-          :span="8"
+          :sm="12"
+          :md="12"
+          :lg="8"
+          :xl="4"
           style="padding-right: 20px; padding-top: 20px"
         >
           <div @click="getModal(event_type)">
@@ -179,25 +182,25 @@ export default {
 
       return events;
     },
-    listenData(data) {
-      this.$store
-        .dispatch("addBooking", data)
-        // eslint-disable-next-line no-unused-vars
-        .then((response) => {});
-    },
-    getBookingProgress() {
-      let msg = [];
+    // listenData(data) {
+    //   this.$store
+    //     .dispatch("addBooking", data)
+    //     // eslint-disable-next-line no-unused-vars
+    //     .then((response) => {});
+    // },
+    // getBookingProgress() {
+    //   let msg = [];
 
-      if (payload.type === "booking.confirmed") {
-        let booking = this.$store.getters._myybookings.find(
-          (b) => b.event_id === payload.data.event_id
-        );
-        // Update booking;
+    //   if (payload.type === "booking.confirmed") {
+    //     let booking = this.$store.getters._myybookings.find(
+    //       (b) => b.event_id === payload.data.event_id
+    //     );
+    //     // Update booking;
 
-        //e-refresh ang this.event_list
-        //this.event_list = withBooking(this.event_list);
-      }
-    },
+    //     //e-refresh ang this.event_list
+    //     //this.event_list = withBooking(this.event_list);
+    //   }
+    // },
     getModal(event_type) {
       const loading = this.$loading({
         lock: true,
@@ -236,8 +239,17 @@ export default {
               events = response.data.data;
 
               this.event_list = [];
+              let events_with_booking = this.withBooking(events);
 
-              this.event_list = this.withBooking(events);
+              this.event_list = events_with_booking.filter((event) => {
+                let now = new Date().getTime();
+                let start = new Date(event.start_at.utc + " UTC").getTime();
+                return (
+                  Number(start) > Number(now) ||
+                  event._related_booking.id !== undefined
+                );
+              });
+
               this.event_list.sort(function (a, b) {
                 return new Date(a.start_at.local) - new Date(b.start_at.local);
               });
@@ -299,6 +311,22 @@ export default {
     },
     handleBookEvents(events) {
       this.$store.dispatch("addBooking", events);
+      console.log(events, "events");
+      const arr_booking_req = events.map((event) => ({
+        event_id: event.id,
+        status: "created",
+        customer_id: this.$store.getters._customer.id,
+      }));
+
+      sessionStorage.setItem(
+        "pending_booking",
+        JSON.stringify(arr_booking_req)
+      );
+
+      console.log(
+        JSON.parse(sessionStorage.getItem("pending_booking")),
+        "pending"
+      );
       this.rebuildEventList();
     },
     rebuildEventList() {
@@ -311,7 +339,7 @@ export default {
       this.currentComponent = null;
     },
     getFormatedDate(date) {
-      console.log(date, "date");
+      // console.log(date, "date");
       var d = new Date(date);
       var month = d.toLocaleString("default", {
         month: "short",

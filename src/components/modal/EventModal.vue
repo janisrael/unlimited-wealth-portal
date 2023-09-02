@@ -448,6 +448,15 @@ export default {
     }, 1000);
   },
   methods: {
+    // filterEvents(events) {
+    //   let event_list = events.filter((event) => {
+    //     let now = new Date().getTime();
+    //     let start = new Date(event.start_at.utc + " UTC").getTime();
+    //     return Number(start) > Number(now);
+    //   });
+
+    //   return events;
+    // },
     /* eslint-disable */
     cancelBooking(active_event) {
       // NOTE:: search from upcoming bookings where event_id = id, parameter active_event.id
