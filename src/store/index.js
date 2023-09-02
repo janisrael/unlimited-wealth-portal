@@ -71,7 +71,7 @@ const store = new Vuex.Store({
         },
     },
     actions: {
-        async getMybookings({ commit }, value) {
+        async getMybookings({ commit, dispatch }, value) {
             // console.log(state)
             return new Promise((resolve, reject) => {
                 var url =
@@ -92,8 +92,16 @@ const store = new Vuex.Store({
                         //   // return item.start_date !== todayDate && item.status.toLowerCase() !== 'completed'
                         //   return item.start_date !== todayDate && item.status.toLowerCase() === 'upcoming'
                         // })
+                        // let data = {
+                        //     my_bookings: my_bookings,
+                        //     token: value,
+                        // };
 
+                        // this.dispatch("callUpcoming", data)
+                        //     // eslint-disable-next-line no-unused-vars
+                        //     .then((response) => {});
                         commit("SET_MYBOOKINS", my_bookings);
+
                         resolve(response);
                     })
                     .catch((error) => {
@@ -118,8 +126,50 @@ const store = new Vuex.Store({
             commit("CANCEL_BOOKING", value);
         },
         async assignCustomer({ commit, state }, value) {
-            console.log(value, state, "update customer details");
+            // console.log(value, state, "update customer details");
             commit("ASSIGN_CUSTOMER", value);
+        },
+        async callUpcoming({ commit, state }, value) {
+            // Loop from my bookings and call each evennts
+            console.log(value, "value");
+            let _my_bookings = value.my_bookings;
+            let region = value.my_bookings[0].event_region;
+            _my_bookings.forEach((booking, index) => {
+                setTimeout(() => {
+                    let url =
+                        process.env.VUE_APP_API_URL +
+                        "/api/events/upcoming?region=" +
+                        region +
+                        "&event_type_id=" +
+                        booking.id;
+                    axios
+                        .get(url, {
+                            headers: {
+                                "X-Session-Key": value.token,
+                                "Content-Type": "application/json",
+                                Accept: "application/json",
+                            },
+                        })
+                        .then((response) => {
+                            if (response.status === 200) {
+                                console.log(response, "in loop");
+                                // events = response.data.data;
+
+                                // this.event_list = [];
+
+                                // this.event_list = this.withBooking(events);
+                                // this.event_list.sort(function (a, b) {
+                                //     return (
+                                //         new Date(a.start_at.local) -
+                                //         new Date(b.start_at.local)
+                                //     );
+                                // });
+                            }
+                        });
+                }, 500);
+            });
+
+            commit("SET_ACTIVE_EVENTS", value);
         },
     },
     getters: {
