@@ -6,6 +6,7 @@
       :visible.sync="dialog_visible"
       width="50%"
       top="3%"
+      class="event_modal_wrapper"
       :close-on-click-modal="false"
       :before-close="handleClose"
     >

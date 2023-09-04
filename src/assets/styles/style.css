@@ -806,8 +806,17 @@ span.modal-span {
     border-radius: 50%;
     margin-top: 66px;
 }
+.el-dialog__wrapper.event_modal_wrapper {
+    /* backdrop-filter: none !important; */
+    background-color: rgba(42, 57, 93, 0.6);
+}
+.el-dialog__wrapper.event_modal_wrapper .el-dialog {
+    border-radius: 8px;
+}
 .el-dialog__wrapper {
     backdrop-filter: blur(2px);
+
+    /* background-color: rgba(52, 48, 125, 0.5) !important; */
 }
 
 .el-dialog__wrapper.locked-modal .el-dialog__body {
