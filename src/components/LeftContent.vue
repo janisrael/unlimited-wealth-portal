@@ -43,7 +43,7 @@
                           Coming up at
                           {{ getFormatedDate(event_type.upcoming_event) }}
                         </div>
-                        <div v-else>-</div>
+                        <div v-else style="visibility: hidden">-</div>
                       </div>
                     </div>
                   </div>

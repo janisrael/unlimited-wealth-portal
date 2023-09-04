@@ -310,6 +310,7 @@ html,
 body {
     /*background-color: #fff;*/
     /*color: #636b6f;*/
+    background-color: #202149 !important;
     font-family: sans-serif;
     font-weight: 200;
     height: 100vh;
@@ -875,6 +876,10 @@ p.speaker-name {
 
 .speaker-wrapper {
     margin-top: 1.5rem;
+}
+
+.booked_carousel_item {
+    background: linear-gradient(270deg, #403b62 0%, #3c4f6f 100%) !important;
 }
 
 /* .slick-list-upcoming .slick-list {
