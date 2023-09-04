@@ -6,12 +6,14 @@ import store from "./store";
 import "/src/assets/styles/style.css";
 import "element-ui/lib/theme-chalk/index.css";
 import locale from "element-ui/lib/locale/lang/en"; // lang i18n
+import { IconsPlugin } from "bootstrap-vue";
 // import "@fortawesome/fontawesome-free/css/all.css";
 import VueRouter from "vue-router";
 import Router from "vue-router";
 // import { routes } from "./router/index";
 import * as Sentry from "@sentry/vue";
-
+// import "bootstrap/dist/css/bootstrap.css";
+// import "bootstrap-vue/dist/bootstrap-vue.css";
 import VueCoreVideoPlayer from "vue-core-video-player";
 import ElementUI from "element-ui";
 import CountryFlag from "vue-country-flag";
@@ -26,6 +28,10 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 /* add font awesome icon component */
 Vue.component("font-awesome-icon", FontAwesomeIcon);
+// Make BootstrapVue available throughout your project
+// Vue.use(BootstrapVue);
+// Optionally install the BootstrapVue icon components plugin
+Vue.use(IconsPlugin);
 Vue.use(VueRouter);
 
 Vue.use(VueLazyload);

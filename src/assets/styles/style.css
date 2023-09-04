@@ -790,6 +790,27 @@ span.modal-span {
     /* left: 269px !important; */
 }
 
+.el-notification {
+    /* display: flex;
+    width: 330px;
+    padding: 14px 26px 14px 13px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    border: 1px solid #EBEEF5;
+    position: fixed; */
+    width: 400px !important;
+    border: 1px solid #353272 !important;
+    background-color: #17153c !important;
+    /* box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    transition: opacity .3s,transform .3s,left .3s,right .3s,top .4s,bottom .3s;
+    overflow: hidden; */
+}
+
+.el-notification__title,
+.el-notification__content {
+    color: #fff !important;
+}
+
 .lock-wrapper {
     width: 100%;
     height: 100%;
@@ -811,11 +832,16 @@ span.modal-span {
     text-align: justify;
     text-align: left !important;
 }
-.el-dialog__wrapper.event_modal_wrapper {
+/* .el-dialog__wrapper.locked-modal {
+
+} */
+.el-dialog__wrapper.event_modal_wrapper,
+.el-dialog__wrapper.locked-modal {
     /* backdrop-filter: none !important; */
     background-color: rgba(42, 57, 93, 0.6);
 }
-.el-dialog__wrapper.event_modal_wrapper .el-dialog {
+.el-dialog__wrapper.event_modal_wrapper .el-dialog,
+.el-dialog__wrapper.locked-modal .el-dialog {
     border-radius: 8px;
 }
 .el-dialog__wrapper {
