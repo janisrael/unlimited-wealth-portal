@@ -110,10 +110,17 @@
                     >
                       <div class="carousel-check-wrapper">
                         <div class="carousel-checked">
-                          <i
-                            @click="cancelBooking(event)"
-                            class="el-icon-circle-close"
-                          ></i>
+                          <el-tooltip
+                            class="item speaker-icon"
+                            content="Cancel Booking"
+                            placement="top"
+                            effect="light"
+                          >
+                            <i
+                              @click="cancelBooking(event)"
+                              class="el-icon-circle-close"
+                            ></i>
+                          </el-tooltip>
                         </div>
                       </div>
 
