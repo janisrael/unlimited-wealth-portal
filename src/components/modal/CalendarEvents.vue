@@ -3,7 +3,7 @@
     <el-dialog
       title=""
       :visible.sync="dialogVisible"
-      width="30%"
+      width="25%"
       top="3%"
       :before-close="handleClose"
       :modal="false"
@@ -28,7 +28,7 @@
           v-for="(event, i) in myEvents"
           :key="i"
           :span="24"
-          style="margin-bottom: 8px"
+          style="margin-bottom: 8px; padding: 0px 20px"
         >
           <div class="events-box" @click="goToModal(event)">
             <el-col :span="4" v-if="event.speaker && event.speaker.avatar">
@@ -39,7 +39,7 @@
                 effect="light"
               >
                 <el-avatar
-                  style="border: 1px solid #248cb3"
+                  class="speaker-avatar-circle"
                   :size="40"
                   :src="
                     require(`@/assets/images/speakers/${event.speaker.avatar}`)
@@ -78,9 +78,9 @@
           v-for="(event, i) in otherEvents"
           :key="i"
           :span="24"
-          style="margin-bottom: 8px"
+          style="margin-bottom: 8px; padding: 0px 20px"
         >
-          <div class="events-box" @click="goToModal(event)">
+          <div class="events-box other-events" @click="goToModal(event)">
             <el-col
               :span="4"
               v-if="event.speaker && event.speaker.avatar"
@@ -93,7 +93,7 @@
                 effect="light"
               >
                 <el-avatar
-                  style="border: 1px solid #248cb3"
+                  class="speaker-avatar-circle"
                   :size="40"
                   :src="
                     require(`@/assets/images/speakers/${event.speaker.avatar}`)
@@ -251,5 +251,9 @@ export default {
 }
 .el-dialog__wrapper {
   backdrop-filter: none !important;
+}
+.other-events {
+  background: #312b54;
+  border: 0 none;
 }
 </style>

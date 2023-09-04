@@ -78,39 +78,41 @@
           />
         </el-col>
         <el-col :span="6" class="left-panel">
-          <el-col :span="24" class="panel-header">
-            <h3
-              style="
-                margin: 0px !important;
-                margin-block-start: 0px !important;
-                margin-block-end: 0px !important;
-                font-size: 18px;
-                font-weight: 400;
-                display: inline-block;
-                padding-right: 20px;
-              "
-            >
-              Events Overview
-            </h3>
-            <el-popover
-              placement="bottom-start"
-              title="All events in one place"
-              width="200"
-              trigger="hover"
-              content="By clicking with your mouse on a specific date, you can see your booked events and other events, that happen trough-out the current month."
-            >
-              <i
-                class="el-icon-warning-outline"
-                style="color: #5ce6e6; cursor: pointer"
-                slot="reference"
-              ></i>
-            </el-popover>
+          <el-col
+            :span="24"
+            class="panel-header"
+            style="display: flex; justify-content: space-between"
+          >
+            <div>
+              <h3
+                style="
+                  margin: 0px !important;
+                  margin-block-start: 0px !important;
+                  margin-block-end: 0px !important;
+                  font-size: 18px;
+                  font-weight: 400;
+                  display: inline-block;
+                  padding-right: 20px;
+                "
+              >
+                Events Overview
+              </h3>
+              <el-popover
+                placement="bottom-start"
+                title="All events in one place"
+                width="200"
+                trigger="hover"
+                content="By clicking with your mouse on a specific date, you can see your booked events and other events, that happen trough-out the current month."
+              >
+                <i
+                  class="el-icon-warning-outline"
+                  style="color: #5ce6e6; cursor: pointer"
+                  slot="reference"
+                ></i>
+              </el-popover>
+            </div>
             <el-tooltip class="item" content="Logout" placement="left">
-              <el-button
-                type="primary"
-                size="mini"
-                style="position: absolute; right: 20px"
-                @click="clearSession()"
+              <el-button type="primary" size="mini" @click="clearSession()"
                 ><b-icon icon="box-arrow-right" aria-hidden="true"></b-icon
               ></el-button>
             </el-tooltip>

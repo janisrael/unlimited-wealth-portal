@@ -39,7 +39,7 @@ const store = new Vuex.Store({
                     join_url: "",
                     meta: {},
                     registration_key: "",
-                    start_date: value.start_at.local,
+                    start_date: value.start_at.utc,
                     status: "Progress",
                 };
                 state.myybookings.push(new_booking);

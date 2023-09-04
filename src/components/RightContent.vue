@@ -1,6 +1,6 @@
 <template>
   <div class="right-panel-wrapper">
-    <el-col :span="24">
+    <el-col :span="24" style="padding: 0 20px">
       <el-calendar v-model="calendar_date">
         <template slot="dateCell" slot-scope="{ data }">
           <div
@@ -22,8 +22,8 @@
       </el-calendar>
     </el-col>
 
-    <el-col :span="24">
-      <h4 style="margin-left: 20px; font-size: 14px; font-weight: 600">
+    <el-col :span="24" style="padding: 0 40px">
+      <h4 style="font-size: 14px; font-weight: 600">
         My Upcoming Bookings &nbsp;
         <span v-loading="loading" element-loading-background="#2D2953"></span>
       </h4>
@@ -45,7 +45,7 @@
               effect="light"
             >
               <el-avatar
-                style="border: 1px solid #248cb3"
+                class="speaker-avatar-circle"
                 :size="40"
                 :src="
                   require(`@/assets/images/speakers/${
@@ -78,6 +78,7 @@
       :my_events_for_today="my_events_for_today"
       :selected_booking="selected_booking"
       @close="CloseModal()"
+      @cancel_event="handleCancelEvent"
     />
   </div>
 </template>
@@ -315,15 +316,7 @@ export default {
       return formated_date;
     },
     getFormatedLocalTime(event) {
-      var gmt = new Date()
-        .toLocaleString("en", {
-          timeZone: this.getLocalTimezone(event.event_region),
-          timeZoneName: "short",
-        })
-        .split(" ")[3];
-      var d =
-        (event.start_at ? event.start_at.local : event.start_date) + " " + gmt;
-      var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      var d = (event.start_at ? event.start_at.utc : event.start_date) + " UTC";
 
       var local_date = new Date(d).toLocaleString("default", {
         month: "short",
@@ -333,26 +326,9 @@ export default {
         hour: "numeric",
         minute: "2-digit",
         timeZoneName: "short",
-        timeZone: timeZone,
       });
 
       return local_date;
-    },
-    getLocalTimezone(region) {
-      var timezone = "";
-
-      switch (region) {
-        case "uk":
-          timezone = "Europe/London";
-          break;
-        case "aus":
-          timezone = "Australia/Sydney";
-          break;
-        case "phl":
-          timezone = "Asia/Manila";
-          break;
-      }
-      return timezone;
     },
     getDateExt(date) {
       if (date > 3 && date < 21) return "th";
@@ -415,6 +391,10 @@ export default {
             message: "Something went wrong fetching the booking details.",
           });
         });
+    },
+    handleCancelEvent(event) {
+      this.$store.dispatch("cancelBooking", event);
+      this.getMyBookings();
     },
   },
 };
