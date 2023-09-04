@@ -876,6 +876,10 @@ p.speaker-name {
 .speaker-wrapper {
     margin-top: 1.5rem;
 }
+.speaker-avatar-circle{
+    border: 1.5px solid #b5e5ff;
+}
+
 
 /* .slick-list-upcoming .slick-list {
   height: 170px !important;

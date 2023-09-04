@@ -39,7 +39,7 @@
                 effect="light"
               >
                 <el-avatar
-                  style="border: 1px solid #248cb3"
+                  class="speaker-avatar-circle"
                   :size="40"
                   :src="
                     require(`@/assets/images/speakers/${event.speaker.avatar}`)
@@ -93,7 +93,7 @@
                 effect="light"
               >
                 <el-avatar
-                  style="border: 1px solid #248cb3"
+                  class="speaker-avatar-circle"
                   :size="40"
                   :src="
                     require(`@/assets/images/speakers/${event.speaker.avatar}`)
