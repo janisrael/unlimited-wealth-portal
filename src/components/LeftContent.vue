@@ -315,6 +315,7 @@ export default {
       const arr_booking_req = events.map((event) => ({
         event_id: event.id,
         event_name: event.name,
+        region: event.region,
         status: "created",
         customer_id: this.$store.getters._customer.id,
       }));
