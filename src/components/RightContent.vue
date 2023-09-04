@@ -393,8 +393,9 @@ export default {
         });
     },
     handleCancelEvent(event) {
+      event["id"] = event["event_id"];
       this.$store.dispatch("cancelBooking", event);
-      this.getMyBookings();
+      this.all_bookings = this._myybookings;
     },
   },
 };
