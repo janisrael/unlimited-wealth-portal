@@ -16,6 +16,7 @@ const store = new Vuex.Store({
         myybooking_next_week: [],
         my_active_events: [],
         customer: {},
+        all_upcoming_events: [],
     },
     mutations: {
         SET_MYBOOKINS: (state, payload) => {

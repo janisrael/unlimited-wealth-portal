@@ -57,19 +57,30 @@ export default {
             listenerRes.type === "booking.failed")
         ) {
           if (listenerRes.type === "booking.failed") {
+            let event_match = {};
+            if (sessionStorage.getItem("pending_booking")) {
+              let event_req = JSON.parse(
+                sessionStorage.getItem("pending_booking")
+              );
+              event_match = event_req.find(
+                (b) => b.event_id === listenerRes.data.event_id
+              );
+            }
+
+            console.log(event_match, "ghj");
             this.$notify.error({
               title: "Booking Failed",
               dangerouslyUseHTMLString: true,
               message:
-                "<p>Event name: " +
-                "<strong>" +
-                listenerRes.data.event_type_name +
-                "</strong>" +
-                "<br>Start Date: " +
-                "<strong>" +
-                this.getFormatedDate(listenerRes.data.start_at.local) +
-                "</strong>" +
-                "</p>",
+                "<p>Event name: " + "<strong>" + event_match.event_name
+                  ? event_match.event_name
+                  : listenerRes.data.event_type_name +
+                    "</strong>" +
+                    "<br>Start Date: " +
+                    "<strong>" +
+                    this.getFormatedDate(listenerRes.data.start_at.local) +
+                    "</strong>" +
+                    "</p>",
               duration: 5000,
             });
           }

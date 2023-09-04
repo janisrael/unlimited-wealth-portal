@@ -811,11 +811,16 @@ span.modal-span {
     text-align: justify;
     text-align: left !important;
 }
-.el-dialog__wrapper.event_modal_wrapper {
+/* .el-dialog__wrapper.locked-modal {
+
+} */
+.el-dialog__wrapper.event_modal_wrapper,
+.el-dialog__wrapper.locked-modal {
     /* backdrop-filter: none !important; */
     background-color: rgba(42, 57, 93, 0.6);
 }
-.el-dialog__wrapper.event_modal_wrapper .el-dialog {
+.el-dialog__wrapper.event_modal_wrapper .el-dialog,
+.el-dialog__wrapper.locked-modal .el-dialog {
     border-radius: 8px;
 }
 .el-dialog__wrapper {

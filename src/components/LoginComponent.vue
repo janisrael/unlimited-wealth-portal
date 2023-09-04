@@ -10,10 +10,14 @@
           class="demo-ruleForm"
         >
           <el-form-item label="Email" prop="email">
-            <el-input v-model="ruleForm.email"></el-input>
+            <el-input v-model="ruleForm.email" clearable></el-input>
           </el-form-item>
           <el-form-item label="Password" prop="password">
-            <el-input v-model="ruleForm.password" type="password"></el-input>
+            <el-input
+              v-model="ruleForm.password"
+              clearable
+              type="password"
+            ></el-input>
           </el-form-item>
 
           <el-form-item>
@@ -57,6 +61,7 @@ export default {
     };
   },
   methods: {
+    /* eslint-disable */
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -84,9 +89,19 @@ export default {
               //     this.currentRightComponent = null
               //     this.currentLeftComponent = LoginComponent
               // }
+            })
+            .catch((err) => {
+              this.$notify.error({
+                title: "Login Error",
+                message: "Invalid Credentials",
+              });
             });
         } else {
           console.log("error submit!!");
+          this.$notify.error({
+            title: "Login Error",
+            message: "Invalid Credentials",
+          });
           return false;
         }
       });
