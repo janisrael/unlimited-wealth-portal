@@ -347,12 +347,12 @@ export default {
       var this_date = d.getDate();
       var dateExt = this.getDateExt(this_date);
 
-      var formated_date = "";
-      if (this.type === "upcoming") {
-        formated_date = this_date + dateExt + " " + month;
-      } else {
-        formated_date = this_date + dateExt + " " + month;
-      }
+      // var formated_date = "";
+      // if (this.type === "upcoming") {
+      var formated_date = this_date + dateExt + " " + month;
+      // } else {
+      // formated_date = this_date + dateExt + " " + month;
+      // }
       return formated_date;
     },
     getDateExt(date) {

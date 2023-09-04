@@ -45,19 +45,33 @@ export default {
   watch: {
     ch1: function () {
       //   console.log(this.ch1, "-----published watching-----");
-      let userObj = {};
+      let listenerRes = {};
       if (this.ch1.length > 0) {
         // get last object
-        userObj = JSON.parse(this.ch1[0].message);
-        console.log(userObj, "userObj");
+        listenerRes = JSON.parse(this.ch1[0].message);
+        console.log(listenerRes, "listenerRes");
+
         if (
-          userObj.data.customer_id === this.customer_id &&
-          (userObj.type === "booking.confirmed" ||
-            userObj.type === "booking.failed")
+          listenerRes.data.customer_id === this.customer_id &&
+          (listenerRes.type === "booking.confirmed" ||
+            listenerRes.type === "booking.failed")
         ) {
-          // console.log('update Booking condition is true')
+          if (listenerRes.type === "booking.failed") {
+            this.$notify.error({
+              title: "Booking Failed",
+              dangerouslyUseHTMLString: true,
+              message:
+                "<strong>Event name: " +
+                listenerRes.data.event_type_name +
+                "<br>Start Date: " +
+                this.getFormatedDate(listenerRes.data.start_at.local) +
+                "</strong>",
+              duration: 5000,
+            });
+          }
+
           this.$store
-            .dispatch("updateBooking", userObj)
+            .dispatch("updateBooking", listenerRes)
             // eslint-disable-next-line no-unused-vars
             .then((response) => {
               // if(response.status === 200) {
@@ -65,10 +79,42 @@ export default {
               // }
             });
         }
-
         // filter update booking by customer id
       }
-      userObj = undefined;
+      listenerRes = undefined;
+    },
+  },
+  methods: {
+    getFormatedDate(date) {
+      // console.log(date, "date");
+      var d = new Date(date);
+      var month = d.toLocaleString("default", {
+        month: "short",
+      });
+      var time = d.toLocaleString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      });
+      var this_date = d.getDate();
+      var dateExt = this.getDateExt(this_date);
+
+      var formated_date = "";
+      formated_date = this_date + dateExt + " " + month + " " + time;
+      return formated_date;
+    },
+    getDateExt(date) {
+      if (date > 3 && date < 21) return "th";
+      switch (date % 10) {
+        case 1:
+          return "st";
+        case 2:
+          return "nd";
+        case 3:
+          return "rd";
+        default:
+          return "th";
+      }
     },
   },
 };
