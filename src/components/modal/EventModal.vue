@@ -468,43 +468,59 @@ export default {
     /* eslint-disable */
     cancelBooking(active_event) {
       // NOTE:: search from upcoming bookings where event_id = id, parameter active_event.id
-      console.log(active_event.id);
-      console.log(active_event, "result");
-      this.loading = true;
-      this.this_load = true;
-      this.disable = true;
 
-      let url =
-        process.env.VUE_APP_API_URL +
-        "/api/account/booking/" +
-        active_event._related_booking.id +
-        "/cancel";
-      this.axios
-        .post(url, null, {
-          headers: {
-            "X-Session-Key": this.token,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
+      this.$confirm(
+        "Are you sure you want to cancel this Booking?",
+        "Warning",
+        {
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+          type: "warning",
+        }
+      )
+        .then(() => {
+          this.loading = true;
+          this.this_load = true;
+          this.disable = true;
+
+          let url =
+            process.env.VUE_APP_API_URL +
+            "/api/account/booking/" +
+            active_event._related_booking.id +
+            "/cancel";
+          this.axios
+            .post(url, null, {
+              headers: {
+                "X-Session-Key": this.token,
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            })
+            .then((response) => {
+              if (response.status === 200) {
+                this.$emit("cancel_events", active_event);
+                this.loading = false;
+                this.this_load = false;
+                this.disable = false;
+              } else {
+                this.loading = false;
+                this.this_load = false;
+                this.disable = false;
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              this.stage = 0;
+              this.loading = false;
+              this.this_load = false;
+              this.disable = false;
+            });
         })
-        .then((response) => {
-          if (response.status === 200) {
-            this.$emit("cancel_events", active_event);
-            this.loading = false;
-            this.this_load = false;
-            this.disable = false;
-          } else {
-            this.loading = false;
-            this.this_load = false;
-            this.disable = false;
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          this.stage = 0;
-          this.loading = false;
-          this.this_load = false;
-          this.disable = false;
+        .catch(() => {
+          // this.$message({
+          //   type: "info",
+          //   message: "Delete canceled",
+          // });
         });
     },
     handleBook() {
