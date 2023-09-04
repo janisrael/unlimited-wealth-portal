@@ -313,6 +313,7 @@ body {
     /*background-color: #fff;*/
     /*color: #636b6f;*/
     font-family: 'Open Sans', sans-serif;
+    background-color: #202149 !important;
     font-weight: 200;
     height: 100vh;
     margin: 0;
@@ -890,6 +891,10 @@ p.speaker-name {
     border: 1.5px solid #b5e5ff;
 }
 
+
+.booked_carousel_item {
+    background: linear-gradient(270deg, #403b62 0%, #3c4f6f 100%) !important;
+}
 
 /* .slick-list-upcoming .slick-list {
   height: 170px !important;
