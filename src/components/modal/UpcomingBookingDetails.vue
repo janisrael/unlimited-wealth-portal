@@ -89,21 +89,18 @@
               <p class="gray-text">
                 {{ getFormatedLocalTime }}
               </p>
-              <el-tooltip
-                class="item"
-                content="Coming soon"
-                placement="top"
-                :disabled="!can_join_booking"
+              <el-link
+                :href="can_join_booking ? selected_booking.join_url : '#'"
+                style="width: 90%; margin-top: 10px"
+                target="_blank"
               >
                 <el-button
                   type="success"
-                  style="width: 90%; margin-top: 10px"
                   :disabled="!can_join_booking"
                   :class="{ 'btn-success-custom': can_join_booking }"
                   >{{ getCountdownDate }}</el-button
                 >
-                <!--  @click="handleBook()" -->
-              </el-tooltip>
+              </el-link>
             </div>
           </div>
         </el-card>
