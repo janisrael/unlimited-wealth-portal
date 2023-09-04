@@ -36,11 +36,13 @@
           </el-col>
           <el-col :span="8" style="text-align: right">
             <div class="grid-content">
-              <el-tooltip class="item" content="Coming soon" placement="top">
-                <el-button type="danger" plain class="cancel-booking"
-                  >Cancel Booking</el-button
-                >
-              </el-tooltip>
+              <el-button
+                type="danger"
+                plain
+                class="cancel-booking"
+                @click="cancelBooking(selected_booking)"
+                >Cancel Booking</el-button
+              >
             </div>
           </el-col>
         </el-row>
@@ -138,6 +140,48 @@ export default {
         year: "numeric",
       });
       return formated_date;
+    },
+    cancelBooking(booking) {
+      this.$confirm(
+        "Are you sure you want to delete this booking?",
+        "Warning",
+        {
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+          type: "warning",
+        }
+      )
+        .then(() => {
+          let url =
+            process.env.VUE_APP_API_URL +
+            "/api/account/booking/" +
+            booking.id +
+            "/cancel";
+          this.axios
+            .post(url, null, {
+              headers: {
+                "X-Session-Key": sessionStorage.getItem("token"),
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            })
+            .then((response) => {
+              if (response.status === 200) {
+                this.$emit("cancel_event", booking);
+                this.handleClose();
+
+                this.$notify({
+                  title: "Congratulations",
+                  message: "Successfully deleted the booking",
+                  type: "success",
+                });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+        .catch(() => {});
     },
   },
   computed: {

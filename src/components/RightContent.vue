@@ -78,6 +78,7 @@
       :my_events_for_today="my_events_for_today"
       :selected_booking="selected_booking"
       @close="CloseModal()"
+      @cancel_event="handleCancelEvent"
     />
   </div>
 </template>
@@ -390,6 +391,10 @@ export default {
             message: "Something went wrong fetching the booking details.",
           });
         });
+    },
+    handleCancelEvent(event) {
+      this.$store.dispatch("cancelBooking", event);
+      this.getMyBookings();
     },
   },
 };
