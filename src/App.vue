@@ -61,11 +61,15 @@ export default {
               title: "Booking Failed",
               dangerouslyUseHTMLString: true,
               message:
-                "<strong>Event name: " +
+                "<p>Event name: " +
+                "<strong>" +
                 listenerRes.data.event_type_name +
+                "</strong>" +
                 "<br>Start Date: " +
+                "<strong>" +
                 this.getFormatedDate(listenerRes.data.start_at.local) +
-                "</strong>",
+                "</strong>" +
+                "</p>",
               duration: 5000,
             });
           }

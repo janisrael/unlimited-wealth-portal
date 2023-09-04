@@ -806,6 +806,11 @@ span.modal-span {
     border-radius: 50%;
     margin-top: 66px;
 }
+
+.el-notification__content {
+    text-align: justify;
+    text-align: left !important;
+}
 .el-dialog__wrapper.event_modal_wrapper {
     /* backdrop-filter: none !important; */
     background-color: rgba(42, 57, 93, 0.6);
