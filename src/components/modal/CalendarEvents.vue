@@ -80,7 +80,7 @@
           :span="24"
           style="margin-bottom: 8px"
         >
-          <div class="events-box" @click="goToModal(event)">
+          <div class="events-box other-events" @click="goToModal(event)">
             <el-col
               :span="4"
               v-if="event.speaker && event.speaker.avatar"
@@ -251,5 +251,9 @@ export default {
 }
 .el-dialog__wrapper {
   backdrop-filter: none !important;
+}
+.other-events {
+  background: #312b54;
+  border: 0 none;
 }
 </style>

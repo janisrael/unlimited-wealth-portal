@@ -683,12 +683,16 @@ span.modal-span {
 
 .calendar-modal .el-dialog {
     margin: 50px 30px 50px auto !important;
+    border-radius: 4px;
+    border: 0.5px solid #B5E5FF;
 }
 
 .upcoming-booking-modal .el-dialog {
     position: absolute;
     bottom: 0;
     right: 30px;
+    border-radius: 4px;
+    border: 0.5px solid #B5E5FF;
 }
 .upcoming-booking-modal .el-dialog .el-dialog__body {
     padding: 0;
@@ -700,6 +704,7 @@ span.modal-span {
 }
 .calendar-modal .el-dialog .el-dialog__body {
     width: auto !important;
+    padding: 0 5px 10px;
 }
 
 .carousel-formated-date {
