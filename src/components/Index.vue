@@ -192,8 +192,8 @@ export default {
 
         this.token = sessionStorage.getItem("token");
         this.verification = true;
-        this.currentRightComponent = RightContent;
         this.getEventTypes();
+        this.currentRightComponent = RightContent;
       } else {
         this.verification = false;
         this.currentRightComponent = null;
@@ -203,7 +203,13 @@ export default {
   watch: {
     search: function () {
       this.loading = true;
-      this.search.length >= 3
+      this.event_types = this.original_data;
+      // if (this.search.length >= 3) {
+      //   this.filter_data();
+      // } else {
+      //   this.event_types = this.original_data;
+      // }
+      this.search.length >= 2
         ? this.filter_data()
         : (this.event_types = this.original_data);
     },
@@ -360,24 +366,20 @@ export default {
                   Accept: "application/json",
                 },
               })
-              .then((res) => {
-                if (res.status === 200) {
+              .then((res_upcoming) => {
+                if (res_upcoming.status === 200) {
                   // console.log(response, "response");
-                  let related_events = [];
-                  this.event_types =
-                    this.original_data =
-                    related_events =
-                      response.data.data;
+
+                  this.event_types = this.original_data = response.data.data;
 
                   // this.original_data = response.data.data;
 
-                  // let related_events = res.data.data;
+                  let related_events = res_upcoming.data.data;
 
                   this.event_types.forEach((event_type) => {
                     let filteredEvents = related_events.filter((item) => {
                       return item.event_type_id === event_type.id;
                     });
-
                     if (filteredEvents.length > 0) {
                       filteredEvents.sort(function (a, b) {
                         return (
@@ -448,7 +450,6 @@ export default {
     filter_data() {
       let event_types = this.event_types;
       let search = this.search;
-
       let ret = event_types.filter(function (el) {
         return el.name.toLowerCase().includes(search.toLowerCase());
       });
