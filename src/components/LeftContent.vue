@@ -1,12 +1,16 @@
 <template>
   <div class="left-panel-wrapper">
     <el-row>
-      <el-col :span="24" style="padding: 0px 20px !important">
+      <el-col :span="24" style="padding: 0px 0px 0px 20px !important">
         <!-- eslint-disable -->
         <el-col
           v-for="(event_type, i) in event_types"
           v-if="event_type.policy.is_visible === true"
-          :span="8"
+          :key="i"
+          :sm="12"
+          :md="12"
+          :lg="8"
+          :xl="8"
           style="padding-right: 20px; padding-top: 20px"
         >
           <div @click="getModal(event_type)">
@@ -202,7 +206,7 @@ export default {
         lock: true,
         text: "Loading",
         // spinner: 'el-icon-loading',
-        background: "rgba(0, 0, 0, 0.7)",
+        background: "transparent",
       });
       this.selected_event_type = event_type;
 
