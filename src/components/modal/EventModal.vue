@@ -106,7 +106,7 @@
                     class="carousel-block"
                   >
                     <div
-                      class="carousel-content-upcoming"
+                      class="carousel-content-upcoming booked_carousel_item"
                       :class="{ 'selected-event': event.selected == true }"
                     >
                       <div class="carousel-check-wrapper">
