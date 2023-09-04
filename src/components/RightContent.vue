@@ -315,15 +315,7 @@ export default {
       return formated_date;
     },
     getFormatedLocalTime(event) {
-      var gmt = new Date()
-        .toLocaleString("en", {
-          timeZone: this.getLocalTimezone(event.event_region),
-          timeZoneName: "short",
-        })
-        .split(" ")[3];
-      var d =
-        (event.start_at ? event.start_at.local : event.start_date) + " " + gmt;
-      var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      var d = (event.start_at ? event.start_at.utc : event.start_date) + " UTC";
 
       var local_date = new Date(d).toLocaleString("default", {
         month: "short",
@@ -333,26 +325,9 @@ export default {
         hour: "numeric",
         minute: "2-digit",
         timeZoneName: "short",
-        timeZone: timeZone,
       });
 
       return local_date;
-    },
-    getLocalTimezone(region) {
-      var timezone = "";
-
-      switch (region) {
-        case "uk":
-          timezone = "Europe/London";
-          break;
-        case "aus":
-          timezone = "Australia/Sydney";
-          break;
-        case "phl":
-          timezone = "Asia/Manila";
-          break;
-      }
-      return timezone;
     },
     getDateExt(date) {
       if (date > 3 && date < 21) return "th";

@@ -134,23 +134,6 @@ export default {
       this.$emit("close");
     },
     errorHandler() {},
-
-    getLocalTimezone() {
-      var timezone = "";
-
-      switch (this.selected_booking.event_region) {
-        case "uk":
-          timezone = "Europe/London";
-          break;
-        case "aus":
-          timezone = "Australia/Sydney";
-          break;
-        case "phl":
-          timezone = "Asia/Manila";
-          break;
-      }
-      return timezone;
-    },
     getFormatedDate(date) {
       var formated_date = new Date(date).toLocaleString("default", {
         month: "numeric",
@@ -162,16 +145,8 @@ export default {
   },
   computed: {
     getFormatedLocalTime() {
-      var gmt = new Date()
-        .toLocaleString("en", {
-          timeZone: this.getLocalTimezone(),
-          timeZoneName: "short",
-        })
-        .split(" ")[3];
-
-      var start = this.selected_booking.start_at.local + " " + gmt;
-      var end = this.selected_booking.end_at.local + " " + gmt;
-      var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      var start = this.selected_booking.start_at.utc + " UTC";
+      var end = this.selected_booking.end_at.utc + " UTC";
 
       var start_local_date = new Date(start).toLocaleString("default", {
         month: "short",
@@ -190,7 +165,6 @@ export default {
         hour: "numeric",
         minute: "2-digit",
         timeZoneName: "short",
-        timeZone: timeZone,
       });
       if (
         new Date(start_local_date).toDateString() ===
@@ -202,12 +176,8 @@ export default {
           hour: "numeric",
           minute: "2-digit",
           timeZoneName: "short",
-          timeZone: timeZone,
         });
       }
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.start_local_date = start_local_date;
-
       return start_local_date + " to " + end_local_date;
     },
     getCountdownDate() {
@@ -332,5 +302,8 @@ export default {
 }
 .el-dialog__wrapper {
   backdrop-filter: none !important;
+}
+.el-link.is-underline:hover:after {
+  border-bottom: none;
 }
 </style>
