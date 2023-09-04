@@ -72,7 +72,7 @@
             :type="radio"
             :event_types="event_types"
             :tumbnail_region_title="tumbnail_region_title"
-            :region="region"
+            :region="region === 'gb' ? 'uk' : region"
             :token="token"
             @login="login"
           />
@@ -109,9 +109,9 @@
               <el-button
                 type="primary"
                 size="mini"
-                icon="el-icon-user-solid"
-                style="position: absolute; right: 10px"
+                style="position: absolute; right: 20px"
                 @click="clearSession()"
+                ><b-icon icon="box-arrow-right" aria-hidden="true"></b-icon
               ></el-button>
             </el-tooltip>
           </el-col>
@@ -120,7 +120,7 @@
             v-if="region"
             ref="calendarComponent"
             :is="currentRightComponent"
-            :region="region"
+            :region="region === 'gb' ? 'uk' : region"
             :token="token"
           />
         </el-col>
@@ -273,6 +273,7 @@ export default {
           } else {
             this.verification = false;
             this.currentRightComponent = null;
+            this.clearSession();
           }
         })
         .catch((err) => {
@@ -402,6 +403,7 @@ export default {
           }
         })
         .catch((err) => {
+          this.clearSession();
           loading.close();
         });
 
