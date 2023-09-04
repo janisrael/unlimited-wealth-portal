@@ -6,11 +6,7 @@
         <el-col
           v-for="(event_type, i) in event_types"
           v-if="event_type.policy.is_visible === true"
-          :key="i"
-          :sm="12"
-          :md="12"
-          :lg="8"
-          :xl="4"
+          :span="8"
           style="padding-right: 20px; padding-top: 20px"
         >
           <div @click="getModal(event_type)">
