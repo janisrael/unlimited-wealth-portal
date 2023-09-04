@@ -98,10 +98,10 @@ export default {
             });
         } else {
           console.log("error submit!!");
-          this.$notify.error({
-            title: "Login Error",
-            message: "Invalid Credentials",
-          });
+          // this.$notify.error({
+          //   title: "Login Error",
+          //   message: "Invalid Credentials",
+          // });
           return false;
         }
       });

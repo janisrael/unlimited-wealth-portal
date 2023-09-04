@@ -72,7 +72,7 @@
             :type="radio"
             :event_types="event_types"
             :tumbnail_region_title="tumbnail_region_title"
-            :region="region"
+            :region="region === 'gb' ? 'uk' : region"
             :token="token"
             @login="login"
           />
@@ -120,7 +120,7 @@
             v-if="region"
             ref="calendarComponent"
             :is="currentRightComponent"
-            :region="region"
+            :region="region === 'gb' ? 'uk' : region"
             :token="token"
           />
         </el-col>
