@@ -3,7 +3,7 @@
     <el-dialog
       title=""
       :visible.sync="dialogVisible"
-      width="30%"
+      width="25%"
       top="3%"
       :before-close="handleClose"
       :modal="false"
@@ -28,7 +28,7 @@
           v-for="(event, i) in myEvents"
           :key="i"
           :span="24"
-          style="margin-bottom: 8px"
+          style="margin-bottom: 8px; padding: 0px 20px"
         >
           <div class="events-box" @click="goToModal(event)">
             <el-col :span="4" v-if="event.speaker && event.speaker.avatar">
@@ -78,7 +78,7 @@
           v-for="(event, i) in otherEvents"
           :key="i"
           :span="24"
-          style="margin-bottom: 8px"
+          style="margin-bottom: 8px; padding: 0px 20px"
         >
           <div class="events-box other-events" @click="goToModal(event)">
             <el-col

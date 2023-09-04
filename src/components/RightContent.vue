@@ -1,6 +1,6 @@
 <template>
   <div class="right-panel-wrapper">
-    <el-col :span="24">
+    <el-col :span="24" style="padding: 0 20px">
       <el-calendar v-model="calendar_date">
         <template slot="dateCell" slot-scope="{ data }">
           <div
@@ -22,8 +22,8 @@
       </el-calendar>
     </el-col>
 
-    <el-col :span="24">
-      <h4 style="margin-left: 20px; font-size: 14px; font-weight: 600">
+    <el-col :span="24" style="padding: 0 40px">
+      <h4 style="font-size: 14px; font-weight: 600">
         My Upcoming Bookings &nbsp;
         <span v-loading="loading" element-loading-background="#2D2953"></span>
       </h4>

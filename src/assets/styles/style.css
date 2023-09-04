@@ -59,7 +59,7 @@
 .el-calendar-table .el-calendar-day {
     box-sizing: border-box;
     /* padding: 8px; */
-    height: 32px !important;
+    height: 36px !important;
     background-color: #16153c !important;
     margin: 4px !important;
     border-radius: 3px !important;
@@ -169,7 +169,7 @@ button.el-button.btn-failed.el-button--info.el-button--mini.is-plain {
     flex: none;
     order: 0;
     flex-grow: 0;
-    margin: 0px 20px;
+    /* margin: 0px 20px; */
 }
 
 .bookings-sub-title {
@@ -375,7 +375,7 @@ i.el-icon-circle-plus {
     color: #fff;
 }
 .left-panel > .panel-header {
-    padding: 27.8px 0 27.8px 20px !important;
+    padding: 28px 38px !important;
 }
 .right-panel > .panel-header {
     padding: 20px;
@@ -705,9 +705,12 @@ span.modal-span {
     padding: 0 !important;
 }
 .calendar-modal .el-dialog .el-dialog__body {
-    width: auto !important;
-    padding: 0 5px 10px;
+    width: 100% !important;
+    padding: 0 0 10px;
 }
+.upcoming-booking-modal .el-dialog .el-dialog__header {
+    padding: 15px !important;
+  }
 
 .carousel-formated-date {
     font-size: 22px;

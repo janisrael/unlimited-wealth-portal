@@ -339,7 +339,7 @@ export default {
   padding-top: 20px;
 }
 .gray-text {
-  color: #a1a0b2;
+  /* color: #a1a0b2; */
 }
 .el-dialog__wrapper {
   backdrop-filter: none !important;
