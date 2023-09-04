@@ -1,3 +1,5 @@
+@import url('https://fonts.cdnfonts.com/css/open-sans');
+
 /* scroll */
 /* width */
 ::-webkit-scrollbar {
@@ -207,7 +209,7 @@ div.card-content-title {
     padding-left: 16px;
     padding-top: 21px;
     font-size: 18px;
-    font-family: sans-serif;
+    font-family: 'Open Sans', sans-serif;
     /* text-shadow: 1px 1px 2px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a; */
     text-shadow: 2px 3px 5px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a;
 }
@@ -241,7 +243,7 @@ div.card-content-region {
     padding-left: 16px;
     /* padding-top: 42px; */
     font-size: 32px;
-    font-family: sans-serif;
+    font-family: 'Open Sans', sans-serif;
     text-shadow: 2px 3px 5px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a;
 }
 div.card-content-sched {
@@ -252,7 +254,7 @@ div.card-content-sched {
     padding-left: 26px;
     padding-top: 134px;
     font-size: 12px;
-    font-family: sans-serif;
+    font-family: 'Open Sans', sans-serif;
     text-shadow: 2px 3px 5px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a;
 }
 .el-card.box-card.card-left-panel > .el-card__header {
@@ -310,7 +312,7 @@ html,
 body {
     /*background-color: #fff;*/
     /*color: #636b6f;*/
-    font-family: sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-weight: 200;
     height: 100vh;
     margin: 0;
