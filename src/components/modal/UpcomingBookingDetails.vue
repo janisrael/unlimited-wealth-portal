@@ -93,10 +93,11 @@
               </p>
               <el-link
                 :href="can_join_booking ? selected_booking.join_url : '#'"
-                style="width: 90%; margin-top: 10px"
+                style="width: 100%; margin-top: 10px; display: block"
                 target="_blank"
               >
                 <el-button
+                  style="width: 100%"
                   type="success"
                   :disabled="!can_join_booking"
                   :class="{ 'btn-success-custom': can_join_booking }"
