@@ -93,10 +93,11 @@
               </p>
               <el-link
                 :href="can_join_booking ? selected_booking.join_url : '#'"
-                style="width: 90%; margin-top: 10px"
+                style="width: 100%; margin-top: 10px; display: block"
                 target="_blank"
               >
                 <el-button
+                  style="width: 100%"
                   type="success"
                   :disabled="!can_join_booking"
                   :class="{ 'btn-success-custom': can_join_booking }"
@@ -224,12 +225,11 @@ export default {
     getCountdownDate() {
       let pluralize = require("pluralize");
 
-      var countdowndate = new Date(
-        this.selected_booking.start_at.local
-      ).getTime();
+      var start = this.selected_booking.start_at.utc + " UTC";
+      var countdowndate = new Date(start).getTime();
 
       //FOR TESTING ONLY
-      // countdowndate = new Date("August 2, 2023 18:59:00").getTime();
+      // countdowndate = new Date("September 5, 2023 16:19:00").getTime();
 
       var now = new Date().getTime();
       var timetodate = countdowndate - now;
@@ -267,6 +267,7 @@ export default {
         }
       } else {
         //less than a month
+
         if (weeks > 0) {
           //more than a week
           if (days > 0) {
@@ -280,8 +281,10 @@ export default {
           }
         } else {
           //less than a week
+
           if (days > 0) {
             //more than a day
+
             if (hours > 0) {
               return `Event starts in ${pluralize(
                 "day",
@@ -297,15 +300,16 @@ export default {
               //more than an hour
               if (minutes > 0) {
                 return `Event starts in ${pluralize(
-                  "day",
-                  days,
+                  "hour",
+                  hours,
                   true
-                )} ${pluralize("hour", hours, true)}`;
+                )} ${pluralize("minute", minutes, true)}`;
               } else {
-                return `Event starts in ${pluralize("day", days, true)}`;
+                return `Event starts in ${pluralize("hour", hours, true)}`;
               }
             } else {
               //less than an hour and more than 15mins
+
               if (minutes > 0 && minutes > 15) {
                 return `Event starts in ${pluralize("minute", minutes, true)}`;
               } else {
