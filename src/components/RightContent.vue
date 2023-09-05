@@ -228,7 +228,7 @@ export default {
 
           this.all_bookings = this._myybookings;
           this.all_bookings.sort(function (a, b) {
-            return new Date(a.start_date) - new Date(b.start_date);
+            return new Date(a.start_at.local) - new Date(b.start_at.local);
           });
 
           let curr = new Date();
