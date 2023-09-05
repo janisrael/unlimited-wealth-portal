@@ -64,7 +64,13 @@
               }}</span>
             </div>
             <div class="bookings-sub-title">
-              {{ getFormatedLocalTime(event) }}
+              {{ getFormatedLocalTime(event) }} &nbsp;
+              <el-badge
+                v-if="event.status === 'Progress'"
+                value="Pending"
+                class="item"
+              >
+              </el-badge>
             </div>
           </el-col>
         </div>
