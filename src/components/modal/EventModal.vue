@@ -445,12 +445,14 @@ export default {
     },
   },
   mounted() {
-    setTimeout(() => {
+    // setTimeout(() => {
+    this.$nextTick(() => {
       this.this_load = false;
       if (this.event_list.length > 0) {
         this.getVideo(this.event_list[0]);
       }
-    }, 1000);
+    });
+    // }, 1000);
   },
   methods: {
     /* eslint-disable */
@@ -659,8 +661,9 @@ export default {
       }
     },
     getSelected(event, index) {
-      setTimeout(() => {
-        /* eslint-disable */
+      /* eslint-disable */
+      // setTimeout(() => {
+      this.$nextTick(() => {
         // let selected_events = []
         if (this.type === "upcoming") {
           if (this.event_list[index].selected === true) {
@@ -703,7 +706,8 @@ export default {
         if (this.type === "recording") {
           this.getVideo(event);
         }
-      }, 20);
+      });
+      // }, 20);
     },
     getVideo(event) {
       var url = event.meta.resource_path;
