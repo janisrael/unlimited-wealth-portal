@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <!-- {{ ch1 }} -->
+    <div class="watched_data_trigger">{{ triggerRebuild }}</div>
     <index ref="indexComponent" />
   </div>
 </template>
@@ -40,12 +40,12 @@ export default {
   },
   watch: {
     triggerRebuild: function () {
-      if (
-        this.triggerRebuild === "booking.failed" ||
-        this.triggerRebuild === "booking.confirmed"
-      ) {
-        this.$refs.indexComponent.rebuild(this.triggerRebuild);
-      }
+      // if (
+      //   this.triggerRebuild === "booking.failed" ||
+      //   this.triggerRebuild === "booking.confirmed"
+      // ) {
+      this.$refs.indexComponent.rebuild(this.triggerRebuild);
+      // }
     },
   },
   methods: {
@@ -88,13 +88,13 @@ export default {
           }
         }
         if (type === "booking.confirmed") {
-          console.log('booking confirmed')
+          console.log("booking confirmed");
         }
         this.$store
           .dispatch("updateBooking", listenerRes)
           // eslint-disable-next-line no-unused-vars
           .then((response) => {
-            this.triggerRebuild = type;
+            this.triggerRebuild = listenerRes;
             listenerRes = undefined;
           });
       }

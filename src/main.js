@@ -7,13 +7,10 @@ import "/src/assets/styles/style.css";
 import "element-ui/lib/theme-chalk/index.css";
 import locale from "element-ui/lib/locale/lang/en"; // lang i18n
 import { IconsPlugin } from "bootstrap-vue";
-// import "@fortawesome/fontawesome-free/css/all.css";
 import VueRouter from "vue-router";
 import Router from "vue-router";
 // import { routes } from "./router/index";
 import * as Sentry from "@sentry/vue";
-// import "bootstrap/dist/css/bootstrap.css";
-// import "bootstrap-vue/dist/bootstrap-vue.css";
 import VueCoreVideoPlayer from "vue-core-video-player";
 import ElementUI from "element-ui";
 import CountryFlag from "vue-country-flag";
@@ -24,17 +21,6 @@ import VueLazyImageLoading from "vue-lazy-image-loading";
 import PubNubVue from "pubnub-vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-/* add font awesome icon component */
-// Vue = require('vue');
-// Vue.use(require("vue-pubnub"), {
-//     subscribeKey: "sub-c-c02c8970-4729-4e8c-ae32-8e66935e2014",
-//     // publishKey: "myPublishKey",
-//     userId: "35467812y8u390129ui3",
-//     restore: true,
-//     logVerbosity: true,
-//     ssl: true,
-//     presenceTimeout: 130,
-// });
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Vue.use(IconsPlugin);
@@ -55,9 +41,9 @@ Vue.use(PubNubVue, {
     // publishKey: "pub-c-c78be85e-c4e2-4e03-b862-ca9674005d70",
     userId: "35467812y8u390129ui3",
     restore: true,
-    logVerbosity: true,
+    logVerbosity: false,
     ssl: true,
-    presenceTimeout: 130,
+    presenceTimeout: 300,
 });
 
 //Sentry integration

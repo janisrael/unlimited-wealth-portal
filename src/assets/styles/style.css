@@ -1,4 +1,4 @@
-@import url('https://fonts.cdnfonts.com/css/open-sans');
+@import url("https://fonts.cdnfonts.com/css/open-sans");
 
 /* scroll */
 /* width */
@@ -209,7 +209,7 @@ div.card-content-title {
     padding-left: 16px;
     padding-top: 21px;
     font-size: 18px;
-    font-family: 'Open Sans', sans-serif;
+    font-family: "Open Sans", sans-serif;
     /* text-shadow: 1px 1px 2px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a; */
     text-shadow: 2px 3px 5px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a;
 }
@@ -243,7 +243,7 @@ div.card-content-region {
     padding-left: 16px;
     /* padding-top: 42px; */
     font-size: 32px;
-    font-family: 'Open Sans', sans-serif;
+    font-family: "Open Sans", sans-serif;
     text-shadow: 2px 3px 5px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a;
 }
 div.card-content-sched {
@@ -254,7 +254,7 @@ div.card-content-sched {
     padding-left: 26px;
     padding-top: 134px;
     font-size: 12px;
-    font-family: 'Open Sans', sans-serif;
+    font-family: "Open Sans", sans-serif;
     text-shadow: 2px 3px 5px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a;
 }
 .el-card.box-card.card-left-panel > .el-card__header {
@@ -312,7 +312,7 @@ html,
 body {
     /*background-color: #fff;*/
     /*color: #636b6f;*/
-    font-family: 'Open Sans', sans-serif;
+    font-family: "Open Sans", sans-serif;
     background-color: #202149 !important;
     font-weight: 200;
     height: 100vh;
@@ -594,7 +594,11 @@ span.modal-span {
     color: #ffffff;
     cursor: pointer;
 }
-
+.watched_data_trigger {
+    visibility: hidden;
+    position: absolute;
+    left: -9999;
+}
 .carousel-block .carousel-content-upcoming {
     min-height: 80px;
     text-align: center;
@@ -688,7 +692,7 @@ span.modal-span {
 .calendar-modal .el-dialog {
     margin: 50px 30px 50px auto !important;
     border-radius: 4px;
-    border: 0.5px solid #B5E5FF;
+    border: 0.5px solid #b5e5ff;
 }
 
 .upcoming-booking-modal .el-dialog {
@@ -696,7 +700,7 @@ span.modal-span {
     bottom: 0;
     right: 30px;
     border-radius: 4px;
-    border: 0.5px solid #B5E5FF;
+    border: 0.5px solid #b5e5ff;
 }
 .upcoming-booking-modal .el-dialog .el-dialog__body {
     padding: 0;
@@ -712,7 +716,7 @@ span.modal-span {
 }
 .upcoming-booking-modal .el-dialog .el-dialog__header {
     padding: 15px !important;
-  }
+}
 
 .carousel-formated-date {
     font-size: 22px;
@@ -888,10 +892,9 @@ p.speaker-name {
 .speaker-wrapper {
     margin-top: 1.5rem;
 }
-.speaker-avatar-circle{
+.speaker-avatar-circle {
     border: 1.5px solid #b5e5ff;
 }
-
 
 .booked_carousel_item {
     background: linear-gradient(270deg, #403b62 0%, #3c4f6f 100%) !important;
