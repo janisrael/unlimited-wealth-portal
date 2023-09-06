@@ -59,6 +59,7 @@
       </el-col>
 
       <component
+        ref="modalComponent"
         :is="currentComponent"
         :type="type"
         :event_list="event_list"
@@ -213,7 +214,6 @@ export default {
       if (event_type.policy.is_accessible === false) {
         this.currentComponent = LockedEvent;
         loading.close();
-
         return;
       }
 
@@ -275,7 +275,6 @@ export default {
           })
           .then((response) => {
             this.event_list = response.data.data;
-            console.log(this.event_list, "----recordings----");
             if (this.event_list.length === 0 && this.type === "recording") {
               this.currentComponent = NoRecording;
             } else {
@@ -286,7 +285,7 @@ export default {
       }
     },
     handleCancelEvent(data) {
-      this.$store.dispatch("cancelBooking", data);
+      // this.$store.dispatch("removeBooking", data);
       this.rebuildEventList();
     },
     handleAddEvent(data) {
@@ -311,7 +310,7 @@ export default {
     },
     handleBookEvents(events) {
       this.$store.dispatch("addBooking", events);
-      console.log(events, "events");
+
       const arr_booking_req = events.map((event) => ({
         event_id: event.id,
         event_name: event.name,
@@ -332,16 +331,21 @@ export default {
       this.rebuildEventList();
     },
     rebuildEventList() {
+      // this.$refs.modalComponent.triggerLoading();
+
       let freshList = this.withBooking(this.event_list);
       this.event_list = [];
       this.event_list = freshList;
+
+      // setTimeout(() => {
+      this.event_list = freshList;
+      // }, 100);
     },
     CloseModal() {
       this.event_list = [];
       this.currentComponent = null;
     },
     getFormatedDate(date) {
-      // console.log(date, "date");
       var d = new Date(date);
       var month = d.toLocaleString("default", {
         month: "short",

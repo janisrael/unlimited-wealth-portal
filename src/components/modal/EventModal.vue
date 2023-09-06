@@ -97,7 +97,7 @@
                 >
                   <!--   -->
                   <div
-                    v-for="(event, i) in event_list"
+                    v-for="(event, i) in checkIfHasPending(event_list)"
                     :key="i"
                     v-if="
                       event._related_booking.progress !== undefined &&
@@ -119,6 +119,10 @@
                             effect="light"
                           >
                             <i
+                              v-if="
+                                event._related_booking.progress.toLowerCase() ===
+                                'confirmed'
+                              "
                               @click="cancelBooking(event)"
                               class="el-icon-circle-close"
                             ></i>
@@ -413,6 +417,9 @@ export default {
         centerMode: false,
         accessibility: true,
         edgeFriction: 0.35,
+        waitForAnimate: true,
+        cssEase: "ease",
+        lazyLoad: "true",
       },
       video_url: "",
       active_tab: "",
@@ -423,20 +430,7 @@ export default {
       loading: false,
       this_load: true,
       local_timezone: this.getLocalTimezone(),
-      // ch1: this.$pnGetMessage('customers.001Ae000005mU49IAE.booking', null),
-      // selected_id: ''
     };
-  },
-  // beforeDestroy() {
-  //   this.stage = 0;
-  // },
-  watch: {
-    // event_list() {
-    //   console.log(" 2: watch eventmodal: ", this.event_list);
-    //   if (this.event_list.length > 0) {
-    //     this.getVideo(this.event_list[0]);
-    //   }
-    // },
   },
   computed: {
     countBooked() {
@@ -459,19 +453,19 @@ export default {
     }, 1000);
   },
   methods: {
-    // filterEvents(events) {
-    //   let event_list = events.filter((event) => {
-    //     let now = new Date().getTime();
-    //     let start = new Date(event.start_at.utc + " UTC").getTime();
-    //     return Number(start) > Number(now);
-    //   });
-
-    //   return events;
-    // },
     /* eslint-disable */
+    checkIfHasPending(events) {
+      // clear sessionStorage for pending_booking
+      let events_list = events;
+      let event_match = events.find(
+        (b) => b._related_booking.progress === "pending"
+      );
+      if (!event_match) {
+        sessionStorage.removeItem("pending_booking");
+      }
+      return events_list;
+    },
     cancelBooking(active_event) {
-      // NOTE:: search from upcoming bookings where event_id = id, parameter active_event.id
-
       this.$confirm(
         "Are you sure you want to cancel this Booking?",
         "Warning",
@@ -485,35 +479,17 @@ export default {
           this.loading = true;
           this.this_load = true;
           this.disable = true;
-
-          let url =
-            process.env.VUE_APP_API_URL +
-            "/api/account/booking/" +
-            active_event._related_booking.id +
-            "/cancel";
-          this.axios
-            .post(url, null, {
-              headers: {
-                "X-Session-Key": this.token,
-                "Content-Type": "application/json",
-                Accept: "application/json",
-              },
-            })
+          active_event["token"] = this.token;
+          this.$store
+            .dispatch("cancelBooking", active_event)
             .then((response) => {
-              if (response.status === 200) {
-                this.$emit("cancel_events", active_event);
-                this.loading = false;
-                this.this_load = false;
-                this.disable = false;
-              } else {
-                this.loading = false;
-                this.this_load = false;
-                this.disable = false;
-              }
+              this.loading = false;
+              this.this_load = false;
+              this.disable = false;
+              this.$emit("cancel_events", active_event);
             })
             .catch((err) => {
               console.log(err);
-              this.stage = 0;
               this.loading = false;
               this.this_load = false;
               this.disable = false;
@@ -553,21 +529,11 @@ export default {
           )
           .then((response) => {
             if (response.status === 200) {
-              // this.stage = 1;
-              // this.loading = false;
-              // this.disable = false;
-              // let _selectec_events = this.selected_events;
-              // this.selected_events = [];
-              // // eslint-disable-next-line no-unused-vars
-              // _selectec_events.forEach((value, index) => {
-              //   value.states.progress = "Booking";
-              // });
-              // this.$emit("add_events", _selectec_events);
               let selected = this.selected_events;
               this.selected_events = [];
+              // make a disoatch to store all req booking, incase some is
+              // this.event_list = [];
               this.$emit("book_events", selected);
-              // eslint-disable-next-line no-unused-vars
-              // .then((response) => { });
               this.loading = false;
               this.this_load = false;
               this.disable = false;
@@ -712,6 +678,16 @@ export default {
             this.event_list[index].selected = true;
             this.selected_events.push(this.event_list[index]);
           }
+          let arr = this.event_list;
+          let filtered_events = arr.filter((item) => {
+            return item._related_booking.id === undefined;
+          });
+
+          let selected_index = filtered_events.findIndex((object) => {
+            return object.id === event.id;
+          });
+          console.log(selected_index);
+          this.$refs.slick.goTo(selected_index);
         } else {
           this.event_list.forEach((value, index) => {
             value.selected = false;
@@ -719,21 +695,18 @@ export default {
           });
           this.disable = false;
           this.event_list[index].selected = true;
+          console.log("no");
+
+          this.$refs.slick.goTo(index);
         }
 
         if (this.type === "recording") {
           this.getVideo(event);
         }
-
-        this.$refs.slick.goTo(index);
       }, 20);
     },
     getVideo(event) {
       var url = event.meta.resource_path;
-      console.log(event, "----selected recording----");
-      // SAMPLE URL WITH RECORDINGS
-      // var url =
-      //   "https://uw-portal-api.tinkerpub.com/api/events/a000C000005uXWbQAM";
 
       this.axios
         .get(url, {

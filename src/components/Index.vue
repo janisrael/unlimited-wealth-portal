@@ -37,7 +37,7 @@
                     <span class="el-dropdown-link">
                       <span>
                         <country-flag
-                          :country="use_region"
+                          :country="use_region === 'uk' ? 'gb' : use_region"
                           size="small"
                         /> </span
                       ><i class="el-icon-arrow-down el-icon--right"></i>
@@ -183,10 +183,6 @@ export default {
       this.verifyToken(substr);
     } else {
       if (sessionStorage.getItem("token")) {
-        sessionStorage.getItem("region") === "uk"
-          ? sessionStorage.setItem("region", "gb")
-          : sessionStorage.getItem("region");
-
         this.use_region =
           this.selected_region =
           this.region =
@@ -206,19 +202,20 @@ export default {
     search: function () {
       this.loading = true;
       this.event_types = this.original_data;
-      // if (this.search.length >= 3) {
-      //   this.filter_data();
-      // } else {
-      //   this.event_types = this.original_data;
-      // }
       this.search.length >= 2
         ? this.filter_data()
         : (this.event_types = this.original_data);
     },
   },
+  created() {
+    if (sessionStorage.getItem("active_type")) {
+      this.type = sessionStorage.getItem("active_type");
+      this.radio = sessionStorage.getItem("active_type");
+    }
+  },
   methods: {
-    rebuild() {
-      this.$refs.leftComponent.rebuildEventList();
+    rebuild(action) {
+      this.$refs.leftComponent.rebuildEventList(action);
     },
     verifyToken(token) {
       let url = process.env.VUE_APP_API_URL + "/api/auth/login";
@@ -230,37 +227,20 @@ export default {
         .then((response) => {
           if (response.status === 200) {
             this.$store.dispatch("assignCustomer", response.data);
-            if (response.data.customer.use_region === "uk") {
-              this.use_region = this.selected_region = "gb";
-              this.region = response.data.customer.use_region;
-              !sessionStorage.getItem("region")
-                ? sessionStorage.setItem("region", this.use_region)
-                : sessionStorage.getItem("region");
-            } else {
-              this.use_region =
-                this.selected_region =
-                this.region =
-                  response.data.customer.use_region;
-              !sessionStorage.getItem("region")
-                ? sessionStorage.setItem("region", this.use_region)
-                : sessionStorage.getItem("region");
-            }
-
             if (!sessionStorage.getItem("region")) {
-              sessionStorage.setItem("region", this.use_region);
+              sessionStorage.setItem(
+                "region",
+                response.data.customer.use_region
+              );
               this.use_region =
                 this.selected_region =
                 this.region =
                   response.data.customer.use_region;
             } else {
-              if (sessionStorage.getItem("region") === "uk") {
-                this.use_region = this.selected_region = this.region = "gb";
-              } else {
-                this.use_region =
-                  this.selected_region =
-                  this.region =
-                    sessionStorage.getItem("region");
-              }
+              this.use_region =
+                this.selected_region =
+                this.region =
+                  sessionStorage.getItem("region");
             }
 
             sessionStorage.setItem(
@@ -284,8 +264,6 @@ export default {
               this.selected_region =
               this.region =
                 sessionStorage.getItem("region");
-            // this.selected_region = sessionStorage.getItem("region");
-            // this.region = sessionStorage.getItem("region");
             this.token = sessionStorage.getItem("token");
             this.verification = true;
             this.currentRightComponent = RightContent;
@@ -298,7 +276,6 @@ export default {
         });
     },
     clearSession() {
-      // window.sessionStorage.removeItem("token");
       window.sessionStorage.clear();
       document.location.href = "/";
       setTimeout(() => {
@@ -307,24 +284,17 @@ export default {
       }, 300);
     },
     async checkToken(data) {
-      sessionStorage.getItem("region") === "uk"
-        ? sessionStorage.setItem("region", "gb")
-        : sessionStorage.getItem("region");
-      //   sessionStorage.setItem("region", "gb");
-      // }
       this.use_region =
         this.selected_region =
         this.region =
           sessionStorage.getItem("region");
-      // this.selected_region = sessionStorage.getItem("region");
-      // this.region = sessionStorage.getItem("region");
       this.verification = true;
       this.token = sessionStorage.getItem("token");
       this.getEventTypes();
     },
     login(data) {
-      window.sessionStorage.removeItem("token");
-      window.sessionStorage.setItem("token", data.app_session.session_key);
+      sessionStorage.removeItem("token");
+      sessionStorage.setItem("token", data.app_session.session_key);
       // window.sessionStorage.setItem('token', 'n8RwzOAnck4xUS9QrRRYWxzhB13SQ9aNsxIpEmpj4V') // static token
       this.token = data.app_session.session_key;
       this.checkToken(data);
@@ -337,14 +307,11 @@ export default {
         background: "rgba(0, 0, 0, 0.7)",
       });
       let _region = "";
-      sessionStorage.getItem("region") === "gb"
-        ? (_region = "uk")
-        : (_region = sessionStorage.getItem("region"));
-      // if (sessionStorage.getItem("region") === "gb") {
-      //   _region = "uk";
-      // } else {
-      //   _region = sessionStorage.getItem("region");
-      // }
+      _region =
+        sessionStorage.getItem("region") === "gb"
+          ? "uk"
+          : sessionStorage.getItem("region");
+
       this.loading = true;
       var url = process.env.VUE_APP_API_URL + "/api/event-types/" + _region;
       this.axios
@@ -371,11 +338,7 @@ export default {
               })
               .then((res_upcoming) => {
                 if (res_upcoming.status === 200) {
-                  // console.log(response, "response");
-
                   this.event_types = this.original_data = response.data.data;
-
-                  // this.original_data = response.data.data;
 
                   let related_events = res_upcoming.data.data;
 
@@ -415,7 +378,7 @@ export default {
     handleChangeRegion(command) {
       if (command) {
         if (command === "uk") {
-          this.use_region = "gb";
+          this.use_region = command;
 
           this.tumbnail_region_title = "Europe";
         } else if (command === "aus" || command === "au") {
@@ -428,14 +391,11 @@ export default {
         this.region = command;
       }
       if (command !== sessionStorage.getItem("region")) {
-        sessionStorage.removeItem("region");
         sessionStorage.setItem("region", this.use_region);
         this.region =
           this.use_region =
           this.selected_region =
             sessionStorage.getItem("region");
-        // this.use_region = sessionStorage.getItem("region");
-        // this.selected_region = sessionStorage.getItem("region");
       }
 
       setTimeout(() => {
@@ -450,6 +410,7 @@ export default {
     },
     getTypes(type) {
       this.radio = type;
+      sessionStorage.setItem("active_type", type);
     },
     filter_data() {
       let event_types = this.event_types;
