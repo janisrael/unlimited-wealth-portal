@@ -278,10 +278,12 @@ export default {
     clearSession() {
       window.sessionStorage.clear();
       document.location.href = "/";
-      setTimeout(() => {
+      // setTimeout(() => {
+      this.$nextTick(() => {
         /* eslint-disable */
         window.location.reload();
-      }, 300);
+      });
+      // }, 300);
     },
     async checkToken(data) {
       this.use_region =
@@ -398,12 +400,14 @@ export default {
             sessionStorage.getItem("region");
       }
 
-      setTimeout(() => {
+      // setTimeout(() => {
+      this.$nextTick(() => {
         /* eslint-disable */
         this.currentRightComponent = null;
         this.getEventTypes();
         this.$refs.calendarComponent.getEventsDate();
-      }, 100);
+      });
+      // }, 100);
     },
     getCountryByRegion(region) {
       console.log(region);
