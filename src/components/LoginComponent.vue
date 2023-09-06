@@ -75,20 +75,12 @@ export default {
               if (response.status === 200) {
                 sessionStorage.clear();
                 this.$store.dispatch("assignCustomer", response.data);
-                var session_token = "";
-                session_token = response.data.app_session.session_key;
                 sessionStorage.setItem(
                   "region",
                   response.data.customer.use_region
                 );
-                if (session_token) {
-                  this.$emit("login", response.data);
-                }
+                this.$emit("login", response.data);
               }
-              //  else {
-              //     this.currentRightComponent = null
-              //     this.currentLeftComponent = LoginComponent
-              // }
             })
             .catch((err) => {
               this.$notify.error({

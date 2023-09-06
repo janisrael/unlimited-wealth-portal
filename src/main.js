@@ -22,15 +22,21 @@ import VueAxios from "vue-axios";
 import VueLazyload from "vue-lazyload";
 import VueLazyImageLoading from "vue-lazy-image-loading";
 import PubNubVue from "pubnub-vue";
-/* import font awesome icon component */
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-// require('dotenv').config();
 
 /* add font awesome icon component */
+// Vue = require('vue');
+// Vue.use(require("vue-pubnub"), {
+//     subscribeKey: "sub-c-c02c8970-4729-4e8c-ae32-8e66935e2014",
+//     // publishKey: "myPublishKey",
+//     userId: "35467812y8u390129ui3",
+//     restore: true,
+//     logVerbosity: true,
+//     ssl: true,
+//     presenceTimeout: 130,
+// });
 Vue.component("font-awesome-icon", FontAwesomeIcon);
-// Make BootstrapVue available throughout your project
-// Vue.use(BootstrapVue);
-// Optionally install the BootstrapVue icon components plugin
+
 Vue.use(IconsPlugin);
 Vue.use(VueRouter);
 
@@ -49,7 +55,11 @@ Vue.use(PubNubVue, {
     // publishKey: "pub-c-c78be85e-c4e2-4e03-b862-ca9674005d70",
     userId: "35467812y8u390129ui3",
     restore: true,
+    logVerbosity: true,
+    ssl: true,
+    presenceTimeout: 130,
 });
+
 //Sentry integration
 const router = new Router({});
 
@@ -98,8 +108,3 @@ new Vue({
     render: (h) => h(App),
     store: store,
 }).$mount("#app");
-
-// Vue.component(
-//   "index-component",
-//   require("./App.vue").default
-// );
