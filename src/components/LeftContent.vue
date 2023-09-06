@@ -336,7 +336,9 @@ export default {
       // this.event_list = freshList;
       this.event_list = [];
       // setTimeout(() => {
-      this.event_list = freshList;
+      this.$nextTick(() => {
+        this.event_list = freshList;
+      });
       // }, 100);
     },
     CloseModal() {
