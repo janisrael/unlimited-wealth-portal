@@ -1,3 +1,5 @@
+@import url('https://fonts.cdnfonts.com/css/open-sans');
+
 /* scroll */
 /* width */
 ::-webkit-scrollbar {
@@ -57,7 +59,7 @@
 .el-calendar-table .el-calendar-day {
     box-sizing: border-box;
     /* padding: 8px; */
-    height: 32px !important;
+    height: 36px !important;
     background-color: #16153c !important;
     margin: 4px !important;
     border-radius: 3px !important;
@@ -167,7 +169,7 @@ button.el-button.btn-failed.el-button--info.el-button--mini.is-plain {
     flex: none;
     order: 0;
     flex-grow: 0;
-    margin: 0px 20px;
+    /* margin: 0px 20px; */
 }
 
 .bookings-sub-title {
@@ -207,7 +209,7 @@ div.card-content-title {
     padding-left: 16px;
     padding-top: 21px;
     font-size: 18px;
-    font-family: sans-serif;
+    font-family: 'Open Sans', sans-serif;
     /* text-shadow: 1px 1px 2px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a; */
     text-shadow: 2px 3px 5px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a;
 }
@@ -241,7 +243,7 @@ div.card-content-region {
     padding-left: 16px;
     /* padding-top: 42px; */
     font-size: 32px;
-    font-family: sans-serif;
+    font-family: 'Open Sans', sans-serif;
     text-shadow: 2px 3px 5px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a;
 }
 div.card-content-sched {
@@ -252,7 +254,7 @@ div.card-content-sched {
     padding-left: 26px;
     padding-top: 134px;
     font-size: 12px;
-    font-family: sans-serif;
+    font-family: 'Open Sans', sans-serif;
     text-shadow: 2px 3px 5px #20224a, 0 0 1em #20224a, 0 0 0.2em #20224a;
 }
 .el-card.box-card.card-left-panel > .el-card__header {
@@ -310,8 +312,8 @@ html,
 body {
     /*background-color: #fff;*/
     /*color: #636b6f;*/
+    font-family: 'Open Sans', sans-serif;
     background-color: #202149 !important;
-    font-family: sans-serif;
     font-weight: 200;
     height: 100vh;
     margin: 0;
@@ -374,7 +376,7 @@ i.el-icon-circle-plus {
     color: #fff;
 }
 .left-panel > .panel-header {
-    padding: 27.8px 0 27.8px 20px !important;
+    padding: 28px 38px !important;
 }
 .right-panel > .panel-header {
     padding: 20px;
@@ -685,12 +687,16 @@ span.modal-span {
 
 .calendar-modal .el-dialog {
     margin: 50px 30px 50px auto !important;
+    border-radius: 4px;
+    border: 0.5px solid #B5E5FF;
 }
 
 .upcoming-booking-modal .el-dialog {
     position: absolute;
     bottom: 0;
     right: 30px;
+    border-radius: 4px;
+    border: 0.5px solid #B5E5FF;
 }
 .upcoming-booking-modal .el-dialog .el-dialog__body {
     padding: 0;
@@ -701,8 +707,12 @@ span.modal-span {
     padding: 0 !important;
 }
 .calendar-modal .el-dialog .el-dialog__body {
-    width: auto !important;
+    width: 100% !important;
+    padding: 0 0 10px;
 }
+.upcoming-booking-modal .el-dialog .el-dialog__header {
+    padding: 15px !important;
+  }
 
 .carousel-formated-date {
     font-size: 22px;
@@ -878,6 +888,10 @@ p.speaker-name {
 .speaker-wrapper {
     margin-top: 1.5rem;
 }
+.speaker-avatar-circle{
+    border: 1.5px solid #b5e5ff;
+}
+
 
 .booked_carousel_item {
     background: linear-gradient(270deg, #403b62 0%, #3c4f6f 100%) !important;

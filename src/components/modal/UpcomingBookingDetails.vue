@@ -36,11 +36,13 @@
           </el-col>
           <el-col :span="8" style="text-align: right">
             <div class="grid-content">
-              <el-tooltip class="item" content="Coming soon" placement="top">
-                <el-button type="danger" plain class="cancel-booking"
-                  >Cancel Booking</el-button
-                >
-              </el-tooltip>
+              <el-button
+                type="danger"
+                plain
+                class="cancel-booking"
+                @click="cancelBooking(selected_booking)"
+                >Cancel Booking</el-button
+              >
             </div>
           </el-col>
         </el-row>
@@ -89,21 +91,19 @@
               <p class="gray-text">
                 {{ getFormatedLocalTime }}
               </p>
-              <el-tooltip
-                class="item"
-                content="Coming soon"
-                placement="top"
-                :disabled="!can_join_booking"
+              <el-link
+                :href="can_join_booking ? selected_booking.join_url : '#'"
+                style="width: 100%; margin-top: 10px; display: block"
+                target="_blank"
               >
                 <el-button
+                  style="width: 100%"
                   type="success"
-                  style="width: 90%; margin-top: 10px"
                   :disabled="!can_join_booking"
                   :class="{ 'btn-success-custom': can_join_booking }"
                   >{{ getCountdownDate }}</el-button
                 >
-                <!--  @click="handleBook()" -->
-              </el-tooltip>
+              </el-link>
             </div>
           </div>
         </el-card>
@@ -134,23 +134,6 @@ export default {
       this.$emit("close");
     },
     errorHandler() {},
-
-    getLocalTimezone() {
-      var timezone = "";
-
-      switch (this.selected_booking.event_region) {
-        case "uk":
-          timezone = "Europe/London";
-          break;
-        case "aus":
-          timezone = "Australia/Sydney";
-          break;
-        case "phl":
-          timezone = "Asia/Manila";
-          break;
-      }
-      return timezone;
-    },
     getFormatedDate(date) {
       var formated_date = new Date(date).toLocaleString("default", {
         month: "numeric",
@@ -159,19 +142,53 @@ export default {
       });
       return formated_date;
     },
+    cancelBooking(booking) {
+      this.$confirm(
+        "Are you sure you want to delete this booking?",
+        "Warning",
+        {
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+          type: "warning",
+        }
+      )
+        .then(() => {
+          let url =
+            process.env.VUE_APP_API_URL +
+            "/api/account/booking/" +
+            booking.id +
+            "/cancel";
+          this.axios
+            .post(url, null, {
+              headers: {
+                "X-Session-Key": sessionStorage.getItem("token"),
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            })
+            .then((response) => {
+              if (response.status === 200) {
+                this.$emit("cancel_event", booking);
+                this.handleClose();
+
+                this.$notify({
+                  title: "Congratulations",
+                  message: "Successfully deleted the booking",
+                  type: "success",
+                });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+        .catch(() => {});
+    },
   },
   computed: {
     getFormatedLocalTime() {
-      var gmt = new Date()
-        .toLocaleString("en", {
-          timeZone: this.getLocalTimezone(),
-          timeZoneName: "short",
-        })
-        .split(" ")[3];
-
-      var start = this.selected_booking.start_at.local + " " + gmt;
-      var end = this.selected_booking.end_at.local + " " + gmt;
-      var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      var start = this.selected_booking.start_at.utc + " UTC";
+      var end = this.selected_booking.end_at.utc + " UTC";
 
       var start_local_date = new Date(start).toLocaleString("default", {
         month: "short",
@@ -190,7 +207,6 @@ export default {
         hour: "numeric",
         minute: "2-digit",
         timeZoneName: "short",
-        timeZone: timeZone,
       });
       if (
         new Date(start_local_date).toDateString() ===
@@ -202,23 +218,18 @@ export default {
           hour: "numeric",
           minute: "2-digit",
           timeZoneName: "short",
-          timeZone: timeZone,
         });
       }
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.start_local_date = start_local_date;
-
       return start_local_date + " to " + end_local_date;
     },
     getCountdownDate() {
       let pluralize = require("pluralize");
 
-      var countdowndate = new Date(
-        this.selected_booking.start_at.local
-      ).getTime();
+      var start = this.selected_booking.start_at.utc + " UTC";
+      var countdowndate = new Date(start).getTime();
 
       //FOR TESTING ONLY
-      // countdowndate = new Date("August 2, 2023 18:59:00").getTime();
+      // countdowndate = new Date("September 5, 2023 16:19:00").getTime();
 
       var now = new Date().getTime();
       var timetodate = countdowndate - now;
@@ -256,6 +267,7 @@ export default {
         }
       } else {
         //less than a month
+
         if (weeks > 0) {
           //more than a week
           if (days > 0) {
@@ -269,8 +281,10 @@ export default {
           }
         } else {
           //less than a week
+
           if (days > 0) {
             //more than a day
+
             if (hours > 0) {
               return `Event starts in ${pluralize(
                 "day",
@@ -286,15 +300,16 @@ export default {
               //more than an hour
               if (minutes > 0) {
                 return `Event starts in ${pluralize(
-                  "day",
-                  days,
+                  "hour",
+                  hours,
                   true
-                )} ${pluralize("hour", hours, true)}`;
+                )} ${pluralize("minute", minutes, true)}`;
               } else {
-                return `Event starts in ${pluralize("day", days, true)}`;
+                return `Event starts in ${pluralize("hour", hours, true)}`;
               }
             } else {
               //less than an hour and more than 15mins
+
               if (minutes > 0 && minutes > 15) {
                 return `Event starts in ${pluralize("minute", minutes, true)}`;
               } else {
@@ -328,9 +343,12 @@ export default {
   padding-top: 20px;
 }
 .gray-text {
-  color: #a1a0b2;
+  /* color: #a1a0b2; */
 }
 .el-dialog__wrapper {
   backdrop-filter: none !important;
+}
+.el-link.is-underline:hover:after {
+  border-bottom: none;
 }
 </style>

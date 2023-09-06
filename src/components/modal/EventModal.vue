@@ -112,6 +112,7 @@
                       <div class="carousel-check-wrapper">
                         <div class="carousel-checked">
                           <el-tooltip
+                            v-if="event._related_booking.progress != 'pending'"
                             class="item speaker-icon"
                             content="Cancel Booking"
                             placement="top"
@@ -126,6 +127,8 @@
                               class="el-icon-circle-close"
                             ></i>
                           </el-tooltip>
+                          <el-badge v-else value="Pending" class="item">
+                          </el-badge>
                         </div>
                       </div>
 
