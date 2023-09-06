@@ -214,8 +214,8 @@ export default {
     }
   },
   methods: {
-    rebuild(action) {
-      this.$refs.leftComponent.rebuildEventList(action);
+    rebuild() {
+      this.$refs.leftComponent.rebuildEventList();
     },
     verifyToken(token) {
       let url = process.env.VUE_APP_API_URL + "/api/auth/login";

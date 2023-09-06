@@ -1,7 +1,7 @@
 <template>
   <div class="left-panel-wrapper">
     <el-row>
-      <el-col :span="24" style="padding: 0px 0px 0px 28px !important">
+      <el-col :span="24" style="padding: 0px 0px 0px 20px !important">
         <!-- eslint-disable -->
         <el-col
           v-for="(event_type, i) in event_types"
@@ -11,7 +11,7 @@
           :md="12"
           :lg="8"
           :xl="8"
-          style="padding-right: 28px; padding-top: 28px"
+          style="padding-right: 20px; padding-top: 20px"
         >
           <div @click="getModal(event_type)">
             <el-card class="box-card card-left-panel" shadow="hover">
@@ -332,11 +332,9 @@ export default {
     },
     rebuildEventList() {
       // this.$refs.modalComponent.triggerLoading();
-
       let freshList = this.withBooking(this.event_list);
+      // this.event_list = freshList;
       this.event_list = [];
-      this.event_list = freshList;
-
       // setTimeout(() => {
       this.event_list = freshList;
       // }, 100);
@@ -398,8 +396,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.el-card {
-  background-color: transparent !important;
-}
-</style>
+<style scoped></style>
