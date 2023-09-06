@@ -445,14 +445,14 @@ export default {
     },
   },
   mounted() {
-    // setTimeout(() => {
-    this.$nextTick(() => {
+    setTimeout(() => {
+      // this.$nextTick(() => {
       this.this_load = false;
       if (this.event_list.length > 0) {
         this.getVideo(this.event_list[0]);
       }
-    });
-    // }, 1000);
+      // });
+    }, 1000);
   },
   methods: {
     /* eslint-disable */

@@ -55,48 +55,53 @@ export default {
     receptor(msg) {
       var listenerRes = {};
       listenerRes = JSON.parse(msg.message);
+      if (
+        listenerRes.data.customer_id === this.customer_id &&
+        (listenerRes.type === "booking.confirmed" ||
+          listenerRes.type === "booking.failed")
+      ) {
+        var event_match = {};
+        var event_req = [];
+        console.log(listenerRes, "listenerResreceptor");
+        var event_id = listenerRes.data.event_id;
 
-      var event_match = {};
-      var event_req = [];
-      console.log(listenerRes, "listenerResreceptor");
-      var event_id = listenerRes.data.event_id;
+        if (listenerRes) {
+          let type = listenerRes.type;
 
-      if (listenerRes) {
-        let type = listenerRes.type;
-
-        if (type === "booking.failed") {
-          if (sessionStorage.getItem("pending_booking")) {
-            event_req = JSON.parse(sessionStorage.getItem("pending_booking"));
-            event_match = event_req.find((b) => b.event_id === event_id);
+          if (type === "booking.failed") {
+            if (sessionStorage.getItem("pending_booking")) {
+              event_req = JSON.parse(sessionStorage.getItem("pending_booking"));
+              event_match = event_req.find((b) => b.event_id === event_id);
+            }
+            if (event_match) {
+              this.$notify.error({
+                title: "Booking Failed",
+                dangerouslyUseHTMLString: true,
+                message:
+                  "<p>Event name: " +
+                  "<strong>" +
+                  (!event_match.event_name
+                    ? listenerRes.data.event_name
+                    : event_match.event_name) +
+                  "</strong><br>Region: " +
+                  "<strong>" +
+                  event_match.region.toUpperCase() +
+                  "</strong></p>",
+                duration: 5000,
+              });
+            }
           }
-          if (event_match) {
-            this.$notify.error({
-              title: "Booking Failed",
-              dangerouslyUseHTMLString: true,
-              message:
-                "<p>Event name: " +
-                "<strong>" +
-                (!event_match.event_name
-                  ? listenerRes.data.event_name
-                  : event_match.event_name) +
-                "</strong><br>Region: " +
-                "<strong>" +
-                event_match.region.toUpperCase() +
-                "</strong></p>",
-              duration: 5000,
+          if (type === "booking.confirmed") {
+            console.log("booking confirmed");
+          }
+          this.$store
+            .dispatch("updateBooking", listenerRes)
+            // eslint-disable-next-line no-unused-vars
+            .then((response) => {
+              this.triggerRebuild = listenerRes;
+              listenerRes = undefined;
             });
-          }
         }
-        if (type === "booking.confirmed") {
-          console.log("booking confirmed");
-        }
-        this.$store
-          .dispatch("updateBooking", listenerRes)
-          // eslint-disable-next-line no-unused-vars
-          .then((response) => {
-            this.triggerRebuild = listenerRes;
-            listenerRes = undefined;
-          });
       }
     },
     getFormatedDate(date) {

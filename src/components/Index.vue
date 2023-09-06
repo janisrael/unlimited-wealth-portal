@@ -2,7 +2,14 @@
   <div class="row full-height">
     <el-row>
       <el-col v-if="verification === true" :span="24">
-        <el-col :span="18" class="right-panel">
+        <el-col
+          :xs="24"
+          :sm="24"
+          :md="12"
+          :lg="18"
+          :xl="18"
+          class="right-panel"
+        >
           <el-col :span="24" class="panel-header">
             <el-col :span="17">
               <el-radio
@@ -77,7 +84,7 @@
             @login="login"
           />
         </el-col>
-        <el-col :span="6" class="left-panel">
+        <el-col :xs="24" :sm="24" :md="24" :lg="6" :xl="6" class="left-panel">
           <el-col
             :span="24"
             class="panel-header"
