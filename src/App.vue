@@ -88,7 +88,7 @@ export default {
           }
         }
         if (type === "booking.confirmed") {
-          alert("confirmed");
+          console.log('booking confirmed')
         }
         this.$store
           .dispatch("updateBooking", listenerRes)
