@@ -153,7 +153,6 @@ export default {
   },
   methods: {
     isReadyToJoin(event) {
-      console.log("ready to join event: ", event);
       let now = new Date().getTime();
       let start = new Date(event.start_at.utc + " UTC").getTime();
       if (
@@ -243,6 +242,8 @@ export default {
           this.filterMyUpcomingEventsByRegion();
 
           this.all_bookings = this._myybookings;
+          this.removeCompletedEvents();
+
           this.all_bookings.sort(function (a, b) {
             return new Date(a.start_at.local) - new Date(b.start_at.local);
           });
@@ -418,6 +419,14 @@ export default {
       event["id"] = event["event_id"];
       this.$store.dispatch("cancelBooking", event);
       this.all_bookings = this._myybookings;
+      this.removeCompletedEvents();
+    },
+    removeCompletedEvents() {
+      this.all_bookings = this.all_bookings.filter(function (item) {
+        let now = new Date().getTime();
+        let end = new Date(item.end_at.utc + " UTC").getTime();
+        return Number(end) > Number(now);
+      });
     },
   },
 };
