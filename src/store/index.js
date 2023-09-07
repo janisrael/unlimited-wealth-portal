@@ -12,14 +12,12 @@ const store = new Vuex.Store({
         my_active_events: [],
         customer: {},
         all_upcoming_events: [],
+        // listener_data: {},
     },
     mutations: {
         SET_MYBOOKINS: (state, payload) => {
             state.myybookings = payload;
         },
-        // SET_ACTIVE_EVENTS: (state, payload) => {
-        //     state.active_events = payload;
-        // },
         ASSIGN_CUSTOMER: (state, payload) => {
             state.customer = payload;
             window.sessionStorage.setItem("customer_id", payload.customer.id);
@@ -47,6 +45,9 @@ const store = new Vuex.Store({
 
             state.myybookings.splice(index, 1);
         },
+        // ASSIGN_LISTENER_DATA: (state, payload) => {
+        //     state.listener_data = payload;
+        // },
         UPDATE_BOOKING: (state, payload) => {
             // for booking confirmed and failed
             const index = state.myybookings.findIndex((object) => {
@@ -100,9 +101,9 @@ const store = new Vuex.Store({
                     });
             });
         },
-        async setActiveEvents({ commit, state }, value) {
-            commit("SET_ACTIVE_EVENTS", value);
-        },
+        // async setActiveEvents({ commit, state }, value) {
+        //     commit("SET_ACTIVE_EVENTS", value);
+        // },
         async addBooking({ commit, state }, value) {
             console.log(value, state, "add booking");
             commit("ADD_BOOKING", value);
@@ -146,57 +147,15 @@ const store = new Vuex.Store({
         async assignCustomer({ commit, state }, value) {
             commit("ASSIGN_CUSTOMER", value);
         },
-        // async callUpcoming({ commit, state }, value) {
-        //     // for testing
-        //     // Loop from my bookings and call each evennts
-        //     console.log(value, "value");
-        //     let _my_bookings = value.my_bookings;
-        //     let region =
-        //         value.my_bookings[0].event_region === "gb"
-        //             ? "uk"
-        //             : value.my_bookings[0].event_region;
-        //     _my_bookings.forEach((booking, index) => {
-        //         setTimeout(() => {
-        //             let url =
-        //                 process.env.VUE_APP_API_URL +
-        //                 "/api/events/upcoming?region=" +
-        //                 region +
-        //                 "&event_type_id=" +
-        //                 booking.id;
-        //             axios
-        //                 .get(url, {
-        //                     headers: {
-        //                         "X-Session-Key": value.token,
-        //                         "Content-Type": "application/json",
-        //                         Accept: "application/json",
-        //                     },
-        //                 })
-        //                 .then((response) => {
-        //                     if (response.status === 200) {
-        //                         console.log(response, "in loop");
-        //                         // events = response.data.data;
-
-        //                         // this.event_list = [];
-
-        //                         // this.event_list = this.withBooking(events);
-        //                         // this.event_list.sort(function (a, b) {
-        //                         //     return (
-        //                         //         new Date(a.start_at.local) -
-        //                         //         new Date(b.start_at.local)
-        //                         //     );
-        //                         // });
-        //                     }
-        //                 });
-        //         }, 500);
-        //     });
-
-        //     commit("SET_ACTIVE_EVENTS", value);
+        // async watchListenerData({ commit, state }, value) {
+        //     commit("ASSIGN_LISTENER_DATA", value);
         // },
     },
     getters: {
         _myybookings: (state) => state.myybookings,
-        _my_active_events: (state) => state.my_active_events,
+        // _my_active_events: (state) => state.my_active_events,
         _customer: (state) => state.customer,
+        // _listener_data: (state) => state.listener_data,
     },
 });
 
