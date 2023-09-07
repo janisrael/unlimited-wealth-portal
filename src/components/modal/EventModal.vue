@@ -195,19 +195,18 @@
             >Book from available dates:</span
           >
           <div v-if="type === 'recording'" class="video-wrapper">
-            <el-tabs
-              @tab-click="video_url = active_tab"
-              type="card"
+            <el-radio-group
+              style="padding-bottom: 10px"
               v-model="active_tab"
+              size="medium"
               v-if="recordings_per_date.length > 0"
             >
-              <el-tab-pane
+              <el-radio-button
                 v-for="(recording, i) in recordings_per_date"
-                :key="i"
                 :name="recording"
                 :label="`Recording ${i + 1}`"
-              ></el-tab-pane>
-            </el-tabs>
+              ></el-radio-button>
+            </el-radio-group>
             <div class="player-container">
               <vue-core-video-player
                 v-if="video_url"
@@ -729,13 +728,12 @@ export default {
                 ? response.data.data.recordings[0]
                 : null;
 
-            this.active_tab = this.video_url;
+            this.active_tab = "Recording 1";
 
             this.recordings_per_date =
               response.data.data.recordings.length > 0
                 ? response.data.data.recordings
                 : [];
-            // console.log("video url: ", response.data);
           }
         });
     },
@@ -743,4 +741,17 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.el-radio-button__inner {
+  background: #312b54;
+  border: 1px solid #312b54;
+}
+.el-radio-button:first-child .el-radio-button__inner {
+  border-left: 0;
+}
+.el-radio-button__orig-radio:checked + .el-radio-button__inner {
+  background-color: #42427c;
+  border-color: #42427c;
+  box-shadow: -1px 0 0 0 #42427c;
+}
+</style>
