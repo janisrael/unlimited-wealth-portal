@@ -23,18 +23,26 @@
 
       <span slot="footer" class="dialog-footer" style="font-size: 12px">
         <el-row :gutter="20" type="flex" justify="space-between">
-          <el-col :span="6" style="text-align: left" class="gray-text">
+          <el-col
+            :span="can_join_booking ? 16 : 6"
+            style="text-align: left"
+            class="gray-text"
+          >
             <div class="grid-content">
               Booking ID: {{ selected_booking.id }}
             </div>
           </el-col>
-          <el-col :span="4" style="text-align: left" class="gray-text">
+          <el-col
+            :span="can_join_booking ? 8 : 4"
+            :style="{ 'text-align': can_join_booking ? 'right' : 'left' }"
+            class="gray-text"
+          >
             <div class="grid-content">
               Date:
               {{ getFormatedDate(selected_booking.start_date) }}
             </div>
           </el-col>
-          <el-col :span="8" style="text-align: right">
+          <el-col :span="8" style="text-align: right" v-if="!can_join_booking">
             <div class="grid-content">
               <el-button
                 type="danger"
