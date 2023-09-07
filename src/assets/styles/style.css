@@ -409,6 +409,9 @@ i.el-icon-circle-plus {
 .channel-item > .el-badge.item > .el-badge__content {
     border: none !important;
 }
+.el-badge__content {
+    background-color: #354961 !important;
+  }
 .item-read {
     color: rgba(255, 255, 255, 0.57);
 }
