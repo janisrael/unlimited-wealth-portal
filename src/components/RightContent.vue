@@ -36,7 +36,11 @@
         :span="24"
         style="margin-bottom: 8px"
       >
-        <div class="events-box" @click="getBookingDetails(event)">
+        <div
+          class="events-box"
+          @click="getBookingDetails(event)"
+          :class="{ 'join-now-bg': isReadyToJoin(event) }"
+        >
           <el-col :span="4">
             <el-tooltip
               class="item speaker-icon"
@@ -46,6 +50,7 @@
             >
               <el-avatar
                 class="speaker-avatar-circle"
+                :class="{ 'green-border': isReadyToJoin(event) }"
                 :size="40"
                 :src="
                   require(`@/assets/images/speakers/${
@@ -147,6 +152,17 @@ export default {
     this.getMyBookings();
   },
   methods: {
+    isReadyToJoin(event) {
+      console.log("ready to join event: ", event);
+      let now = new Date().getTime();
+      let start = new Date(event.start_at.utc + " UTC").getTime();
+      if (
+        Number(start) < Number(now) ||
+        (Number(start) - Number(now)) / 1000 / 60 < 15
+      ) {
+        return true;
+      } else return false;
+    },
     getEventsDate(date) {
       var events = [];
       var url = "";
@@ -407,4 +423,12 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.join-now-bg {
+  background: #a4f14a57;
+  border: 0.5px solid #a4f14a;
+}
+.green-border {
+  border: 1.5px solid #a4f14a57;
+}
+</style>
