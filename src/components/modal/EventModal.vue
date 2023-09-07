@@ -446,12 +446,14 @@ export default {
     },
   },
   mounted() {
-    setTimeout(() => {
-      this.this_load = false;
-      if (this.event_list.length > 0) {
-        this.getVideo(this.event_list[0]);
-      }
-    }, 1000);
+    this.this_load = false;
+    if (this.event_list.length > 0 && this.type === "recording") {
+      // eslint-disable-next-line vue/no-mutating-props
+      this.event_list.sort(function (a, b) {
+        return new Date(b.start_at.utc) - new Date(a.start_at.utc);
+      });
+      this.getVideo(this.event_list[0]);
+    }
   },
   methods: {
     /* eslint-disable */
