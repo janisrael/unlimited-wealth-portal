@@ -119,12 +119,9 @@ export default {
       avatar: require("../assets/images/avatar.png"),
       currentComponent: null,
       date: {},
-      // region: 'phl',
       event_list: [],
       all_bookings: [],
       event_on_this_day: [],
-      my_events_this_week: [],
-      my_events_next_week: [],
       my_events_upcoming: [],
       my_events_for_today: [],
       calendar_date: new Date(),
@@ -247,56 +244,6 @@ export default {
           this.all_bookings.sort(function (a, b) {
             return new Date(a.start_at.local) - new Date(b.start_at.local);
           });
-
-          let curr = new Date();
-          let week = [];
-          let next_week = [];
-
-          for (let i = 1; i <= 7; i++) {
-            let first = curr.getDate() - curr.getDay() + i;
-            let day = new Date(curr.setDate(first)).toISOString().slice(0, 10);
-            week.push(day);
-          }
-
-          //next week
-          let next_week_start = new Date(week[week.length - 1]);
-          for (let i = 1; i <= 7; i++) {
-            let first_next_week =
-              next_week_start.getDate() - next_week_start.getDay() + i;
-            let next_week_day = new Date(
-              next_week_start.setDate(first_next_week)
-            )
-              .toISOString()
-              .slice(0, 10);
-            next_week.push(next_week_day);
-          }
-          // /* eslint-disable */
-          if (this.my_events_upcoming.length > 0) {
-            //check events
-            this.my_events_upcoming.forEach((value) => {
-              week.forEach((value_week) => {
-                if (value.start_date === value_week) {
-                  this.my_events_this_week.push(value);
-                }
-              });
-              next_week.forEach((value_week) => {
-                if (value.start_date === value_week) {
-                  this.my_events_next_week.push(value);
-                }
-              });
-            });
-          }
-          if (this.my_events_this_week.length > 0) {
-            this.my_events_this_week.sort(function (a, b) {
-              return new Date(a.start_date) - new Date(b.start_date);
-            });
-          }
-
-          if (this.my_events_next_week.length > 0) {
-            this.my_events_next_week.sort(function (a, b) {
-              return new Date(a.start_date) - new Date(b.start_date);
-            });
-          }
         }
       });
     },
