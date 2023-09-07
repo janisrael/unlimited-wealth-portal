@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <div class="watched_data_trigger">{{ triggerRebuild }}</div>
+    <!-- {{ category }} -->
+    <!-- hidden, use only to make use watch will trigger when data change -->
+    <!-- <div class="watched_data_trigger">{{ triggerRebuild }}</div> -->
+    <!--  -->
     <index ref="indexComponent" />
   </div>
 </template>
@@ -18,7 +21,10 @@ export default {
       customer_id: sessionStorage.getItem("customer_id"),
       data: {},
       category: "",
-      triggerRebuild: null,
+      // triggerRebuild: null,
+      messages: [], // listener message history, max 10,
+      presense: {},
+      pubnub_status: null,
     };
   },
   mounted() {
@@ -27,32 +33,40 @@ export default {
         channels: [
           "customers." + sessionStorage.getItem("customer_id") + ".booking",
         ],
+        withPresence: true,
       });
 
-      this.$pnGetMessage(
+      this.messages = this.$pnGetMessage(
         "customers." + sessionStorage.getItem("customer_id") + ".booking",
         this.receptor,
         10
+      );
+      this.$pnGetPresence(
+        "customers." + sessionStorage.getItem("customer_id") + ".booking",
+        this.presence
       );
 
       this.$pnGetStatus(this.status);
     }
   },
-  watch: {
-    triggerRebuild: function () {
-      // if (
-      //   this.triggerRebuild === "booking.failed" ||
-      //   this.triggerRebuild === "booking.confirmed"
-      // ) {
-      this.$refs.indexComponent.rebuild(this.triggerRebuild);
-      // }
-    },
-  },
+  // watch: {
+  //   triggerRebuild: function () {
+  //     // TO TRIGGER REBUILD METHOD ON LEFTCOMPONENT, 2 OPTION FOR TESTING,
+  //     // this.$refs.indexComponent.rebuild(this.triggerRebuild); // first option, using refs,
+  //     // this.$store.dispatch("watchListenerData", this.triggerRebuild); // second option using distach,computed and watch
+  //   },
+  // },
   methods: {
+    presence(ps) {
+      this.presense = ps.occupancy;
+      console.log("presense", ps);
+    },
     status(st) {
+      console.log("listener status: ", st);
       this.category = st.category;
     },
     receptor(msg) {
+      // triggers for new message from listener
       var listenerRes = {};
       listenerRes = JSON.parse(msg.message);
       if (
@@ -70,6 +84,7 @@ export default {
 
           if (type === "booking.failed") {
             if (sessionStorage.getItem("pending_booking")) {
+              // for getting the complete name of event, this data assign during handlebooking method,
               event_req = JSON.parse(sessionStorage.getItem("pending_booking"));
               event_match = event_req.find((b) => b.event_id === event_id);
             }
@@ -98,7 +113,8 @@ export default {
             .dispatch("updateBooking", listenerRes)
             // eslint-disable-next-line no-unused-vars
             .then((response) => {
-              this.triggerRebuild = listenerRes;
+              // this.triggerRebuild = listenerRes;
+              this.$root.$emit("rebuild-event-list");
               listenerRes = undefined;
             });
         }

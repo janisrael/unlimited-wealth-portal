@@ -811,6 +811,9 @@ span.modal-span {
     border: 1px solid #353272 !important;
     background-color: #17153c !important;
 }
+.el-notification__content strong {
+    font-weight: 500 !important;
+}
 .el-message-box__title,
 .el-message-box__content {
     color: #ffffff !important;

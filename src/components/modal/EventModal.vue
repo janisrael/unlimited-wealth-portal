@@ -97,7 +97,7 @@
                 >
                   <!--   -->
                   <div
-                    v-for="(event, i) in checkIfHasPending(event_list)"
+                    v-for="(event, i) in checkPending(event_list)"
                     :key="i"
                     v-if="
                       event._related_booking.progress !== undefined &&
@@ -373,6 +373,7 @@ export default {
     event_list: {
       type: Array,
       required: true,
+      default: null,
     },
     event: {
       type: Object,
@@ -446,18 +447,16 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      // this.$nextTick(() => {
       this.this_load = false;
       if (this.event_list.length > 0) {
         this.getVideo(this.event_list[0]);
       }
-      // });
     }, 1000);
   },
   methods: {
     /* eslint-disable */
-    checkIfHasPending(events) {
-      // clear sessionStorage for pending_booking
+    checkPending(events) {
+      // clear sessionStorage pending_bookings if event_list dont have pending status
       let events_list = events;
       let event_match = events.find(
         (b) => b._related_booking.progress === "pending"
@@ -497,7 +496,8 @@ export default {
               this.disable = false;
             });
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log(err);
           // this.$message({
           //   type: "info",
           //   message: "Delete canceled",
