@@ -36,7 +36,11 @@
         :span="24"
         style="margin-bottom: 8px"
       >
-        <div class="events-box" @click="getBookingDetails(event)">
+        <div
+          class="events-box"
+          @click="getBookingDetails(event)"
+          :class="{ 'join-now-bg': isReadyToJoin(event) }"
+        >
           <el-col :span="4">
             <el-tooltip
               class="item speaker-icon"
@@ -46,6 +50,7 @@
             >
               <el-avatar
                 class="speaker-avatar-circle"
+                :class="{ 'green-border': isReadyToJoin(event) }"
                 :size="40"
                 :src="
                   require(`@/assets/images/speakers/${
@@ -114,12 +119,9 @@ export default {
       avatar: require("../assets/images/avatar.png"),
       currentComponent: null,
       date: {},
-      // region: 'phl',
       event_list: [],
       all_bookings: [],
       event_on_this_day: [],
-      my_events_this_week: [],
-      my_events_next_week: [],
       my_events_upcoming: [],
       my_events_for_today: [],
       calendar_date: new Date(),
@@ -147,6 +149,16 @@ export default {
     this.getMyBookings();
   },
   methods: {
+    isReadyToJoin(event) {
+      let now = new Date().getTime();
+      let start = new Date(event.start_at.utc + " UTC").getTime();
+      if (
+        Number(start) < Number(now) ||
+        (Number(start) - Number(now)) / 1000 / 60 < 15
+      ) {
+        return true;
+      } else return false;
+    },
     getEventsDate(date) {
       var events = [];
       var url = "";
@@ -227,59 +239,11 @@ export default {
           this.filterMyUpcomingEventsByRegion();
 
           this.all_bookings = this._myybookings;
+          this.removeCompletedEvents();
+
           this.all_bookings.sort(function (a, b) {
             return new Date(a.start_at.local) - new Date(b.start_at.local);
           });
-
-          let curr = new Date();
-          let week = [];
-          let next_week = [];
-
-          for (let i = 1; i <= 7; i++) {
-            let first = curr.getDate() - curr.getDay() + i;
-            let day = new Date(curr.setDate(first)).toISOString().slice(0, 10);
-            week.push(day);
-          }
-
-          //next week
-          let next_week_start = new Date(week[week.length - 1]);
-          for (let i = 1; i <= 7; i++) {
-            let first_next_week =
-              next_week_start.getDate() - next_week_start.getDay() + i;
-            let next_week_day = new Date(
-              next_week_start.setDate(first_next_week)
-            )
-              .toISOString()
-              .slice(0, 10);
-            next_week.push(next_week_day);
-          }
-          // /* eslint-disable */
-          if (this.my_events_upcoming.length > 0) {
-            //check events
-            this.my_events_upcoming.forEach((value) => {
-              week.forEach((value_week) => {
-                if (value.start_date === value_week) {
-                  this.my_events_this_week.push(value);
-                }
-              });
-              next_week.forEach((value_week) => {
-                if (value.start_date === value_week) {
-                  this.my_events_next_week.push(value);
-                }
-              });
-            });
-          }
-          if (this.my_events_this_week.length > 0) {
-            this.my_events_this_week.sort(function (a, b) {
-              return new Date(a.start_date) - new Date(b.start_date);
-            });
-          }
-
-          if (this.my_events_next_week.length > 0) {
-            this.my_events_next_week.sort(function (a, b) {
-              return new Date(a.start_date) - new Date(b.start_date);
-            });
-          }
         }
       });
     },
@@ -402,9 +366,25 @@ export default {
       event["id"] = event["event_id"];
       this.$store.dispatch("cancelBooking", event);
       this.all_bookings = this._myybookings;
+      this.removeCompletedEvents();
+    },
+    removeCompletedEvents() {
+      this.all_bookings = this.all_bookings.filter(function (item) {
+        let now = new Date().getTime();
+        let end = new Date(item.end_at.utc + " UTC").getTime();
+        return Number(end) > Number(now);
+      });
     },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.join-now-bg {
+  background: #a4f14a57;
+  border: 0.5px solid #a4f14a;
+}
+.green-border {
+  border: 1.5px solid #a4f14a57;
+}
+</style>

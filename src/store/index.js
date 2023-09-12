@@ -7,8 +7,6 @@ const store = new Vuex.Store({
     namespaced: true,
     state: {
         myybookings: [],
-        myybooking_this_week: [],
-        myybooking_next_week: [],
         my_active_events: [],
         customer: {},
         all_upcoming_events_by_region: [],
@@ -37,6 +35,12 @@ const store = new Vuex.Store({
                     meta: {},
                     registration_key: "",
                     start_date: value.start_at.utc,
+                    end_at: {
+                        utc: value.end_at.utc
+                    },
+                    start_at: {
+                        utc: value.start_at.utc
+                    },
                     status: "Progress",
                 };
                 state.myybookings.push(new_booking);
