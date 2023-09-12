@@ -95,7 +95,6 @@
                   class="slick-list-upcoming"
                   v-bind="settings"
                 >
-                  <!--   -->
                   <div
                     v-for="(event, i) in checkPending(event_list)"
                     :key="i"
@@ -106,32 +105,71 @@
                     class="carousel-block"
                   >
                     <div
-                      class="carousel-content-upcoming booked_carousel_item"
-                      :class="{ 'selected-event': event.selected == true }"
+                      class="carousel-content-mybooked-events booked_carousel_item"
+                      :class="
+                        ({ 'selected-event': event.selected == true },
+                        {
+                          'event-completed':
+                            event.states.progress.toLowerCase() == 'completed',
+                        },
+                        {
+                          'event-ongoing':
+                            checkIfOngoing(event) == true
+                        }),
+                      "
                     >
                       <div class="carousel-check-wrapper">
                         <div class="carousel-checked">
                           <el-tooltip
-                            v-if="event._related_booking.progress != 'pending'"
+                            v-if="
+                              event._related_booking.progress.toLowerCase() ===
+                                'confirmed' &&
+                              event.states.progress.toLowerCase() ===
+                                'upcoming' &&
+                              !checkIfOngoing(event)
+                            "
                             class="item speaker-icon"
                             content="Cancel Booking"
                             placement="top"
                             effect="light"
                           >
                             <i
-                              v-if="
-                                event._related_booking.progress.toLowerCase() ===
-                                'confirmed'
-                              "
                               @click="cancelBooking(event)"
                               class="el-icon-circle-close"
                             ></i>
                           </el-tooltip>
-                          <el-badge v-else value="Pending" class="item">
+                          <el-badge
+                            v-if="
+                              event._related_booking.progress.toLowerCase() ===
+                              'pending'
+                            "
+                            value="Pending"
+                            class="item"
+                          >
                           </el-badge>
+                          <!-- join button at the top right -->
+                          <!-- <a
+                            v-if="
+                              event._related_booking.progress.toLowerCase() ===
+                                'confirmed' &&
+                              event.states.progress.toLowerCase() ===
+                                'upcoming' &&
+                              checkIfOngoing(event)
+                            "
+                            :href="event._related_booking.join_url"
+                            target="_blank"
+                          >
+                            <el-button
+                              type="success"
+                              size="mini"
+                              class="modal-join-btn"
+                              >JOIN</el-button
+                            ></a
+                          > -->
                         </div>
                       </div>
-
+                      <!-- {{ event._related_booking.join_url }} -->
+                      <!-- {{ event._related_booking.registration_key }} -->
                       <div class="carousel-day">{{ getDate(event.date) }}</div>
                       <div class="carousel-formated-date">
                         {{ getFormatedDate(event.date) }}
@@ -157,24 +195,61 @@
                         </el-tooltip>
                       </div>
 
-                      <el-tooltip
-                        class="item speaker-icon"
-                        effect="light"
-                        :content="getFormatedLocalTime(event.start_at.local)"
-                        placement="bottom"
-                      >
-                        <div
-                          v-if="type === 'upcoming'"
-                          class="sub-wrapper"
-                          style="display: inline-block; margin-top: 10px"
+                      <div v-if="checkIfOngoing(event) === true">
+                        <el-tooltip
+                          class="item speaker-icon"
+                          effect="light"
+                          :content="
+                            'Event on Progress: ' +
+                            getFormatedLocalTime(event.start_at.local)
+                          "
+                          placement="top"
                         >
-                          <i class="el-icon-alarm-clock speaker-icon"></i>
-                          <span class="speaker-name">
-                            {{ getFormatedTime(event.start_at.local) }}</span
+                          <div
+                            class="on-progress"
+                            style="display: inline-block; margin-bottom: 10px"
                           >
-                          <p class="speaker-name">{{ getLocalTimezone() }}</p>
+                            <!-- <div class="on-progress">Event ongoing</div> -->
+                            <i class="el-icon-alarm-clock speaker-icon"></i>
+                            <span class="speaker-name">
+                              {{ getFormatedTime(event.start_at.local) }}</span
+                            >
+                          </div>
+                        </el-tooltip>
+                        <div>
+                          <a
+                            :href="event._related_booking.join_url"
+                            target="_blank"
+                          >
+                            <el-button
+                              type="success"
+                              size="mini"
+                              class="modal-join-btn"
+                              >JOIN</el-button
+                            ></a
+                          >
                         </div>
-                      </el-tooltip>
+                      </div>
+                      <div v-else>
+                        <el-tooltip
+                          class="item speaker-icon"
+                          effect="light"
+                          :content="getFormatedLocalTime(event.start_at.local)"
+                          placement="bottom"
+                        >
+                          <div
+                            v-if="type === 'upcoming'"
+                            class="sub-wrapper"
+                            style="display: inline-block; margin-top: 10px"
+                          >
+                            <i class="el-icon-alarm-clock speaker-icon"></i>
+                            <span class="speaker-name">
+                              {{ getFormatedTime(event.start_at.local) }}</span
+                            >
+                            <p class="speaker-name">{{ getLocalTimezone() }}</p>
+                          </div>
+                        </el-tooltip>
+                      </div>
                     </div>
                   </div>
                 </VueSlickCarousel>
@@ -456,6 +531,18 @@ export default {
   },
   methods: {
     /* eslint-disable */
+    checkIfOngoing(event) {
+      // moment(localDt, localDtFormat).tz(timezone).format('YYYY-MM-DD hh:mm:ss A');
+      let now = this.$moment(new Date().toString()).format("YYYY-MM-DD h:mm");
+      // console.log(now, event.start_at.local, "event.start_at.local");
+      let start_date = event.start_at.local;
+      let end_date = event.end_at.local;
+      if (start_date < now && end_date > now) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     checkPending(events) {
       // clear sessionStorage pending_bookings if event_list dont have pending status
       let events_list = events;
@@ -691,6 +778,7 @@ export default {
             return object.id === event.id;
           });
           console.log(selected_index);
+
           this.$refs.slick.goTo(selected_index);
         } else {
           this.event_list.forEach((value, index) => {

@@ -169,11 +169,15 @@ export default {
           let related = {
             id: undefined,
             progress: undefined,
+            join_url: undefined,
+            registration_key: undefined,
           };
 
           if (related_booking) {
             related.id = related_booking.id;
             related.progress = "pending";
+            related.join_url = related_booking.join_url;
+            related.registration_key = related_booking.registration_key;
 
             if (related_booking.status === "Attending") {
               related.progress = "confirmed";
