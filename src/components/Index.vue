@@ -348,7 +348,10 @@ export default {
               .then((res_upcoming) => {
                 if (res_upcoming.status === 200) {
                   this.event_types = this.original_data = response.data.data;
-
+                  this.$store.dispatch(
+                    "allUpcomingEventsByRegion",
+                    response.data.data
+                  );
                   let related_events = res_upcoming.data.data;
 
                   this.event_types.forEach((event_type) => {
@@ -405,15 +408,17 @@ export default {
           this.use_region =
           this.selected_region =
             sessionStorage.getItem("region");
+
+        this.$nextTick(() => {
+          /* eslint-disable */
+          this.currentRightComponent = null;
+          this.getEventTypes();
+          this.$refs.calendarComponent.getEventsDate();
+        });
       }
 
       // setTimeout(() => {
-      this.$nextTick(() => {
-        /* eslint-disable */
-        this.currentRightComponent = null;
-        this.getEventTypes();
-        this.$refs.calendarComponent.getEventsDate();
-      });
+
       // }, 100);
     },
     getCountryByRegion(region) {

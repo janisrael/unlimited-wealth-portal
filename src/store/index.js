@@ -11,7 +11,7 @@ const store = new Vuex.Store({
         myybooking_next_week: [],
         my_active_events: [],
         customer: {},
-        all_upcoming_events: [],
+        all_upcoming_events_by_region: [],
         // listener_data: {},
     },
     mutations: {
@@ -21,6 +21,10 @@ const store = new Vuex.Store({
         ASSIGN_CUSTOMER: (state, payload) => {
             state.customer = payload;
             window.sessionStorage.setItem("customer_id", payload.customer.id);
+        },
+        SET_ALL_UPCOMING_EVENTS_BY_REGION: (state, payload) => {
+            // check wwhat region
+            // state.all_upcoming_events_by_region
         },
         ADD_BOOKING: (state, payload) => {
             payload.forEach((value) => {
@@ -147,6 +151,10 @@ const store = new Vuex.Store({
         async assignCustomer({ commit, state }, value) {
             commit("ASSIGN_CUSTOMER", value);
         },
+        async allUpcomingEventsByRegion({ commit, state }, value) {
+            commit("SET_ALL_UPCOMING_EVENTS_BY_REGION", value);
+        },
+
         // async watchListenerData({ commit, state }, value) {
         //     commit("ASSIGN_LISTENER_DATA", value);
         // },
