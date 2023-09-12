@@ -95,9 +95,8 @@
                   class="slick-list-upcoming"
                   v-bind="settings"
                 >
-                  <!--   -->
                   <div
-                    v-for="(event, i) in checkIfHasPending(event_list)"
+                    v-for="(event, i) in checkPending(event_list)"
                     :key="i"
                     v-if="
                       event._related_booking.progress !== undefined &&
@@ -106,32 +105,71 @@
                     class="carousel-block"
                   >
                     <div
-                      class="carousel-content-upcoming booked_carousel_item"
-                      :class="{ 'selected-event': event.selected == true }"
+                      class="carousel-content-mybooked-events booked_carousel_item"
+                      :class="
+                        ({ 'selected-event': event.selected == true },
+                        {
+                          'event-completed':
+                            event.states.progress.toLowerCase() == 'completed',
+                        },
+                        {
+                          'event-ongoing':
+                            checkIfOngoing(event) == true
+                        }),
+                      "
                     >
                       <div class="carousel-check-wrapper">
                         <div class="carousel-checked">
                           <el-tooltip
-                            v-if="event._related_booking.progress != 'pending'"
+                            v-if="
+                              event._related_booking.progress.toLowerCase() ===
+                                'confirmed' &&
+                              event.states.progress.toLowerCase() ===
+                                'upcoming' &&
+                              !checkIfOngoing(event)
+                            "
                             class="item speaker-icon"
                             content="Cancel Booking"
                             placement="top"
                             effect="light"
                           >
                             <i
-                              v-if="
-                                event._related_booking.progress.toLowerCase() ===
-                                'confirmed'
-                              "
                               @click="cancelBooking(event)"
                               class="el-icon-circle-close"
                             ></i>
                           </el-tooltip>
-                          <el-badge v-else value="Pending" class="item">
+                          <el-badge
+                            v-if="
+                              event._related_booking.progress.toLowerCase() ===
+                              'pending'
+                            "
+                            value="Pending"
+                            class="item"
+                          >
                           </el-badge>
+                          <!-- join button at the top right -->
+                          <!-- <a
+                            v-if="
+                              event._related_booking.progress.toLowerCase() ===
+                                'confirmed' &&
+                              event.states.progress.toLowerCase() ===
+                                'upcoming' &&
+                              checkIfOngoing(event)
+                            "
+                            :href="event._related_booking.join_url"
+                            target="_blank"
+                          >
+                            <el-button
+                              type="success"
+                              size="mini"
+                              class="modal-join-btn"
+                              >JOIN</el-button
+                            ></a
+                          > -->
                         </div>
                       </div>
-
+                      <!-- {{ event._related_booking.join_url }} -->
+                      <!-- {{ event._related_booking.registration_key }} -->
                       <div class="carousel-day">{{ getDate(event.date) }}</div>
                       <div class="carousel-formated-date">
                         {{ getFormatedDate(event.date) }}
@@ -157,24 +195,61 @@
                         </el-tooltip>
                       </div>
 
-                      <el-tooltip
-                        class="item speaker-icon"
-                        effect="light"
-                        :content="getFormatedLocalTime(event.start_at.local)"
-                        placement="bottom"
-                      >
-                        <div
-                          v-if="type === 'upcoming'"
-                          class="sub-wrapper"
-                          style="display: inline-block; margin-top: 10px"
+                      <div v-if="checkIfOngoing(event) === true">
+                        <el-tooltip
+                          class="item speaker-icon"
+                          effect="light"
+                          :content="
+                            'Event on Progress: ' +
+                            getFormatedLocalTime(event.start_at.local)
+                          "
+                          placement="top"
                         >
-                          <i class="el-icon-alarm-clock speaker-icon"></i>
-                          <span class="speaker-name">
-                            {{ getFormatedTime(event.start_at.local) }}</span
+                          <div
+                            class="on-progress"
+                            style="display: inline-block; margin-bottom: 10px"
                           >
-                          <p class="speaker-name">{{ getLocalTimezone() }}</p>
+                            <!-- <div class="on-progress">Event ongoing</div> -->
+                            <i class="el-icon-alarm-clock speaker-icon"></i>
+                            <span class="speaker-name">
+                              {{ getFormatedTime(event.start_at.local) }}</span
+                            >
+                          </div>
+                        </el-tooltip>
+                        <div>
+                          <a
+                            :href="event._related_booking.join_url"
+                            target="_blank"
+                          >
+                            <el-button
+                              type="success"
+                              size="mini"
+                              class="modal-join-btn"
+                              >JOIN</el-button
+                            ></a
+                          >
                         </div>
-                      </el-tooltip>
+                      </div>
+                      <div v-else>
+                        <el-tooltip
+                          class="item speaker-icon"
+                          effect="light"
+                          :content="getFormatedLocalTime(event.start_at.local)"
+                          placement="bottom"
+                        >
+                          <div
+                            v-if="type === 'upcoming'"
+                            class="sub-wrapper"
+                            style="display: inline-block; margin-top: 10px"
+                          >
+                            <i class="el-icon-alarm-clock speaker-icon"></i>
+                            <span class="speaker-name">
+                              {{ getFormatedTime(event.start_at.local) }}</span
+                            >
+                            <p class="speaker-name">{{ getLocalTimezone() }}</p>
+                          </div>
+                        </el-tooltip>
+                      </div>
                     </div>
                   </div>
                 </VueSlickCarousel>
@@ -195,19 +270,18 @@
             >Book from available dates:</span
           >
           <div v-if="type === 'recording'" class="video-wrapper">
-            <el-tabs
-              @tab-click="video_url = active_tab"
-              type="card"
+            <el-radio-group
+              style="padding-bottom: 10px"
               v-model="active_tab"
+              size="medium"
               v-if="recordings_per_date.length > 0"
             >
-              <el-tab-pane
+              <el-radio-button
                 v-for="(recording, i) in recordings_per_date"
-                :key="i"
                 :name="recording"
                 :label="`Recording ${i + 1}`"
-              ></el-tab-pane>
-            </el-tabs>
+              ></el-radio-button>
+            </el-radio-group>
             <div class="player-container">
               <vue-core-video-player
                 v-if="video_url"
@@ -373,6 +447,7 @@ export default {
     event_list: {
       type: Array,
       required: true,
+      default: null,
     },
     event: {
       type: Object,
@@ -445,19 +520,31 @@ export default {
     },
   },
   mounted() {
-    setTimeout(() => {
-      // this.$nextTick(() => {
-      this.this_load = false;
-      if (this.event_list.length > 0) {
-        this.getVideo(this.event_list[0]);
-      }
-      // });
-    }, 1000);
+    this.this_load = false;
+    if (this.event_list.length > 0 && this.type === "recording") {
+      // eslint-disable-next-line vue/no-mutating-props
+      this.event_list.sort(function (a, b) {
+        return new Date(b.start_at.utc) - new Date(a.start_at.utc);
+      });
+      this.getVideo(this.event_list[0]);
+    }
   },
   methods: {
     /* eslint-disable */
-    checkIfHasPending(events) {
-      // clear sessionStorage for pending_booking
+    checkIfOngoing(event) {
+      // moment(localDt, localDtFormat).tz(timezone).format('YYYY-MM-DD hh:mm:ss A');
+      let now = this.$moment(new Date().toString()).format("YYYY-MM-DD h:mm");
+      // console.log(now, event.start_at.local, "event.start_at.local");
+      let start_date = event.start_at.local;
+      let end_date = event.end_at.local;
+      if (start_date < now && end_date > now) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    checkPending(events) {
+      // clear sessionStorage pending_bookings if event_list dont have pending status
       let events_list = events;
       let event_match = events.find(
         (b) => b._related_booking.progress === "pending"
@@ -497,7 +584,8 @@ export default {
               this.disable = false;
             });
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log(err);
           // this.$message({
           //   type: "info",
           //   message: "Delete canceled",
@@ -690,6 +778,7 @@ export default {
             return object.id === event.id;
           });
           console.log(selected_index);
+
           this.$refs.slick.goTo(selected_index);
         } else {
           this.event_list.forEach((value, index) => {
@@ -727,13 +816,12 @@ export default {
                 ? response.data.data.recordings[0]
                 : null;
 
-            this.active_tab = this.video_url;
+            this.active_tab = "Recording 1";
 
             this.recordings_per_date =
               response.data.data.recordings.length > 0
                 ? response.data.data.recordings
                 : [];
-            // console.log("video url: ", response.data);
           }
         });
     },
@@ -741,4 +829,17 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.el-radio-button__inner {
+  background: #312b54;
+  border: 1px solid #312b54;
+}
+.el-radio-button:first-child .el-radio-button__inner {
+  border-left: 0;
+}
+.el-radio-button__orig-radio:checked + .el-radio-button__inner {
+  background-color: #42427c;
+  border-color: #42427c;
+  box-shadow: -1px 0 0 0 #42427c;
+}
+</style>

@@ -68,7 +68,6 @@
         :event_type="selected_event_type"
         :event_types="event_types"
         @close="CloseModal()"
-        @add_events="handleAddEvent"
         @book_events="handleBookEvents"
         @cancel_events="handleCancelEvent"
         :token="token"
@@ -123,7 +122,6 @@ export default {
       event_list: [],
       selected_event_type: {},
       active_events: [],
-      // ch1: this.$pnGetMessage('customers.001Ae000005mU49IAE.booking'),
     };
   },
   beforeMount() {
@@ -134,17 +132,29 @@ export default {
 
       this.getModal(clicked_event_type[0]);
     });
+
+    this.$root.$on("rebuild-event-list", (event) => {
+      this.rebuildEventList();
+    });
   },
   computed: {
     _myybookings() {
       return this.$store.getters._myybookings;
     },
-    _my_active_events() {
-      return this.$store.getters._my_active_events;
-    },
+    // _my_active_events() {
+    //   return this.$store.getters._my_active_events;
+    // },
+    // _listener_data() {
+    //   // listener data from getter
+    //   return this.$store.getters._listener_data;
+    // },
   },
-  mounted() {},
-  watch: {},
+  // watch: {
+  //   _listener_data: function () {
+  //     // trigger rebuildmethod if listener data change
+  //     this.rebuildEventList();
+  //   },
+  // },
   methods: {
     withBooking(events) {
       var type = this.type;
@@ -159,20 +169,24 @@ export default {
           let related = {
             id: undefined,
             progress: undefined,
+            join_url: undefined,
+            registration_key: undefined,
           };
 
           if (related_booking) {
             related.id = related_booking.id;
             related.progress = "pending";
+            related.join_url = related_booking.join_url;
+            related.registration_key = related_booking.registration_key;
 
             if (related_booking.status === "Attending") {
               related.progress = "confirmed";
             }
 
-            console.log(
-              related_booking.event_id + "<->" + event.id,
-              "related_booking.event_id <-> event.id"
-            );
+            // console.log(
+            //   related_booking.event_id + "<->" + event.id,
+            //   "related_booking.event_id <-> event.id"
+            // );
           } else {
             console.log("no related_booking.event_id");
           }
@@ -184,25 +198,6 @@ export default {
 
       return events;
     },
-    // listenData(data) {
-    //   this.$store
-    //     .dispatch("addBooking", data)
-    //     // eslint-disable-next-line no-unused-vars
-    //     .then((response) => {});
-    // },
-    // getBookingProgress() {
-    //   let msg = [];
-
-    //   if (payload.type === "booking.confirmed") {
-    //     let booking = this.$store.getters._myybookings.find(
-    //       (b) => b.event_id === payload.data.event_id
-    //     );
-    //     // Update booking;
-
-    //     //e-refresh ang this.event_list
-    //     //this.event_list = withBooking(this.event_list);
-    //   }
-    // },
     getModal(event_type) {
       const loading = this.$loading({
         lock: true,
@@ -289,26 +284,26 @@ export default {
       // this.$store.dispatch("removeBooking", data);
       this.rebuildEventList();
     },
-    handleAddEvent(data) {
-      let active_events = this.active_events;
-      active_events = active_events.concat(data);
+    // handleAddEvent(data) {
+    //   let active_events = this.active_events;
+    //   active_events = active_events.concat(data);
 
-      let event_list = this.event_list;
+    //   let event_list = this.event_list;
 
-      event_list = event_list.filter(function (obj) {
-        return !this.has(obj.id);
-      }, new Set(data.map((obj) => obj.id)));
+    //   event_list = event_list.filter(function (obj) {
+    //     return !this.has(obj.id);
+    //   }, new Set(data.map((obj) => obj.id)));
 
-      this.event_list = []; // clearing evelt_list for carousel arrrow to reshow, reload the component
-      this.active_events = []; // clearing evelt_list for carousel arrrow to reshow, reload the component
+    //   this.event_list = []; // clearing evelt_list for carousel arrrow to reshow, reload the component
+    //   this.active_events = []; // clearing evelt_list for carousel arrrow to reshow, reload the component
 
-      this.active_events = active_events;
+    //   this.active_events = active_events;
 
-      this.active_events.forEach((event) => {
-        event.selected = false;
-      });
-      this.event_list = event_list;
-    },
+    //   this.active_events.forEach((event) => {
+    //     event.selected = false;
+    //   });
+    //   this.event_list = event_list;
+    // },
     handleBookEvents(events) {
       this.$store.dispatch("addBooking", events);
 
@@ -320,6 +315,7 @@ export default {
         customer_id: this.$store.getters._customer.id,
       }));
 
+      // store the book events to session storage, use to get the full event name during event listener
       sessionStorage.setItem(
         "pending_booking",
         JSON.stringify(arr_booking_req)
@@ -331,13 +327,11 @@ export default {
       );
       this.rebuildEventList();
     },
-    rebuildEventList() {
-      // this.$refs.modalComponent.triggerLoading();
+    async rebuildEventList() {
       let freshList = this.withBooking(this.event_list);
-      // this.event_list = freshList;
       this.event_list = [];
       // setTimeout(() => {
-      this.$nextTick(() => {
+      await this.$nextTick(() => {
         this.event_list = freshList;
       });
       // }, 100);
