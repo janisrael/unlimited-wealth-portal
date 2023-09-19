@@ -38,8 +38,12 @@ Vue.component("country-flag", CountryFlag);
 Vue.config.productionTip = false;
 Vue.use(VueAxios, axios);
 
+console.log(
+    process.env.VUE_APP_SUBSCRIBE_KEY,
+    "process.env.VUE_APP_SUBSCRIBE_KEY"
+);
 Vue.use(PubNubVue, {
-    subscribeKey: "sub-c-c02c8970-4729-4e8c-ae32-8e66935e2014",
+    subscribeKey: process.env.VUE_APP_SUBSCRIBE_KEY,
     // publishKey: "pub-c-c78be85e-c4e2-4e03-b862-ca9674005d70",
     userId: "35467812y8u390129ui3",
     restore: true,
