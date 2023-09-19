@@ -533,7 +533,7 @@ export default {
     /* eslint-disable */
     checkIfOngoing(event) {
       // moment(localDt, localDtFormat).tz(timezone).format('YYYY-MM-DD hh:mm:ss A');
-      let now = this.$moment(new Date().toString()).format("YYYY-MM-DD h:mm");
+      let now = new Date().toString();
       // console.log(now, event.start_at.local, "event.start_at.local");
       let start_date = event.start_at.local;
       let end_date = event.end_at.local;
