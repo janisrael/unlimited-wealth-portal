@@ -72,6 +72,7 @@ export default {
     },
     receptor(msg) {
       // triggers for new message from listener
+      console.log("listener receptor: ", msg);
       var listenerRes = {};
       listenerRes = JSON.parse(msg.message);
       if (
