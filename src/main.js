@@ -45,10 +45,10 @@ console.log(
 Vue.use(PubNubVue, {
     subscribeKey: process.env.VUE_APP_SUBSCRIBE_KEY,
     // publishKey: "pub-c-c78be85e-c4e2-4e03-b862-ca9674005d70",
-    userId: "35467812y8u390129ui3",
-    restore: true,
-    logVerbosity: true,
-    ssl: true,
+    // userId: "35467812y8u390129ui3",
+    restore: false,
+    logVerbosity: false,
+    ssl: false,
     presenceTimeout: 300,
 });
 
