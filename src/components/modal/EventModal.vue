@@ -298,7 +298,10 @@
                 ></div>
                 <div class="bg-text">
                   <p>
-                    Retrieving webinar recording. Video will be availble soon.
+                    The event for this date has ended and the video is being
+                    prepared. <br />
+                    It can take a few hours to process depending on the length
+                    of the session.
                   </p>
                 </div>
               </div>
@@ -395,7 +398,7 @@
           <div v-else id="carousel-wrapper">
             <VueSlickCarousel
               v-if="event_list.length"
-              ref="slick"
+              ref="slickRecording"
               v-bind="settings"
             >
               <div
@@ -487,17 +490,19 @@ export default {
         speed: 500,
         slidesToShow: 5,
         slidesToScroll: 5,
-        touchThreshold: 9,
+        touchThreshold: 7,
         arrows: true,
         centerMode: false,
-        accessibility: true,
+        accessibility: false,
         edgeFriction: 0.35,
-        waitForAnimate: true,
-        cssEase: "ease",
-        lazyLoad: "true",
+        // waitForAnimate: true,
+        // cssEase: "ease",
+        // lazyLoad: "true",
+        // initialSlide: null,
       },
       video_url: "",
       active_tab: "",
+      active_event: {},
       disable: true,
       selected_events: [],
       recordings_per_date: [],
@@ -647,7 +652,43 @@ export default {
       this.$emit("close");
     },
     handlePLay() {
-      console.log("play");
+      // targeting <video> element of vue-core-video-player
+      let vcpPlayerEl = document.querySelector('.vcp-container video')
+      let now = new Date;
+      let utc_timestamp = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate() ,
+      now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+
+      let interval = setInterval(() => {
+        // do nothing if video is paused
+        if (vcpPlayerEl.paused || isNaN(vcpPlayerEl.duration)) {
+          return;
+        }
+
+        if ((vcpPlayerEl.currentTime - 5) >= vcpPlayerEl.duration) {
+          clearInterval(interval)
+        }
+        const decimalProgress = (vcpPlayerEl.currentTime / vcpPlayerEl.duration) * 100;
+        let payload = {
+          type: 'event.recording.view',
+          timestamp: Math.floor(utc_timestamp / 1000),
+          data: {
+            object: 'event-recording-view-log',
+            event_id: this.active_event.id,
+            event_type_id: this.event_type.id,
+            video_url: this.video_url,
+            duration: vcpPlayerEl.duration,
+            percent_progress: parseFloat(Number(decimalProgress).toFixed(2)),
+            playing_timestamp: Math.ceil(vcpPlayerEl.currentTime),
+            customer_id: window.sessionStorage.getItem('customer_id')
+          }
+        }
+
+        this.$store.dispatch('logVideoEvent', payload).then(response => {
+          if (response.status === 204) {
+            // window.ENV.APP_ENV === 'local' && console.log('event.recording.view', payload);
+          }
+        })
+      }, process.env.VUE_APP_SC2_EVENT_POST_INTERVAL_MS);
     },
     getDate(date) {
       var days = [
@@ -781,15 +822,41 @@ export default {
 
           this.$refs.slick.goTo(selected_index);
         } else {
-          this.event_list.forEach((value, index) => {
-            value.selected = false;
-            this.disable = true;
-          });
-          this.disable = false;
-          this.event_list[index].selected = true;
-          console.log("no");
+          // this.event_list.forEach((value, index) => {
+          //   value.selected = false;
+          //   this.disable = true;
+          // });
 
-          this.$refs.slick.goTo(index);
+          if (this.event_list[index].selected === true) {
+            this.event_list[index].selected = false;
+
+            // this.selected_events = this.selected_events.filter(
+            //   (selected_event) => selected_event.id != event.id
+            // );
+
+            if (this.selected_events.length <= 0) {
+              this.disable = true;
+            }
+          } else {
+            this.disable = false;
+            this.event_list[index].selected = true;
+            // this.selected_events.push(this.event_list[index]);
+          }
+
+          let arr = this.event_list;
+          // let filtered_events = arr.filter((item) => {
+          //   return item._related_booking.id === undefined;
+          // });
+
+          let selected_index = arr.findIndex((object) => {
+            return object.id === event.id;
+          });
+
+          // this.disable = false;
+          // this.event_list[index].selected = true;
+          // console.log("no");
+          console.log(selected_index);
+          this.$refs.slickRecording.goTo(selected_index);
         }
 
         if (this.type === "recording") {
@@ -800,7 +867,6 @@ export default {
     },
     getVideo(event) {
       var url = event.meta.resource_path;
-
       this.axios
         .get(url, {
           headers: {
@@ -817,11 +883,18 @@ export default {
                 : null;
 
             this.active_tab = "Recording 1";
-
+            this.active_event = event;
             this.recordings_per_date =
               response.data.data.recordings.length > 0
                 ? response.data.data.recordings
                 : [];
+
+            this.event_list.sort(function (a, b) {
+              return new Date(a.start_at.utc) - new Date(b.start_at.utc);
+            });
+            this.$nextTick(() => {
+              this.$refs.slickRecording.goTo(this.event_list.length - 1);
+            });
           }
         });
     },

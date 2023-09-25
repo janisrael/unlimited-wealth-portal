@@ -22,13 +22,18 @@ export default {
       data: {},
       category: "",
       // triggerRebuild: null,
-      messages: [], // listener message history, max 10,
+      messages: this.$pnGetMessage(
+        "customers." + sessionStorage.getItem("customer_id") + ".booking",
+        this.receptor,
+        10
+      ),
       presense: {},
       pubnub_status: null,
     };
   },
   mounted() {
     if (sessionStorage.getItem("customer_id")) {
+      console.log("has customer id");
       this.$pnSubscribe({
         channels: [
           "customers." + sessionStorage.getItem("customer_id") + ".booking",
@@ -36,11 +41,11 @@ export default {
         withPresence: true,
       });
 
-      this.messages = this.$pnGetMessage(
-        "customers." + sessionStorage.getItem("customer_id") + ".booking",
-        this.receptor,
-        10
-      );
+      // this.messages = this.$pnGetMessage(
+      //   "customers." + sessionStorage.getItem("customer_id") + ".booking",
+      //   this.receptor,
+      //   10
+      // );
       this.$pnGetPresence(
         "customers." + sessionStorage.getItem("customer_id") + ".booking",
         this.presence
@@ -67,6 +72,7 @@ export default {
     },
     receptor(msg) {
       // triggers for new message from listener
+      console.log("listener receptor: ", msg);
       var listenerRes = {};
       listenerRes = JSON.parse(msg.message);
       if (
