@@ -239,7 +239,8 @@ export default {
 
               this.event_list = events_with_booking.filter((event) => {
                 let now = new Date().getTime();
-                let start = new Date(event.start_at.utc + " UTC").getTime();
+                // let start = new Date(event.start_at.utc + " UTC").getTime(); // now working on safari
+                let start = new Date(event.start_at.utc).getTime();
                 return (
                   Number(start) > Number(now) ||
                   event._related_booking.id !== undefined
