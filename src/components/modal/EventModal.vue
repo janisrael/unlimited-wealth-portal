@@ -298,7 +298,10 @@
                 ></div>
                 <div class="bg-text">
                   <p>
-                    Retrieving webinar recording. Video will be availble soon.
+                    The event for this date has ended and the video is being
+                    prepared. <br />
+                    It can take a few hours to process depending on the length
+                    of the session.
                   </p>
                 </div>
               </div>
