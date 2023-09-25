@@ -371,7 +371,8 @@ export default {
     removeCompletedEvents() {
       this.all_bookings = this.all_bookings.filter(function (item) {
         let now = new Date().getTime();
-        let end = new Date(item.end_at.utc + " UTC").getTime();
+        // let end = new Date(item.end_at.utc + " UTC").getTime(); // dont work on safari
+        let end = new Date(item.end_at.utc).getTime();
         return Number(end) > Number(now);
       });
     },
