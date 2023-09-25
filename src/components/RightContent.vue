@@ -286,7 +286,8 @@ export default {
       return formated_date;
     },
     getFormatedLocalTime(event) {
-      var d = (event.start_at ? event.start_at.utc : event.start_date) + " UTC";
+      // var d = (event.start_at ? event.start_at.utc : event.start_date) + " UTC";
+      var d = event.start_at ? event.start_at.utc : event.start_date;
 
       var local_date = new Date(d).toLocaleString("default", {
         month: "short",

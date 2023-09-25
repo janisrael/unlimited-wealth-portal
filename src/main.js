@@ -19,6 +19,7 @@ import VueAxios from 'vue-axios';
 import VueLazyload from 'vue-lazyload';
 import VueLazyImageLoading from 'vue-lazy-image-loading';
 import VueMoment from 'vue-moment';
+import moment from 'moment-timezone';
 import PubNubVue from 'pubnub-vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
@@ -34,7 +35,9 @@ Vue.use(VueLazyload);
 Vue.use(VueLazyImageLoading, {
 	cache: true,
 });
-Vue.use(VueMoment);
+Vue.use(VueMoment, {
+	moment,
+});
 Vue.use(VueCoreVideoPlayer);
 Vue.use(ElementUI, { locale });
 Vue.component('country-flag', CountryFlag);
