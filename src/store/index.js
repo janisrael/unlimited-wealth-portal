@@ -162,6 +162,26 @@ const store = new Vuex.Store({
         // async watchListenerData({ commit, state }, value) {
         //     commit("ASSIGN_LISTENER_DATA", value);
         // },
+
+        async logVideoEvent({ commit, dispatch }, payload) {
+            let data = payload;
+            let iAxios = axios.create({
+                headers: {
+                  Authorization : `Bearer ${process.env.VUE_APP_SC2_EVENT_TOKEN}`
+                },
+                baseURL: process.env.VUE_APP_SC2_EVENT_URL
+            })
+            return new Promise((resolve, reject) => {
+                iAxios
+                .post("/api/v1/recording-view-logs", data)
+                .then((response) => {
+                    resolve(response);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+            });
+        },
     },
     getters: {
         _myybookings: (state) => state.myybookings,
