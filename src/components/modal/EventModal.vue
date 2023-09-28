@@ -103,6 +103,7 @@
                       !event.hidden
                     "
                     class="carousel-block"
+                    @click="checkThisEvent(event)"
                   >
                     <div
                       class="carousel-content-mybooked-events booked_carousel_item"
@@ -283,26 +284,31 @@
               ></el-radio-button>
             </el-radio-group>
             <div class="player-container">
-              <vue-core-video-player
-                v-if="video_url"
-                @play="handlePLay()"
-                :cover="event_type.image_url"
-                :title="event_type.name"
-                :logo="require(`@/assets/images/speakers/smartcharts.png`)"
-                :src="video_url"
-              ></vue-core-video-player>
-              <div v-else style="position: relative">
-                <div
-                  class="bg-image"
-                  :style="`background-image: url(${event_type.image_url}),linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)); `"
-                ></div>
-                <div class="bg-text">
-                  <p>
-                    The event for this date has ended and the video is being
-                    prepared. <br />
-                    It can take a few hours to process depending on the length
-                    of the session.
-                  </p>
+              <div
+                v-loading="loading"
+                element-loading-background="rgba(0, 0, 0, 0.8)"
+              >
+                <vue-core-video-player
+                  v-if="video_url"
+                  @play="handlePLay()"
+                  :cover="event_type.image_url"
+                  :title="event_type.name"
+                  :logo="require(`@/assets/images/speakers/smartcharts.png`)"
+                  :src="video_url"
+                ></vue-core-video-player>
+                <div v-else style="position: relative">
+                  <div
+                    class="bg-image"
+                    :style="`background-image: url(${event_type.image_url}),linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)); `"
+                  ></div>
+                  <div v-if="!video_url && !loading" class="bg-text">
+                    <p>
+                      The event for this date has ended and the video is being
+                      prepared. <br />
+                      It can take a few hours to process depending on the length
+                      of the session.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -399,7 +405,7 @@
             <VueSlickCarousel
               v-if="event_list.length"
               ref="slickRecording"
-              v-bind="settings"
+              v-bind="settingsRecordings"
             >
               <div
                 v-for="(event, i) in event_list"
@@ -483,6 +489,19 @@ export default {
       dialog_visible: true,
       thumbnail_image: require("../../assets/images/video-thumbnail.png"),
       check_icon: require("../../assets/images/check.png"),
+      settingsRecordings: {
+        dots: false,
+        focusOnSelect: false,
+        infinite: false,
+        speed: 500,
+        slidesToShow: 5,
+        slidesToScroll: 5,
+        touchThreshold: 5,
+        arrows: true,
+        centerMode: false,
+        accessibility: true,
+        edgeFriction: 0.35,
+      },
       settings: {
         dots: false,
         focusOnSelect: false,
@@ -532,9 +551,16 @@ export default {
       });
       this.getVideo(this.event_list[0]);
     }
+
+    this.$nextTick(() => {
+      this.$refs.slickRecording.goTo(this.event_list.length - 1);
+    });
   },
   methods: {
     /* eslint-disable */
+    checkThisEvent(event) {
+      console.log(event, "cghvjbkn");
+    },
     checkIfOngoing(event) {
       // moment(localDt, localDtFormat).tz(timezone).format('YYYY-MM-DD hh:mm:ss A');
       let now = this.$moment(new Date().toString()).format("YYYY-MM-DD h:mm");
@@ -724,7 +750,28 @@ export default {
         })
         .split(" ")[3];
       var d = datetime + " " + gmt;
+
       var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      var new_d =
+        this.$moment(datetime).format("MMMM DD YYYY, h:mm:ss a") + " " + gmt;
+      // console.log(new_d + " " + gmt);
+
+      const formatted_date = new Date(new_d);
+
+      var local_date_formatted = new Date(formatted_date).toLocaleString(
+        "default",
+        {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour12: true,
+          hour: "numeric",
+          minute: "2-digit",
+          timeZoneName: "short",
+          timeZone: timeZone,
+        }
+      );
 
       var local_date = new Date(d).toLocaleString("default", {
         month: "short",
@@ -737,7 +784,11 @@ export default {
         timeZone: timeZone,
       });
 
-      return local_date;
+      return (
+        this.$moment(local_date_formatted).format("MMMM Do YYYY, h:mm a") +
+        " " +
+        this.$moment.tz(datetime, timeZone).format("z")
+      );
     },
     getDateExt(date) {
       if (date > 3 && date < 21) return "th";
@@ -789,22 +840,26 @@ export default {
           //   value.selected = false;
           //   this.disable = true;
           // });
+          this.event_list.forEach((value, index) => {
+            value.selected = false;
+          });
 
-          if (this.event_list[index].selected === true) {
-            this.event_list[index].selected = false;
+          this.event_list[index].selected = true;
+          // if (this.event_list[index].selected === true) {
+          //   this.event_list[index].selected = false;
 
-            // this.selected_events = this.selected_events.filter(
-            //   (selected_event) => selected_event.id != event.id
-            // );
+          //   // this.selected_events = this.selected_events.filter(
+          //   //   (selected_event) => selected_event.id != event.id
+          //   // );
 
-            if (this.selected_events.length <= 0) {
-              this.disable = true;
-            }
-          } else {
-            this.disable = false;
-            this.event_list[index].selected = true;
-            // this.selected_events.push(this.event_list[index]);
-          }
+          //   // if (this.selected_events.length <= 0) {
+          //   //   this.disable = true;
+          //   // }
+          // } else {
+          //   // this.disable = false;
+
+          //   // this.selected_events.push(this.event_list[index]);
+          // }
 
           let arr = this.event_list;
           // let filtered_events = arr.filter((item) => {
@@ -819,7 +874,7 @@ export default {
           // this.event_list[index].selected = true;
           // console.log("no");
           console.log(selected_index);
-          this.$refs.slickRecording.goTo(selected_index);
+          this.$refs.slickRecording.goTo(index);
         }
 
         if (this.type === "recording") {
@@ -830,7 +885,7 @@ export default {
     },
     getVideo(event) {
       var url = event.meta.resource_path;
-
+      this.loading = true;
       this.axios
         .get(url, {
           headers: {
@@ -856,9 +911,8 @@ export default {
             this.event_list.sort(function (a, b) {
               return new Date(a.start_at.utc) - new Date(b.start_at.utc);
             });
-            this.$nextTick(() => {
-              this.$refs.slickRecording.goTo(this.event_list.length - 1);
-            });
+
+            this.loading = false;
           }
         });
     },
