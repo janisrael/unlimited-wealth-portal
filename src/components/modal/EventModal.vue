@@ -521,6 +521,7 @@ export default {
       },
       video_url: "",
       active_tab: "",
+      active_event: {},
       disable: true,
       selected_events: [],
       recordings_per_date: [],
@@ -677,7 +678,43 @@ export default {
       this.$emit("close");
     },
     handlePLay() {
-      console.log("play");
+      // targeting <video> element of vue-core-video-player
+      let vcpPlayerEl = document.querySelector('.vcp-container video')
+      let now = new Date;
+      let utc_timestamp = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate() ,
+      now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+
+      let interval = setInterval(() => {
+        // do nothing if video is paused
+        if (vcpPlayerEl.paused || isNaN(vcpPlayerEl.duration)) {
+          return;
+        }
+
+        if ((vcpPlayerEl.currentTime - 5) >= vcpPlayerEl.duration) {
+          clearInterval(interval)
+        }
+        const decimalProgress = (vcpPlayerEl.currentTime / vcpPlayerEl.duration) * 100;
+        let payload = {
+          type: 'event.recording.view',
+          timestamp: Math.floor(utc_timestamp / 1000),
+          data: {
+            object: 'event-recording-view-log',
+            event_id: this.active_event.id,
+            event_type_id: this.event_type.id,
+            video_url: this.video_url,
+            duration: vcpPlayerEl.duration,
+            percent_progress: parseFloat(Number(decimalProgress).toFixed(2)),
+            playing_timestamp: Math.ceil(vcpPlayerEl.currentTime),
+            customer_id: window.sessionStorage.getItem('customer_id')
+          }
+        }
+
+        this.$store.dispatch('logVideoEvent', payload).then(response => {
+          if (response.status === 204) {
+            // window.ENV.APP_ENV === 'local' && console.log('event.recording.view', payload);
+          }
+        })
+      }, process.env.VUE_APP_SC2_EVENT_POST_INTERVAL_MS);
     },
     getDate(date) {
       var days = [
@@ -902,7 +939,7 @@ export default {
                 : null;
 
             this.active_tab = "Recording 1";
-
+            this.active_event = event;
             this.recordings_per_date =
               response.data.data.recordings.length > 0
                 ? response.data.data.recordings
