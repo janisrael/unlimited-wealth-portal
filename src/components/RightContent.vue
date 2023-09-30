@@ -289,17 +289,66 @@ export default {
       // var d = (event.start_at ? event.start_at.utc : event.start_date) + " UTC";
       var d = event.start_at ? event.start_at.utc : event.start_date;
 
-      var local_date = new Date(d).toLocaleString("default", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour12: true,
-        hour: "numeric",
-        minute: "2-digit",
-        timeZoneName: "short",
-      });
+      var new_start =
+        this.$moment(d).format("MMMM DD YYYY, h:mm:ss a") + " UTC";
 
-      return local_date;
+      const start_formatted_date = new Date(new_start);
+      // var local_date = new Date(d).toLocaleString("default", {
+      //   month: "short",
+      //   day: "numeric",
+      //   year: "numeric",
+      //   hour12: true,
+      //   hour: "numeric",
+      //   minute: "2-digit",
+      //   timeZoneName: "short",
+      // });
+
+      // return local_date;
+      // console.log(event.start_at, "startat");
+      // var gmt = new Date()
+      //   .toLocaleString("en", {
+      //     timeZone: this.local_timezone,
+      //     timeZoneName: "short",
+      //   })
+      //   .split(" ")[3];
+      // var d = datetime + " " + gmt;
+
+      var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      // var new_d =
+      //   this.$moment(event.start_at).format("MMMM DD YYYY, h:mm:ss a") +
+      //   " " +
+      //   gmt;
+      // console.log(new_d + " " + gmt);
+
+      // const formatted_date = new Date(new_d);
+
+      var local_date_formatted = new Date(start_formatted_date).toLocaleString(
+        "default",
+        {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour12: true,
+          hour: "numeric",
+          minute: "2-digit",
+          timeZoneName: "short",
+          timeZone: timeZone,
+        }
+      );
+
+      // var local_date = new Date(d).toLocaleString("default", {
+      //   month: "short",
+      //   day: "numeric",
+      //   year: "numeric",
+      //   hour12: true,
+      //   hour: "numeric",
+      //   minute: "2-digit",
+      //   timeZoneName: "short",
+      //   timeZone: timeZone,
+      // });
+
+      return local_date_formatted;
     },
     getDateExt(date) {
       if (date > 3 && date < 21) return "th";
