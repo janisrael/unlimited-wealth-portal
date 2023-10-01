@@ -127,6 +127,7 @@ export default {
       calendar_date: new Date(),
       selected_booking: {},
       loading: false,
+      coockie_timezone: "",
     };
   },
   watch: {
@@ -147,6 +148,9 @@ export default {
   created() {
     this.getEventsDate();
     this.getMyBookings();
+    if (this.$cookies.get("timezone")) {
+      this.coockie_timezone = this.$cookies.get("timezone").timezone;
+    }
   },
   methods: {
     isReadyToJoin(event) {
@@ -293,35 +297,9 @@ export default {
         this.$moment(d).format("MMMM DD YYYY, h:mm:ss a") + " UTC";
 
       const start_formatted_date = new Date(new_start);
-      // var local_date = new Date(d).toLocaleString("default", {
-      //   month: "short",
-      //   day: "numeric",
-      //   year: "numeric",
-      //   hour12: true,
-      //   hour: "numeric",
-      //   minute: "2-digit",
-      //   timeZoneName: "short",
-      // });
 
-      // return local_date;
-      // console.log(event.start_at, "startat");
-      // var gmt = new Date()
-      //   .toLocaleString("en", {
-      //     timeZone: this.local_timezone,
-      //     timeZoneName: "short",
-      //   })
-      //   .split(" ")[3];
-      // var d = datetime + " " + gmt;
-
-      var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-      // var new_d =
-      //   this.$moment(event.start_at).format("MMMM DD YYYY, h:mm:ss a") +
-      //   " " +
-      //   gmt;
-      // console.log(new_d + " " + gmt);
-
-      // const formatted_date = new Date(new_d);
+      /* eslint-disable */
+      var timeZone = this.$cookies.get("_detected_current_tz").timezone;
 
       var local_date_formatted = new Date(start_formatted_date).toLocaleString(
         "default",
@@ -336,17 +314,6 @@ export default {
           timeZone: timeZone,
         }
       );
-
-      // var local_date = new Date(d).toLocaleString("default", {
-      //   month: "short",
-      //   day: "numeric",
-      //   year: "numeric",
-      //   hour12: true,
-      //   hour: "numeric",
-      //   minute: "2-digit",
-      //   timeZoneName: "short",
-      //   timeZone: timeZone,
-      // });
 
       return local_date_formatted;
     },
