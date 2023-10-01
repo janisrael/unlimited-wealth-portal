@@ -35,7 +35,7 @@ Vue.use(VueRouter);
 Vue.use(VueCookies, {
 	expires: '1y',
 	path: '/',
-	domain: process.env.VUE_APP_COOKIE_DOMAIN, //should be from .env
+	domain: process.env.VUE_APP_COOKIE_DOMAIN ?? '', //should be from .env
 	secure: '',
 	sameSite: 'Lax',
 });
