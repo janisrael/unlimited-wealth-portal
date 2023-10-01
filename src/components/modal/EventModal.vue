@@ -529,6 +529,7 @@ export default {
       loading: false,
       this_load: true,
       local_timezone: this.getLocalTimezone(),
+      coockie_timezone: "",
     };
   },
   computed: {
@@ -552,10 +553,11 @@ export default {
       });
       this.getVideo(this.event_list[0]);
     }
-
-    this.$nextTick(() => {
-      this.$refs.slickRecording.goTo(this.event_list.length - 1);
-    });
+    if (this.event_list.length > 0 && this.type === "recording") {
+      this.$nextTick(() => {
+        this.$refs.slickRecording.goTo(this.event_list.length - 1);
+      });
+    }
   },
   methods: {
     /* eslint-disable */
@@ -679,10 +681,17 @@ export default {
     },
     handlePLay() {
       // targeting <video> element of vue-core-video-player
-      let vcpPlayerEl = document.querySelector('.vcp-container video')
-      let now = new Date;
-      let utc_timestamp = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate() ,
-      now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+      let vcpPlayerEl = document.querySelector(".vcp-container video");
+      let now = new Date();
+      let utc_timestamp = Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        now.getUTCHours(),
+        now.getUTCMinutes(),
+        now.getUTCSeconds(),
+        now.getUTCMilliseconds()
+      );
 
       let interval = setInterval(() => {
         // do nothing if video is paused
@@ -690,30 +699,31 @@ export default {
           return;
         }
 
-        if ((vcpPlayerEl.currentTime - 5) >= vcpPlayerEl.duration) {
-          clearInterval(interval)
+        if (vcpPlayerEl.currentTime - 5 >= vcpPlayerEl.duration) {
+          clearInterval(interval);
         }
-        const decimalProgress = (vcpPlayerEl.currentTime / vcpPlayerEl.duration) * 100;
+        const decimalProgress =
+          (vcpPlayerEl.currentTime / vcpPlayerEl.duration) * 100;
         let payload = {
-          type: 'event.recording.view',
+          type: "event.recording.view",
           timestamp: Math.floor(utc_timestamp / 1000),
           data: {
-            object: 'event-recording-view-log',
+            object: "event-recording-view-log",
             event_id: this.active_event.id,
             event_type_id: this.event_type.id,
             video_url: this.video_url,
             duration: vcpPlayerEl.duration,
             percent_progress: parseFloat(Number(decimalProgress).toFixed(2)),
             playing_timestamp: Math.ceil(vcpPlayerEl.currentTime),
-            customer_id: window.sessionStorage.getItem('customer_id')
-          }
-        }
+            customer_id: window.sessionStorage.getItem("customer_id"),
+          },
+        };
 
-        this.$store.dispatch('logVideoEvent', payload).then(response => {
+        this.$store.dispatch("logVideoEvent", payload).then((response) => {
           if (response.status === 204) {
             // window.ENV.APP_ENV === 'local' && console.log('event.recording.view', payload);
           }
-        })
+        });
       }, process.env.VUE_APP_SC2_EVENT_POST_INTERVAL_MS);
     },
     getDate(date) {
@@ -788,14 +798,17 @@ export default {
         .split(" ")[3];
       var d = datetime + " " + gmt;
 
-      var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      var timeZone = this.$cookies.get("_detected_current_tz").timezone;
 
       var new_d =
-        this.$moment(datetime).format("MMMM DD YYYY, h:mm:ss a") + " " + gmt;
-      // console.log(new_d + " " + gmt);
+        this.$moment(datetime).format("MMMM DD YYYY, h:mm:ss a") + " UTC";
 
       const formatted_date = new Date(new_d);
+      // if (this.$cookies.get("timezone")) {
+      //   this.coockie_timezone = this.$cookies.get("timezone").timezone;
+      // }
 
+      // console.log(this.coockie_timezone, "left this.coockie_timezone");
       var local_date_formatted = new Date(formatted_date).toLocaleString(
         "default",
         {
@@ -810,22 +823,7 @@ export default {
         }
       );
 
-      var local_date = new Date(d).toLocaleString("default", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour12: true,
-        hour: "numeric",
-        minute: "2-digit",
-        timeZoneName: "short",
-        timeZone: timeZone,
-      });
-
-      return (
-        this.$moment(local_date_formatted).format("MMMM Do YYYY, h:mm a") +
-        " " +
-        this.$moment.tz(datetime, timeZone).format("z")
-      );
+      return local_date_formatted;
     },
     getDateExt(date) {
       if (date > 3 && date < 21) return "th";

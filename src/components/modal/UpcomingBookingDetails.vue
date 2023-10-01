@@ -199,15 +199,14 @@ export default {
       var end = this.selected_booking.end_at.utc;
 
       var new_start =
-        this.$moment(start).format("MMMM DD YYYY, h:mm:ss a") + " UTC";
+        this.$moment(start).format("MMMM DD YYYY, HH:mm") + " UTC";
 
-      var new_end =
-        this.$moment(end).format("MMMM DD YYYY, h:mm:ss a") + " UTC";
+      var new_end = this.$moment(end).format("MMMM DD YYYY, HH:mm") + " UTC";
 
       const start_formatted_date = new Date(new_start);
       const end_formatted_date = new Date(new_end);
-
-      var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      /* eslint-disable */
+      var timeZone = this.$cookies.get("_detected_current_tz").timezone;
 
       var start_local_date_formatted = new Date(
         start_formatted_date
@@ -218,7 +217,7 @@ export default {
         hour12: true,
         hour: "numeric",
         minute: "2-digit",
-        timeZoneName: "short",
+        // timeZoneName: "short",
         timeZone: timeZone,
       });
 
@@ -235,37 +234,6 @@ export default {
         timeZone: timeZone,
       });
 
-      // var start_local_date = new Date(start).toLocaleString("default", {
-      //   month: "short",
-      //   day: "numeric",
-      //   year: "numeric",
-      //   hour12: true,
-      //   hour: "numeric",
-      //   minute: "2-digit",
-      // });
-
-      // var end_local_date = new Date(end).toLocaleString("default", {
-      //   month: "short",
-      //   day: "numeric",
-      //   year: "numeric",
-      //   hour12: true,
-      //   hour: "numeric",
-      //   minute: "2-digit",
-      //   timeZoneName: "short",
-      // });
-
-      // if (
-      //   new Date(start_local_date).toDateString() ===
-      //   new Date(end_local_date).toDateString()
-      // ) {
-      //   //same day
-      //   end_local_date = new Date(end).toLocaleString("default", {
-      //     hour12: true,
-      //     hour: "numeric",
-      //     minute: "2-digit",
-      //     timeZoneName: "short",
-      //   });
-      // }
       return start_local_date_formatted + " to " + end_local_date_formatted;
     },
     getCountdownDate() {
