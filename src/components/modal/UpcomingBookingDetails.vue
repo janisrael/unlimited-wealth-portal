@@ -24,12 +24,12 @@
       <span slot="footer" class="dialog-footer" style="font-size: 12px">
         <el-row :gutter="20" type="flex" justify="space-between">
           <el-col
-            :span="can_join_booking ? 16 : 6"
+            :span="can_join_booking ? 16 : 8"
             style="text-align: left"
             class="gray-text"
           >
             <div class="grid-content">
-              Booking ID: {{ selected_booking.id }}
+              <small>Booking ID:</small> {{ selected_booking.id }}
             </div>
           </el-col>
           <el-col
@@ -38,7 +38,7 @@
             class="gray-text"
           >
             <div class="grid-content">
-              Date:
+              <small>Date:</small>
               {{ getFormatedDate(selected_booking.start_date) }}
             </div>
           </el-col>
@@ -49,13 +49,12 @@
                 plain
                 class="cancel-booking"
                 @click="cancelBooking(selected_booking)"
-                >Cancel Booking</el-button
+                ><small>Cancel&nbsp;<br />Booking</small></el-button
               >
             </div>
           </el-col>
         </el-row>
       </span>
-
       <el-col :span="24">
         <el-card :body-style="{ padding: '0px', background: 'transparent' }">
           <img :src="default_banner" style="display: none" />
@@ -70,7 +69,7 @@
                 font-weight: 600;
                 padding: 5px 10px;
                 display: block;
-                margin-top: 12px;
+                margin-top: 8px;
               "
             >
               <!-- {{ selected_booking.event.name }} -->
@@ -78,7 +77,7 @@
                 {{ selected_booking.event.name.split(",")[0] }}
               </div>
               <!-- <span> {{ selected_booking.event.name.split(",")[(1, 2)] }}</span> -->
-              <div style="text-shadow: 1px 1px 2px #343434">
+              <div style="text-shadow: 1px 1px 2px #343434; font-size: 14px">
                 {{ formatText(selected_booking.event.name) }}
               </div>
               <country-flag
@@ -88,7 +87,7 @@
                     ? 'gb'
                     : selected_booking.event_region
                 "
-                size="big"
+                size="medium"
               />
             </span>
             <!-- <img

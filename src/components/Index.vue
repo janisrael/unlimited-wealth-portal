@@ -230,7 +230,8 @@ export default {
       // var url_timezone =
       //   "https://api.ipgeolocation.io/timezone?location=philippines&apiKey=37349195dae541e2b542ed8b7c6f027b";
       var url_timezone =
-        "https://api.ipgeolocation.io/timezone?apiKey=37349195dae541e2b542ed8b7c6f027b";
+        "https://api.ipgeolocation.io/timezone?apiKey=" +
+        process.env.VUE_APP_COOKIE_KEY;
 
       this.axios
         .get(url_timezone)

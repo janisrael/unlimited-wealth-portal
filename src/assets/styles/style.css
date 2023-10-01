@@ -635,7 +635,7 @@ span.modal-span {
 
 .upcoming-booking-image-wrapper {
 	display: inline-block;
-	height: 120px;
+	height: 140px;
 	width: 100%;
 	background-size: cover;
 	background-position: center;
@@ -810,10 +810,18 @@ span.modal-span {
 } */
 
 span.upcoming-pop-up-flag {
-	float: right;
+	/* float: right;
 	top: 20px;
 	position: absolute;
 	right: 5px;
+    box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.6); */
+	/* float: right;
+	top: 10px;
+	position: absolute;
+	right: 13px; */
+	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+	margin-left: -13px !important;
+	margin-top: -5px !important;
 }
 
 .carousel-formated-date {
