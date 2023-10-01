@@ -235,7 +235,7 @@
                         <el-tooltip
                           class="item speaker-icon"
                           effect="light"
-                          :content="getFormatedLocalTime(event.start_at.local)"
+                          :content="getFormatedLocalTime(event.start_at.utc)"
                           placement="bottom"
                         >
                           <div
@@ -377,7 +377,7 @@
                       <el-tooltip
                         class="item speaker-icon"
                         effect="light"
-                        :content="getFormatedLocalTime(event.start_at.local)"
+                        :content="getFormatedLocalTime(event.start_at.utc)"
                         placement="bottom"
                       >
                         <div
@@ -566,10 +566,11 @@ export default {
     },
     checkIfOngoing(event) {
       // moment(localDt, localDtFormat).tz(timezone).format('YYYY-MM-DD hh:mm:ss A');
-      let now = this.$moment(new Date().toString()).format("YYYY-MM-DD h:mm");
+      let now = this.$moment.utc();
       // console.log(now, event.start_at.local, "event.start_at.local");
-      let start_date = event.start_at.local;
-      let end_date = event.end_at.local;
+      var start_date = this.$moment(event.start_at.utc).utc(true);
+      var end_date = this.$moment(event.start_at.utc).utc(true);
+
       if (start_date < now && end_date > now) {
         return true;
       } else {
@@ -790,26 +791,25 @@ export default {
       return time;
     },
     getFormatedLocalTime(datetime) {
-      var gmt = new Date()
-        .toLocaleString("en", {
-          timeZone: this.local_timezone,
-          timeZoneName: "short",
-        })
-        .split(" ")[3];
-      var d = datetime + " " + gmt;
-
       var timeZone = this.$cookies.get("_detected_current_tz");
+      // var gmt = new Date()
+      //   .toLocaleString("en", {
+      //     timeZone: timeZone,
+      //     timeZoneName: "short",
+      //   })
+      //   .split(" ")[3];
 
-      var new_d =
-        this.$moment(datetime).format("MMMM DD YYYY, h:mm:ss a") + " UTC";
+      // var d = datetime + " " + gmt;
 
-      const formatted_date = new Date(new_d);
+      var new_d = this.$moment(datetime).utc(true);
+
+      // const formatted_date = new Date(new_d);
       // if (this.$cookies.get("timezone")) {
       //   this.coockie_timezone = this.$cookies.get("timezone").timezone;
       // }
 
       // console.log(this.coockie_timezone, "left this.coockie_timezone");
-      var local_date_formatted = new Date(formatted_date).toLocaleString(
+      var local_date_formatted = new Date(new_d).toLocaleString(
         "default",
         {
           month: "short",
