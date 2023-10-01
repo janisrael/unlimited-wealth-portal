@@ -4,7 +4,6 @@
       <el-calendar v-model="calendar_date">
         <template slot="dateCell" slot-scope="{ data }">
           <div
-            :class="data.isSelected ? 'is-selected' : ''"
             class="calendar-date"
             @click="getDate(data)"
           >
@@ -22,7 +21,7 @@
       </el-calendar>
     </el-col>
 
-    <el-col :span="24" style="padding: 0 40px">
+    <el-col :span="24" style="padding: 0 40px" class="upcoming-bookings-container">
       <h4 style="font-size: 14px; font-weight: 600">
         My Upcoming Bookings &nbsp;
         <span v-loading="loading" element-loading-background="#2D2953"></span>
@@ -39,8 +38,9 @@
         <div
           class="events-box"
           @click="getBookingDetails(event)"
-          :class="{ 'join-now-bg': isReadyToJoin(event) }"
+          :class="[!isReadyToJoin(event) ? '' : [randomAni(), 'join-now-bg'] ]"
         >
+         <!-- :class="{'join-now-bg' : isReadyToJoin(event) }]" -->
           <el-col :span="4">
             <el-tooltip
               class="item speaker-icon"
@@ -153,6 +153,9 @@ export default {
     }
   },
   methods: {
+    randomAni() {
+      return 'animation-' + Math.floor((Math.random() * 3) + 1);
+    },
     isReadyToJoin(event) {
       let now = new Date().getTime();
       let start = new Date(event.start_at.utc + " UTC").getTime();
@@ -398,15 +401,25 @@ export default {
 </script>
 
 <style scoped>
-.join-now-bg {
+.join-now-bg{
   background: #a4f14a57;
   border: 0.5px solid #a4f14a;
-  animation: jump-shaking 3s infinite;
+  /* animation: jump-shaking-1 3s infinite; */
 }
+.animation-1{
+  animation: jump-shaking-1 3s infinite;
+}
+.animation-2{
+  animation: jump-shaking-2 3s infinite;
+}
+.animation-3{
+  animation: jump-shaking-2 3s infinite;
+}
+
 .green-border {
   border: 1.5px solid #a4f14a57;
 }
-@keyframes jump-shaking {
+@keyframes jump-shaking-1 {
   0% { transform: translateX(0) }
   3% { transform: translateY(-1px) }
   6% { transform: translateY(-1px) rotate(0.5deg) }
@@ -415,6 +428,29 @@ export default {
   15% { transform: translateY(-1px) rotate(-0.5deg) }
   18% { transform: translateY(0) rotate(0) }
   50% { transform: translateY(0) rotate(0) }
+  100% { transform: translateY(0) rotate(0) }
+}
+@keyframes jump-shaking-2 {
+  0% { transform: translateY(0) rotate(0) }
+  20% { transform: translateY(0) rotate(0) }
+  50% { transform: translateY(-1px) }
+  85% { transform: translateY(-1px) rotate(0.5deg) }
+  89% { transform: translateY(-1px) rotate(-0.5deg) }
+  92% { transform: translateY(-1px) rotate(0.5deg) }
+  97% { transform: translateY(-1px) rotate(-0.5deg) }
+  100% { transform: translateY(0) rotate(0) }
+}
+@keyframes jump-shaking-3 {
+  0% { transform: translateY(0) rotate(0) }
+  2%{ transform: translateY(-1px) rotate(0.5deg) }
+  4% { transform: translateY(0) rotate(0) }
+  6% { transform: translateY(-1px) rotate(0.5deg) }
+  8% { transform: translateY(0) rotate(0) }
+  50% { transform: translateY(-1px) rotate(-0.5deg) }
+  52% { transform: translateY(-1px) rotate(0.5deg) }
+  56% { transform: translateY(-1px) rotate(-0.5deg) }
+  58% { transform: translateY(-1px) rotate(-0.5deg) }
+  60% { transform: translateY(0) rotate(0) }
   100% { transform: translateY(0) rotate(0) }
 }
 </style>
