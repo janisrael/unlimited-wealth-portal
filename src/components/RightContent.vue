@@ -246,7 +246,7 @@ export default {
           this.removeCompletedEvents();
 
           this.all_bookings.sort(function (a, b) {
-            return new Date(a.start_at.local) - new Date(b.start_at.local);
+            return new Date(a.start_at.utc) - new Date(b.start_at.utc);
           });
         }
       });
@@ -401,8 +401,20 @@ export default {
 .join-now-bg {
   background: #a4f14a57;
   border: 0.5px solid #a4f14a;
+  animation: jump-shaking 3s infinite;
 }
 .green-border {
   border: 1.5px solid #a4f14a57;
+}
+@keyframes jump-shaking {
+  0% { transform: translateX(0) }
+  3% { transform: translateY(-1px) }
+  6% { transform: translateY(-1px) rotate(0.5deg) }
+  9% { transform: translateY(-1px) rotate(-0.5deg) }
+  12% { transform: translateY(-1px) rotate(0.5deg) }
+  15% { transform: translateY(-1px) rotate(-0.5deg) }
+  18% { transform: translateY(0) rotate(0) }
+  50% { transform: translateY(0) rotate(0) }
+  100% { transform: translateY(0) rotate(0) }
 }
 </style>
