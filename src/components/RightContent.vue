@@ -299,7 +299,7 @@ export default {
       const start_formatted_date = new Date(new_start);
 
       /* eslint-disable */
-      var timeZone = this.$cookies.get("_detected_current_tz").timezone;
+      var timeZone = this.$cookies.get("_detected_current_tz");
 
       var local_date_formatted = new Date(start_formatted_date).toLocaleString(
         "default",

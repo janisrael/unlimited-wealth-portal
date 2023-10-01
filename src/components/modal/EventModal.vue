@@ -798,7 +798,7 @@ export default {
         .split(" ")[3];
       var d = datetime + " " + gmt;
 
-      var timeZone = this.$cookies.get("_detected_current_tz").timezone;
+      var timeZone = this.$cookies.get("_detected_current_tz");
 
       var new_d =
         this.$moment(datetime).format("MMMM DD YYYY, h:mm:ss a") + " UTC";
