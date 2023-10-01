@@ -9,7 +9,7 @@
       :modal="false"
       class="upcoming-booking-modal"
     >
-      <span slot="title" style="font-size: 14px; font-weight: 600">
+      <!-- <span slot="title" style="font-size: 14px; font-weight: 600">
         <country-flag
           :country="
             selected_booking.event_region === 'uk'
@@ -19,7 +19,7 @@
           size="small"
         />
         {{ selected_booking.event.name }}
-      </span>
+      </span> -->
 
       <span slot="footer" class="dialog-footer" style="font-size: 12px">
         <el-row :gutter="20" type="flex" justify="space-between">
@@ -59,15 +59,48 @@
       <el-col :span="24">
         <el-card :body-style="{ padding: '0px', background: 'transparent' }">
           <img :src="default_banner" style="display: none" />
-
-          <img
+          <div
+            class="upcoming-booking-image-wrapper"
+            :style="{ 'background-image': 'url(' + default_banner + ')' }"
+          >
+            <span
+              slot="title"
+              style="
+                font-size: 14px;
+                font-weight: 600;
+                padding: 5px 10px;
+                display: block;
+                margin-top: 12px;
+              "
+            >
+              <!-- {{ selected_booking.event.name }} -->
+              <div style="font-size: 18px; text-shadow: 1px 1px 2px #343434">
+                {{ selected_booking.event.name.split(",")[0] }}
+              </div>
+              <!-- <span> {{ selected_booking.event.name.split(",")[(1, 2)] }}</span> -->
+              <div style="text-shadow: 1px 1px 2px #343434">
+                {{ formatText(selected_booking.event.name) }}
+              </div>
+              <country-flag
+                class="upcoming-pop-up-flag"
+                :country="
+                  selected_booking.event_region === 'uk'
+                    ? 'gb'
+                    : selected_booking.event_region
+                "
+                size="big"
+              />
+            </span>
+            <!-- <img
             :src="default_banner"
             class="image"
             style="width: 100%; height: auto"
             :alt="selected_booking.event.name"
             width="550"
             height="300"
-          />
+          /> -->
+          </div>
+
           <div
             style="
               padding: 14px;
@@ -135,6 +168,14 @@ export default {
     };
   },
   methods: {
+    formatText(value) {
+      let str = value.substring(value.indexOf(","));
+
+      if (str[0] == ",") {
+        str = str.substring(1);
+      }
+      return str;
+    },
     handleClose() {
       this.dialogVisible = false;
       this.$emit("close");
