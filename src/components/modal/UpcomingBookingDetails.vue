@@ -58,13 +58,10 @@
 
       <el-col :span="24">
         <el-card :body-style="{ padding: '0px', background: 'transparent' }">
-          <img
-            :src="selected_booking.event.event_type.image_url"
-            style="display: none"
-          />
+          <img :src="default_banner" style="display: none" />
 
           <img
-            :src="selected_booking.event.event_type.image_url"
+            :src="default_banner"
             class="image"
             style="width: 100%; height: auto"
             :alt="selected_booking.event.name"
@@ -134,6 +131,7 @@ export default {
       dialogVisible: true,
       can_join_booking: false,
       start_local_date: null,
+      default_banner: require("../../assets/images/event_type_banner.png"),
     };
   },
   methods: {
