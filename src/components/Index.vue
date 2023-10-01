@@ -204,6 +204,8 @@ export default {
         this.currentRightComponent = null;
       }
     }
+
+    this.getDetectedTimezone();
   },
   watch: {
     search: function () {
@@ -224,6 +226,23 @@ export default {
     // rebuild() {
     //   this.$refs.leftComponent.rebuildEventList();
     // },
+    getDetectedTimezone() {
+      // var url_timezone =
+      //   "https://api.ipgeolocation.io/timezone?location=philippines&apiKey=37349195dae541e2b542ed8b7c6f027b";
+      var url_timezone =
+        "https://api.ipgeolocation.io/timezone?apiKey=" +
+        process.env.VUE_APP_COOKIE_KEY;
+
+      this.axios
+        .get(url_timezone)
+        .then((response) => {
+          console.log(response, "response");
+          this.$cookies.set("_detected_current_tz", response.data);
+        })
+        .catch((error) => {
+          // reject(error);
+        });
+    },
     verifyToken(token) {
       let url = process.env.VUE_APP_API_URL + "/api/auth/login";
 
@@ -306,6 +325,7 @@ export default {
       sessionStorage.setItem("token", data.app_session.session_key);
       // window.sessionStorage.setItem('token', 'n8RwzOAnck4xUS9QrRRYWxzhB13SQ9aNsxIpEmpj4V') // static token
       this.token = data.app_session.session_key;
+
       this.checkToken(data);
     },
     getEventTypes() {
