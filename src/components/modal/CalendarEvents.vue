@@ -31,7 +31,7 @@
           style="margin-bottom: 8px; padding: 0px 20px"
         >
           <div class="events-box" @click="goToModal(event)">
-            <el-col :span="3" v-if="event.speaker && event.speaker.avatar">
+            <el-col :span="4" v-if="event.speaker && event.speaker.avatar">
                           <country-flag
                   :country="event.region === 'uk'
                     ? 'gb'
@@ -52,16 +52,15 @@
               >
                 <el-avatar
                   class="speaker-avatar-circle"
-                  :size="40"
+                  :size="35"
                   :src="
-                    require(`@/assets/images/speakers/${event.speaker.avatar}`)
-                  "
-                  style="margin-left: -10px;"
+                    require(`@/assets/images/speakers/${event.speaker.avatar}`)"
+                  style="margin-left: -10px; margin-top: .2em; position:static;"
                 >
                 </el-avatar>
               </el-tooltip>
             </el-col>
-            <el-col :span="20" style="padding-top: 5px;">
+            <el-col :span="20" style="margin-top: .3rem;">
               <div class="bookings-title">
                 {{ event.name }}
                 <!-- {{ event.event_type_name }} - -->
@@ -96,7 +95,7 @@
         >
           <div class="events-box other-events" @click="goToModal(event)">
             <el-col
-              :span="3"
+              :span="4"
               v-if="event.speaker && event.speaker.avatar"
               style="padding-top;: 5px"
             >
@@ -120,16 +119,16 @@
               >
                 <el-avatar
                   class="speaker-avatar-circle"
-                  :size="40"
+                  :size="35"
                   :src="
                     require(`@/assets/images/speakers/${event.speaker.avatar}`)
                   "
-                  style="margin-left: -10px;"
+                  style="margin-left: -10px; margin-top: .2em; position:static;"
                 >
                 </el-avatar>
               </el-tooltip>
             </el-col>
-            <el-col :span="20">
+            <el-col :span="20" style="margin-top: .3rem;">
               <div class="bookings-title">
                 {{ event.name }}
                 <!-- {{ event.event_type_name }} - -->
@@ -307,7 +306,7 @@ export default {
 
 <style scoped>
 .bookings-title {
-  font-size: 12px;
+  /* font-size: 12px; */
   font-weight: 600;
   color: #ffffff;
 }

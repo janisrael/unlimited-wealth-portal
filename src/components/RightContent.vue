@@ -41,7 +41,7 @@
           :class="[!isReadyToJoin(event) ? '' : [readyToJoinAnimation(i), 'join-now-bg'] ]"
         >
          <!-- :class="{'join-now-bg' : isReadyToJoin(event) }]" -->
-          <el-col :span="3">
+          <el-col :span="4">
             <country-flag
               :country="event.event_region === 'uk'
                 ? 'gb'
@@ -63,18 +63,19 @@
               <el-avatar
                 class="speaker-avatar-circle"
                 :class="{ 'green-border': isReadyToJoin(event) }"
-                :size="40"
+                :size="35"
                 :src="
                   require(`@/assets/images/speakers/${
                     event.speaker ? event.speaker.avatar : 'smartcharts.png'
                   }`)
                 "
-                style="margin-left: -10px;"
+                style="margin-left: -10px; margin-top: .2em; position:static;
+               "
               >
               </el-avatar>
             </el-tooltip>
           </el-col>
-          <el-col :span="20" style="padding-top: -5px;">
+          <el-col :span="20" style="margin-top: .3rem;">
             <div class="bookings-title">
               {{ eventFullName(event) }}
               <!-- {{ event.event_type_name }} - -->
