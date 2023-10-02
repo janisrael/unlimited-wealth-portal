@@ -171,7 +171,7 @@ export default {
     },
     eventFullName(e) {
       var name = e.event_type_name;
-      var sched = this.$moment(e.start_at.local).format("ddd do MMM YYYY, HH:mm");
+      var sched = this.$moment(e.start_at.local).format("ddd Do MMM YYYY, HH:mm");
 
       return name + ", " + sched + ", FX";
     },
@@ -409,9 +409,10 @@ export default {
     },
     removeCompletedEvents() {
       this.all_bookings = this.all_bookings.filter(function (item) {
-        let now = new Date().getTime();
+        let now = new Date(new Date().toUTCString()).getTime();
         // let end = new Date(item.end_at.utc + " UTC").getTime(); // dont work on safari
         let end = new Date(item.end_at.utc).getTime();
+
         return Number(end) > Number(now);
       });
     },
