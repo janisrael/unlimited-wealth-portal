@@ -21,7 +21,7 @@
       </el-calendar>
     </el-col>
 
-    <el-col :span="24" style="padding: 0 40px" class="upcoming-bookings-container">
+    <el-col :span="24" style="padding: 0 20px" class="upcoming-bookings-container">
       <h4 style="font-size: 14px; font-weight: 600">
         My Upcoming Bookings &nbsp;
         <span v-loading="loading" element-loading-background="#2D2953"></span>
@@ -38,10 +38,22 @@
         <div
           class="events-box"
           @click="getBookingDetails(event)"
-          :class="[!isReadyToJoin(event) ? '' : [randomAni(), 'join-now-bg'] ]"
+          :class="[!isReadyToJoin(event) ? '' : [readyToJoinAnimation(i), 'join-now-bg'] ]"
         >
          <!-- :class="{'join-now-bg' : isReadyToJoin(event) }]" -->
-          <el-col :span="4">
+          <el-col :span="3">
+            <country-flag
+              :country="event.event_region === 'uk'
+                ? 'gb'
+                : event.event_region
+                "
+              size="small"
+              style="float: left;
+              /* margin: -1em 0.1em 0.1em -1em !important; */
+              padding: 0;
+              transform: scale(0.40);
+              text-shadow: 0 0 #FFF;"
+            />
             <el-tooltip
               class="item speaker-icon"
               :content="event.speaker ? event.speaker.name : 'Smartcharts'"
@@ -57,19 +69,18 @@
                     event.speaker ? event.speaker.avatar : 'smartcharts.png'
                   }`)
                 "
+                style="margin-left: -10px;"
               >
               </el-avatar>
             </el-tooltip>
           </el-col>
-          <el-col :span="20" style="padding-top: 5px">
+          <el-col :span="20" style="padding-top: -5px;">
             <div class="bookings-title">
-              {{ event.event_type_name }} -
-              <span style="text-transform: uppercase">{{
-                event.event_region
-              }}</span>
+              {{ eventFullName(event) }}
+              <!-- {{ event.event_type_name }} - -->
             </div>
             <div class="bookings-sub-title">
-              {{ getFormatedLocalTime(event) }} &nbsp;
+              {{ getFormatedLocalTime(event) }}
               <el-badge
                 v-if="event.status === 'Progress'"
                 value="Pending"
@@ -153,8 +164,15 @@ export default {
     }
   },
   methods: {
-    randomAni() {
-      return 'animation-' + Math.floor((Math.random() * 3) + 1);
+    readyToJoinAnimation(i) {
+      const n = i + 1;
+      return (n % 2 == 0) ? "animation-1" : "animation-2";
+    },
+    eventFullName(e) {
+      var name = e.event_type_name;
+      var sched = this.$moment(e.start_at.local).format("ddd do MMM YYYY, HH:mm");
+
+      return name + ", " + sched + ", FX";
     },
     isReadyToJoin(event) {
       let now = new Date().getTime();
@@ -403,7 +421,7 @@ export default {
 <style scoped>
 .join-now-bg{
   background: #a4f14a57;
-  border: 0.5px solid #a4f14a;
+  /* border: 0.5px solid #a4f14a; */
   /* animation: jump-shaking-1 3s infinite; */
 }
 .animation-1{
@@ -412,10 +430,6 @@ export default {
 .animation-2{
   animation: jump-shaking-2 3s infinite;
 }
-.animation-3{
-  animation: jump-shaking-2 3s infinite;
-}
-
 .green-border {
   border: 1.5px solid #a4f14a57;
 }
@@ -438,19 +452,6 @@ export default {
   89% { transform: translateY(-1px) rotate(-0.5deg) }
   92% { transform: translateY(-1px) rotate(0.5deg) }
   97% { transform: translateY(-1px) rotate(-0.5deg) }
-  100% { transform: translateY(0) rotate(0) }
-}
-@keyframes jump-shaking-3 {
-  0% { transform: translateY(0) rotate(0) }
-  2%{ transform: translateY(-1px) rotate(0.5deg) }
-  4% { transform: translateY(0) rotate(0) }
-  6% { transform: translateY(-1px) rotate(0.5deg) }
-  8% { transform: translateY(0) rotate(0) }
-  50% { transform: translateY(-1px) rotate(-0.5deg) }
-  52% { transform: translateY(-1px) rotate(0.5deg) }
-  56% { transform: translateY(-1px) rotate(-0.5deg) }
-  58% { transform: translateY(-1px) rotate(-0.5deg) }
-  60% { transform: translateY(0) rotate(0) }
   100% { transform: translateY(0) rotate(0) }
 }
 </style>
