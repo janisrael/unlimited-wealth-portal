@@ -82,12 +82,12 @@
               </div>
               <country-flag
                 class="upcoming-pop-up-flag"
+                size="normal"
                 :country="
                   selected_booking.event_region === 'uk'
                     ? 'gb'
                     : selected_booking.event_region
                 "
-                size="medium"
               />
             </span>
             <!-- <img
@@ -277,7 +277,13 @@ export default {
     getCountdownDate() {
       let pluralize = require("pluralize");
 
-      var start = this.selected_booking.start_at.utc + " UTC";
+      // var start = this.selected_booking.start_at.utc + " UTC";
+
+      var start =
+        this.$moment(this.selected_booking.start_at.utc).format(
+          "MMMM DD YYYY, h:mm:ss a"
+        ) + " UTC";
+
       var countdowndate = new Date(start).getTime();
 
       //FOR TESTING ONLY
