@@ -21,7 +21,7 @@
       </el-calendar>
     </el-col>
 
-    <el-col :span="24" style="padding: 0 40px" class="upcoming-bookings-container">
+    <el-col :span="24" style="padding: 0 20px" class="upcoming-bookings-container">
       <h4 style="font-size: 14px; font-weight: 600">
         My Upcoming Bookings &nbsp;
         <span v-loading="loading" element-loading-background="#2D2953"></span>
@@ -42,6 +42,18 @@
         >
          <!-- :class="{'join-now-bg' : isReadyToJoin(event) }]" -->
           <el-col :span="3">
+            <country-flag
+              :country="event.event_region === 'uk'
+                ? 'gb'
+                : event.event_region
+                "
+              size="small"
+              style="float: left;
+              /* margin: -1em 0.1em 0.1em -1em !important; */
+              padding: 0;
+              transform: scale(0.40);
+              text-shadow: 0 0 #FFF;"
+            />
             <el-tooltip
               class="item speaker-icon"
               :content="event.speaker ? event.speaker.name : 'Smartcharts'"
@@ -57,22 +69,14 @@
                     event.speaker ? event.speaker.avatar : 'smartcharts.png'
                   }`)
                 "
+                style="margin-left: -10px;"
               >
               </el-avatar>
             </el-tooltip>
           </el-col>
-          <el-col :span="20" style="padding-top: 0px">
+          <el-col :span="20" style="padding-top: -5px;">
             <div class="bookings-title">
-              <span> {{ eventFullName(event) }}</span>
-              <span><country-flag
-                  :country="event.event_region === 'uk'
-                    ? 'gb'
-                    : event.event_region
-                    "
-                  size="small"
-                  style="margin:-0.1em -1.2em -1.3em -1em; !important"
-                /></span>
-
+              {{ eventFullName(event) }}
               <!-- {{ event.event_type_name }} - -->
             </div>
             <div class="bookings-sub-title">
@@ -84,9 +88,6 @@
               >
               </el-badge>
             </div>
-          </el-col>
-          <el-col :span="1" style="text-align: right;">
-
           </el-col>
         </div>
       </el-col>

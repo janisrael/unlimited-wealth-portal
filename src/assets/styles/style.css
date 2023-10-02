@@ -181,14 +181,15 @@ button.el-button.btn-failed.el-button--info.el-button--mini.is-plain {
 }
 
 .bookings-sub-title {
-	font-size: 12px;
+	font-size: .6vw;
 	font-weight: 600;
 	color: #a2b0d5;
+  margin-left: 3px;
 }
 .bookings-title {
-	font-size: 12px;
+  margin-left:3px;
+	font-size:.7vw;
 	font-weight: 600;
-  margin-top: -5px !important;
 }
 .left-panel-wrapper {
 	display: inline-block;
@@ -823,8 +824,8 @@ span.upcoming-pop-up-flag {
 	position: absolute;
 	right: 13px; */
 	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-	margin-left: -13px !important;
-	margin-top: -5px !important;
+	margin-left: -5px !important;
+	margin-top: 0px !important;
 }
 
 .carousel-formated-date {

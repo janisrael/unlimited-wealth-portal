@@ -85,9 +85,9 @@
                 :country="
                   selected_booking.event_region === 'uk'
                     ? 'gb'
-                    : selected_booking.event_region
-                "
+                    : selected_booking.event_region"
                 size="normal"
+                style="transform: scale(0.80);"
               />
             </span>
             <!-- <img
