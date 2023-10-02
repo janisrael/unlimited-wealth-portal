@@ -443,6 +443,7 @@
 import VueSlickCarousel from "vue-slick-carousel";
 import "vue-slick-carousel/dist/vue-slick-carousel.css";
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
+import { generateRandomString } from "../../utils";
 export default {
   name: "EventModal",
   components: {
@@ -482,6 +483,10 @@ export default {
     },
     event_type_bookings: {
       type: Array,
+    },
+    play_id: {
+      type: String,
+      required: false,
     },
   },
   data() {
@@ -697,6 +702,7 @@ export default {
       let interval = setInterval(() => {
         // do nothing if video is paused
         if (vcpPlayerEl.paused || isNaN(vcpPlayerEl.duration)) {
+          clearInterval(interval);
           return;
         }
 
@@ -709,6 +715,7 @@ export default {
           type: "event.recording.view",
           timestamp: Math.floor(utc_timestamp / 1000),
           data: {
+            play_id: this.play_id,
             object: "event-recording-view-log",
             event_id: this.active_event.id,
             event_type_id: this.event_type.id,
@@ -726,6 +733,29 @@ export default {
           }
         });
       }, process.env.VUE_APP_SC2_EVENT_POST_INTERVAL_MS);
+    },
+    handleVideoLoaded() {
+      let play_id = generateRandomString(8);
+      this.play_id = play_id;
+      let data = this.active_webinar;
+
+      let payload = {
+        type: 'event.recording.play',
+        timestamp: Math.floor(Date.now() / 1000),
+        data: {
+          id: play_id,
+          object: 'event-recording-view-log',
+          event_id: data.id,
+          event_type_id: data.event_type_id,
+          video_url: data.video_recording_url,
+        }
+      }
+
+      this.$store.dispatch('logVideoEvent', payload).then(response => {
+        if (response.status === 204) {
+          window.ENV.APP_ENV === 'local' && console.log('event.recording.play', payload);
+        }
+      })
     },
     getDate(date) {
       var days = [
