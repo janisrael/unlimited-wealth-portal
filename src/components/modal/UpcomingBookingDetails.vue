@@ -9,7 +9,7 @@
       :modal="false"
       class="upcoming-booking-modal"
     >
-      <span slot="title" style="font-size: 14px; font-weight: 600">
+      <!-- <span slot="title" style="font-size: 14px; font-weight: 600">
         <country-flag
           :country="
             selected_booking.event_region === 'uk'
@@ -19,17 +19,17 @@
           size="small"
         />
         {{ selected_booking.event.name }}
-      </span>
+      </span> -->
 
       <span slot="footer" class="dialog-footer" style="font-size: 12px">
         <el-row :gutter="20" type="flex" justify="space-between">
           <el-col
-            :span="can_join_booking ? 16 : 6"
+            :span="can_join_booking ? 16 : 8"
             style="text-align: left"
             class="gray-text"
           >
             <div class="grid-content">
-              Booking ID: {{ selected_booking.id }}
+              <small>Booking ID:</small> {{ selected_booking.id }}
             </div>
           </el-col>
           <el-col
@@ -38,7 +38,7 @@
             class="gray-text"
           >
             <div class="grid-content">
-              Date:
+              <small>Date:</small>
               {{ getFormatedDate(selected_booking.start_date) }}
             </div>
           </el-col>
@@ -49,30 +49,62 @@
                 plain
                 class="cancel-booking"
                 @click="cancelBooking(selected_booking)"
-                >Cancel Booking</el-button
+                ><small>Cancel&nbsp;<br />Booking</small></el-button
               >
             </div>
           </el-col>
         </el-row>
       </span>
-
       <el-col :span="24">
         <el-card :body-style="{ padding: '0px', background: 'transparent' }">
           <img :src="default_banner" style="display: none" />
-
-          <img
+          <div
+            class="upcoming-booking-image-wrapper"
+            :style="{ 'background-image': 'linear-gradient(rgba(0, 0, 0, 0.2),rgba(0, 0, 0, 0.3)) , url(' + default_banner + ')' }"
+          >
+            <span
+              slot="title"
+              style="
+                font-size: 14px;
+                font-weight: 600;
+                padding: 5px 10px;
+                display: block;
+                margin-top: 8px;
+              "
+            >
+              <!-- {{ selected_booking.event.name }} -->
+              <div style="font-size: 20px; text-shadow: 1px 1px 1px #878686">
+                {{ selected_booking.event.name.split(",")[0] }}
+              </div>
+              <!-- <span> {{ selected_booking.event.name.split(",")[(1, 2)] }}</span> -->
+              <div style="text-shadow: 1px 1px 2px #343434; font-size: 14px">
+                {{ formatText(selected_booking.event.name) }}
+              </div>
+              <country-flag
+                class="upcoming-pop-up-flag"
+                :country="
+                  selected_booking.event_region === 'uk'
+                    ? 'gb'
+                    : selected_booking.event_region"
+                size="normal"
+                style="transform: scale(0.80);"
+              />
+            </span>
+            <!-- <img
             :src="default_banner"
             class="image"
             style="width: 100%; height: auto"
             :alt="selected_booking.event.name"
             width="550"
             height="300"
-          />
+          /> -->
+          </div>
+
           <div
             style="
               padding: 14px;
               position: relative;
-              border-bottom: 1px solid #a1a0b2;
+              border-bottom:  1px solid rgb(181, 229, 255, .2) ;
             "
           >
             <el-avatar
@@ -135,6 +167,14 @@ export default {
     };
   },
   methods: {
+    formatText(value) {
+      let str = value.substring(value.indexOf(","));
+
+      if (str[0] == ",") {
+        str = str.substring(1);
+      }
+      return str;
+    },
     handleClose() {
       this.dialogVisible = false;
       this.$emit("close");
@@ -197,15 +237,14 @@ export default {
       var end = this.selected_booking.end_at.utc;
 
       var new_start =
-        this.$moment(start).format("MMMM DD YYYY, h:mm:ss a") + " UTC";
+        this.$moment(start).format("MMMM DD YYYY, HH:mm") + " UTC";
 
-      var new_end =
-        this.$moment(end).format("MMMM DD YYYY, h:mm:ss a") + " UTC";
+      var new_end = this.$moment(end).format("MMMM DD YYYY, HH:mm") + " UTC";
 
       const start_formatted_date = new Date(new_start);
       const end_formatted_date = new Date(new_end);
-
-      var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      /* eslint-disable */
+      var timeZone = this.$cookies.get("_detected_current_tz");
 
       var start_local_date_formatted = new Date(
         start_formatted_date
@@ -216,7 +255,7 @@ export default {
         hour12: true,
         hour: "numeric",
         minute: "2-digit",
-        timeZoneName: "short",
+        // timeZoneName: "short",
         timeZone: timeZone,
       });
 
@@ -233,44 +272,14 @@ export default {
         timeZone: timeZone,
       });
 
-      // var start_local_date = new Date(start).toLocaleString("default", {
-      //   month: "short",
-      //   day: "numeric",
-      //   year: "numeric",
-      //   hour12: true,
-      //   hour: "numeric",
-      //   minute: "2-digit",
-      // });
-
-      // var end_local_date = new Date(end).toLocaleString("default", {
-      //   month: "short",
-      //   day: "numeric",
-      //   year: "numeric",
-      //   hour12: true,
-      //   hour: "numeric",
-      //   minute: "2-digit",
-      //   timeZoneName: "short",
-      // });
-
-      // if (
-      //   new Date(start_local_date).toDateString() ===
-      //   new Date(end_local_date).toDateString()
-      // ) {
-      //   //same day
-      //   end_local_date = new Date(end).toLocaleString("default", {
-      //     hour12: true,
-      //     hour: "numeric",
-      //     minute: "2-digit",
-      //     timeZoneName: "short",
-      //   });
-      // }
       return start_local_date_formatted + " to " + end_local_date_formatted;
     },
     getCountdownDate() {
       let pluralize = require("pluralize");
 
-      var start = this.selected_booking.start_at.utc + " UTC";
-      var countdowndate = new Date(start).getTime();
+      var start = this.selected_booking.start_at.utc;
+      var new_start = this.$moment(start).format("MMMM DD YYYY, HH:mm") + " UTC";
+      var countdowndate = new Date(new_start).getTime();
 
       //FOR TESTING ONLY
       // countdowndate = new Date("September 5, 2023 16:19:00").getTime();

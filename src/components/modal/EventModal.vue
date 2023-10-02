@@ -235,7 +235,7 @@
                         <el-tooltip
                           class="item speaker-icon"
                           effect="light"
-                          :content="getFormatedLocalTime(event.start_at.local)"
+                          :content="getFormatedLocalTime(event.start_at.utc)"
                           placement="bottom"
                         >
                           <div
@@ -377,7 +377,7 @@
                       <el-tooltip
                         class="item speaker-icon"
                         effect="light"
-                        :content="getFormatedLocalTime(event.start_at.local)"
+                        :content="getFormatedLocalTime(event.start_at.utc)"
                         placement="bottom"
                       >
                         <div
@@ -443,6 +443,7 @@
 import VueSlickCarousel from "vue-slick-carousel";
 import "vue-slick-carousel/dist/vue-slick-carousel.css";
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
+import { generateRandomString } from "../../utils";
 export default {
   name: "EventModal",
   components: {
@@ -482,6 +483,10 @@ export default {
     },
     event_type_bookings: {
       type: Array,
+    },
+    play_id: {
+      type: String,
+      required: false,
     },
   },
   data() {
@@ -529,6 +534,7 @@ export default {
       loading: false,
       this_load: true,
       local_timezone: this.getLocalTimezone(),
+      coockie_timezone: "",
     };
   },
   computed: {
@@ -552,10 +558,11 @@ export default {
       });
       this.getVideo(this.event_list[0]);
     }
-
-    this.$nextTick(() => {
-      this.$refs.slickRecording.goTo(this.event_list.length - 1);
-    });
+    if (this.event_list.length > 0 && this.type === "recording") {
+      this.$nextTick(() => {
+        this.$refs.slickRecording.goTo(this.event_list.length - 1);
+      });
+    }
   },
   methods: {
     /* eslint-disable */
@@ -564,10 +571,11 @@ export default {
     },
     checkIfOngoing(event) {
       // moment(localDt, localDtFormat).tz(timezone).format('YYYY-MM-DD hh:mm:ss A');
-      let now = this.$moment(new Date().toString()).format("YYYY-MM-DD h:mm");
+      let now = this.$moment.utc();
       // console.log(now, event.start_at.local, "event.start_at.local");
-      let start_date = event.start_at.local;
-      let end_date = event.end_at.local;
+      var start_date = this.$moment(event.start_at.utc).utc(true);
+      var end_date = this.$moment(event.start_at.utc).utc(true);
+
       if (start_date < now && end_date > now) {
         return true;
       } else {
@@ -679,42 +687,75 @@ export default {
     },
     handlePLay() {
       // targeting <video> element of vue-core-video-player
-      let vcpPlayerEl = document.querySelector('.vcp-container video')
-      let now = new Date;
-      let utc_timestamp = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate() ,
-      now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+      let vcpPlayerEl = document.querySelector(".vcp-container video");
+      let now = new Date();
+      let utc_timestamp = Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        now.getUTCHours(),
+        now.getUTCMinutes(),
+        now.getUTCSeconds(),
+        now.getUTCMilliseconds()
+      );
 
       let interval = setInterval(() => {
         // do nothing if video is paused
         if (vcpPlayerEl.paused || isNaN(vcpPlayerEl.duration)) {
+          clearInterval(interval);
           return;
         }
 
-        if ((vcpPlayerEl.currentTime - 5) >= vcpPlayerEl.duration) {
-          clearInterval(interval)
+        if (vcpPlayerEl.currentTime - 5 >= vcpPlayerEl.duration) {
+          clearInterval(interval);
         }
-        const decimalProgress = (vcpPlayerEl.currentTime / vcpPlayerEl.duration) * 100;
+        const decimalProgress =
+          (vcpPlayerEl.currentTime / vcpPlayerEl.duration) * 100;
         let payload = {
-          type: 'event.recording.view',
+          type: "event.recording.view",
           timestamp: Math.floor(utc_timestamp / 1000),
           data: {
-            object: 'event-recording-view-log',
+            play_id: this.play_id,
+            object: "event-recording-view-log",
             event_id: this.active_event.id,
             event_type_id: this.event_type.id,
             video_url: this.video_url,
             duration: vcpPlayerEl.duration,
             percent_progress: parseFloat(Number(decimalProgress).toFixed(2)),
             playing_timestamp: Math.ceil(vcpPlayerEl.currentTime),
-            customer_id: window.sessionStorage.getItem('customer_id')
-          }
-        }
+            customer_id: window.sessionStorage.getItem("customer_id"),
+          },
+        };
 
-        this.$store.dispatch('logVideoEvent', payload).then(response => {
+        this.$store.dispatch("logVideoEvent", payload).then((response) => {
           if (response.status === 204) {
             // window.ENV.APP_ENV === 'local' && console.log('event.recording.view', payload);
           }
-        })
+        });
       }, process.env.VUE_APP_SC2_EVENT_POST_INTERVAL_MS);
+    },
+    handleVideoLoaded() {
+      let play_id = generateRandomString(8);
+      this.play_id = play_id;
+      let data = this.active_webinar;
+
+      let payload = {
+        type: 'event.recording.play',
+        timestamp: Math.floor(Date.now() / 1000),
+        data: {
+          id: play_id,
+          object: 'event-recording-view-log',
+          event_id: data.id,
+          event_type_id: data.event_type_id,
+          video_url: data.video_recording_url,
+        }
+      }
+
+      this.$store.dispatch('logVideoEvent', payload).then(response => {
+        if (response.status === 204) {
+          window.ENV.APP_ENV === 'local' && console.log('event.recording.play', payload);
+        }
+      })
     },
     getDate(date) {
       var days = [
@@ -780,23 +821,25 @@ export default {
       return time;
     },
     getFormatedLocalTime(datetime) {
-      var gmt = new Date()
-        .toLocaleString("en", {
-          timeZone: this.local_timezone,
-          timeZoneName: "short",
-        })
-        .split(" ")[3];
-      var d = datetime + " " + gmt;
+      var timeZone = this.$cookies.get("_detected_current_tz");
+      // var gmt = new Date()
+      //   .toLocaleString("en", {
+      //     timeZone: timeZone,
+      //     timeZoneName: "short",
+      //   })
+      //   .split(" ")[3];
 
-      var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      // var d = datetime + " " + gmt;
 
-      var new_d =
-        this.$moment(datetime).format("MMMM DD YYYY, h:mm:ss a") + " " + gmt;
-      // console.log(new_d + " " + gmt);
+      var new_d = this.$moment(datetime).utc(true);
 
-      const formatted_date = new Date(new_d);
+      // const formatted_date = new Date(new_d);
+      // if (this.$cookies.get("timezone")) {
+      //   this.coockie_timezone = this.$cookies.get("timezone").timezone;
+      // }
 
-      var local_date_formatted = new Date(formatted_date).toLocaleString(
+      // console.log(this.coockie_timezone, "left this.coockie_timezone");
+      var local_date_formatted = new Date(new_d).toLocaleString(
         "default",
         {
           month: "short",
@@ -810,22 +853,7 @@ export default {
         }
       );
 
-      var local_date = new Date(d).toLocaleString("default", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour12: true,
-        hour: "numeric",
-        minute: "2-digit",
-        timeZoneName: "short",
-        timeZone: timeZone,
-      });
-
-      return (
-        this.$moment(local_date_formatted).format("MMMM Do YYYY, h:mm a") +
-        " " +
-        this.$moment.tz(datetime, timeZone).format("z")
-      );
+      return local_date_formatted;
     },
     getDateExt(date) {
       if (date > 3 && date < 21) return "th";

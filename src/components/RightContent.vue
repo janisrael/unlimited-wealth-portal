@@ -4,7 +4,6 @@
       <el-calendar v-model="calendar_date">
         <template slot="dateCell" slot-scope="{ data }">
           <div
-            :class="data.isSelected ? 'is-selected' : ''"
             class="calendar-date"
             @click="getDate(data)"
           >
@@ -22,7 +21,7 @@
       </el-calendar>
     </el-col>
 
-    <el-col :span="24" style="padding: 0 40px">
+    <el-col :span="24" style="padding: 0 20px" class="upcoming-bookings-container">
       <h4 style="font-size: 14px; font-weight: 600">
         My Upcoming Bookings &nbsp;
         <span v-loading="loading" element-loading-background="#2D2953"></span>
@@ -39,9 +38,22 @@
         <div
           class="events-box"
           @click="getBookingDetails(event)"
-          :class="{ 'join-now-bg': isReadyToJoin(event) }"
+          :class="[!isReadyToJoin(event) ? '' : [readyToJoinAnimation(i), 'join-now-bg'] ]"
         >
-          <el-col :span="4">
+         <!-- :class="{'join-now-bg' : isReadyToJoin(event) }]" -->
+          <el-col :span="4" class="el-col-xl-3 el-col-lg-4 el-col-md-4">
+            <country-flag
+              :country="event.event_region === 'uk'
+                ? 'gb'
+                : event.event_region
+                "
+              size="small"
+              style="float: left;
+              /* margin: -1em 0.1em 0.1em -1em !important; */
+              padding: 0;
+              transform: scale(0.40);
+              text-shadow: 0 0 #FFF;"
+            />
             <el-tooltip
               class="item speaker-icon"
               :content="event.speaker ? event.speaker.name : 'Smartcharts'"
@@ -51,25 +63,25 @@
               <el-avatar
                 class="speaker-avatar-circle"
                 :class="{ 'green-border': isReadyToJoin(event) }"
-                :size="40"
+                :size="35"
                 :src="
                   require(`@/assets/images/speakers/${
                     event.speaker ? event.speaker.avatar : 'smartcharts.png'
                   }`)
                 "
+                style="margin-left: -10px; margin-top: .2em; position:static;
+               "
               >
               </el-avatar>
             </el-tooltip>
           </el-col>
-          <el-col :span="20" style="padding-top: 5px">
+          <el-col :span="20" style="margin-top: .3rem;" class="el-col-xl-21 el-col-lg-20 el-col-md-20">
             <div class="bookings-title">
-              {{ event.event_type_name }} -
-              <span style="text-transform: uppercase">{{
-                event.event_region
-              }}</span>
+              {{ eventFullName(event) }}
+              <!-- {{ event.event_type_name }} - -->
             </div>
             <div class="bookings-sub-title">
-              {{ getFormatedLocalTime(event) }} &nbsp;
+              {{ getFormatedLocalTime(event) }}
               <el-badge
                 v-if="event.status === 'Progress'"
                 value="Pending"
@@ -127,6 +139,7 @@ export default {
       calendar_date: new Date(),
       selected_booking: {},
       loading: false,
+      coockie_timezone: "",
     };
   },
   watch: {
@@ -147,8 +160,21 @@ export default {
   created() {
     this.getEventsDate();
     this.getMyBookings();
+    if (this.$cookies.get("timezone")) {
+      this.coockie_timezone = this.$cookies.get("timezone").timezone;
+    }
   },
   methods: {
+    readyToJoinAnimation(i) {
+      const n = i + 1;
+      return (n % 2 == 0) ? "animation-1" : "animation-2";
+    },
+    eventFullName(e) {
+      var name = e.event_type_name;
+      var sched = this.$moment(e.start_at.local).format("ddd Do MMM YYYY, HH:mm");
+
+      return name + ", " + sched + ", FX";
+    },
     isReadyToJoin(event) {
       let now = new Date().getTime();
       let start = new Date(event.start_at.utc + " UTC").getTime();
@@ -242,7 +268,7 @@ export default {
           this.removeCompletedEvents();
 
           this.all_bookings.sort(function (a, b) {
-            return new Date(a.start_at.local) - new Date(b.start_at.local);
+            return new Date(a.start_at.utc) - new Date(b.start_at.utc);
           });
         }
       });
@@ -293,35 +319,9 @@ export default {
         this.$moment(d).format("MMMM DD YYYY, h:mm:ss a") + " UTC";
 
       const start_formatted_date = new Date(new_start);
-      // var local_date = new Date(d).toLocaleString("default", {
-      //   month: "short",
-      //   day: "numeric",
-      //   year: "numeric",
-      //   hour12: true,
-      //   hour: "numeric",
-      //   minute: "2-digit",
-      //   timeZoneName: "short",
-      // });
 
-      // return local_date;
-      // console.log(event.start_at, "startat");
-      // var gmt = new Date()
-      //   .toLocaleString("en", {
-      //     timeZone: this.local_timezone,
-      //     timeZoneName: "short",
-      //   })
-      //   .split(" ")[3];
-      // var d = datetime + " " + gmt;
-
-      var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-      // var new_d =
-      //   this.$moment(event.start_at).format("MMMM DD YYYY, h:mm:ss a") +
-      //   " " +
-      //   gmt;
-      // console.log(new_d + " " + gmt);
-
-      // const formatted_date = new Date(new_d);
+      /* eslint-disable */
+      var timeZone = this.$cookies.get("_detected_current_tz");
 
       var local_date_formatted = new Date(start_formatted_date).toLocaleString(
         "default",
@@ -336,17 +336,6 @@ export default {
           timeZone: timeZone,
         }
       );
-
-      // var local_date = new Date(d).toLocaleString("default", {
-      //   month: "short",
-      //   day: "numeric",
-      //   year: "numeric",
-      //   hour12: true,
-      //   hour: "numeric",
-      //   minute: "2-digit",
-      //   timeZoneName: "short",
-      //   timeZone: timeZone,
-      // });
 
       return local_date_formatted;
     },
@@ -420,9 +409,10 @@ export default {
     },
     removeCompletedEvents() {
       this.all_bookings = this.all_bookings.filter(function (item) {
-        let now = new Date().getTime();
+        let now = new Date(new Date().toUTCString()).getTime();
         // let end = new Date(item.end_at.utc + " UTC").getTime(); // dont work on safari
         let end = new Date(item.end_at.utc).getTime();
+
         return Number(end) > Number(now);
       });
     },
@@ -431,11 +421,39 @@ export default {
 </script>
 
 <style scoped>
-.join-now-bg {
+.join-now-bg{
   background: #a4f14a57;
-  border: 0.5px solid #a4f14a;
+  /* border: 0.5px solid #a4f14a; */
+  /* animation: jump-shaking-1 3s infinite; */
+}
+.animation-1{
+  animation: jump-shaking-1 3s infinite;
+}
+.animation-2{
+  animation: jump-shaking-2 3s infinite;
 }
 .green-border {
   border: 1.5px solid #a4f14a57;
+}
+@keyframes jump-shaking-1 {
+  0% { transform: translateX(0) }
+  3% { transform: translateY(-1px) }
+  6% { transform: translateY(-1px) rotate(0.5deg) }
+  9% { transform: translateY(-1px) rotate(-0.5deg) }
+  12% { transform: translateY(-1px) rotate(0.5deg) }
+  15% { transform: translateY(-1px) rotate(-0.5deg) }
+  18% { transform: translateY(0) rotate(0) }
+  50% { transform: translateY(0) rotate(0) }
+  100% { transform: translateY(0) rotate(0) }
+}
+@keyframes jump-shaking-2 {
+  0% { transform: translateY(0) rotate(0) }
+  20% { transform: translateY(0) rotate(0) }
+  50% { transform: translateY(-1px) }
+  85% { transform: translateY(-1px) rotate(0.5deg) }
+  89% { transform: translateY(-1px) rotate(-0.5deg) }
+  92% { transform: translateY(-1px) rotate(0.5deg) }
+  97% { transform: translateY(-1px) rotate(-0.5deg) }
+  100% { transform: translateY(0) rotate(0) }
 }
 </style>
