@@ -186,8 +186,9 @@ button.el-button.btn-failed.el-button--info.el-button--mini.is-plain {
 	color: #a2b0d5;
 }
 .bookings-title {
-	font-size: 14px;
+	font-size: 12px;
 	font-weight: 600;
+  margin-top: -5px !important;
 }
 .left-panel-wrapper {
 	display: inline-block;

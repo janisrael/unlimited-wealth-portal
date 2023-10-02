@@ -31,7 +31,7 @@
           style="margin-bottom: 8px; padding: 0px 20px"
         >
           <div class="events-box" @click="goToModal(event)">
-            <el-col :span="4" v-if="event.speaker && event.speaker.avatar">
+            <el-col :span="3" v-if="event.speaker && event.speaker.avatar">
               <el-tooltip
                 class="item speaker-icon"
                 :content="event.speaker.name"
@@ -48,12 +48,22 @@
                 </el-avatar>
               </el-tooltip>
             </el-col>
-            <el-col :span="20" style="padding-top: 5px">
+            <el-col :span="20">
               <div class="bookings-title">
-                {{ getName(event.name) }}
-              </div>
+                  <span> {{ event.name }} </span>
+                  <span><country-flag
+                      :country="event.region === 'uk'
+                        ? 'gb'
+                        : event.region
+                        "
+                      size="small"
+                      style="margin:-0.1em -1.2em -1.3em -1em; !important"
+                    /></span>
+
+                  <!-- {{ event.event_type_name }} - -->
+                </div>
               <div class="bookings-sub-title">
-                {{ getDate(event) }}
+                {{ getFormatedLocalTime(event) }}
               </div>
             </el-col>
           </div>
@@ -82,7 +92,7 @@
         >
           <div class="events-box other-events" @click="goToModal(event)">
             <el-col
-              :span="4"
+              :span="3"
               v-if="event.speaker && event.speaker.avatar"
               style="padding-top;: 5px"
             >
@@ -102,12 +112,21 @@
                 </el-avatar>
               </el-tooltip>
             </el-col>
-            <el-col :span="20" style="padding-top: 5px">
+            <el-col :span="20">
               <div class="bookings-title">
-                {{ getName(event.name) }}
+                <span> {{event.name}} </span>
+                <span><country-flag
+                    :country="event.region === 'uk'
+                      ? 'gb'
+                      : event.region
+                      "
+                    size="small"
+                    style="margin:-0.1em -1.2em -1.3em -1em; !important"
+                  /></span>
+                <!-- {{ event.event_type_name }} - -->
               </div>
               <div class="bookings-sub-title">
-                {{ getDate(event) }}
+                {{ getFormatedLocalTime(event) }}
               </div>
             </el-col>
           </div>
@@ -156,6 +175,12 @@ export default {
     },
   },
   methods: {
+    eventFullName(e) {
+      var name = e.event_type_name;
+      var sched = this.$moment(e.start_at.local).format("ddd do MMM YYYY, HH:mm");
+
+      return name + ", " + sched + ", FX";
+    },
     handleClose() {
       this.dialogVisible = false;
       this.$emit("close");
@@ -239,13 +264,41 @@ export default {
       this.$root.$emit("open-upcoming-events-modal", event);
       this.$root.$emit("set-type", "upcoming");
     },
+    getFormatedLocalTime(event) {
+      // var d = (event.start_at ? event.start_at.utc : event.start_date) + " UTC";
+      var d = event.start_at ? event.start_at.utc : event.start_date;
+
+      var new_start =
+        this.$moment(d).format("MMMM DD YYYY, h:mm:ss a") + " UTC";
+
+      const start_formatted_date = new Date(new_start);
+
+      /* eslint-disable */
+      var timeZone = this.$cookies.get("_detected_current_tz");
+
+      var local_date_formatted = new Date(start_formatted_date).toLocaleString(
+        "default",
+        {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour12: true,
+          hour: "numeric",
+          minute: "2-digit",
+          timeZoneName: "short",
+          timeZone: timeZone,
+        }
+      );
+
+      return local_date_formatted;
+    },
   },
 };
 </script>
 
 <style scoped>
 .bookings-title {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: #ffffff;
 }
