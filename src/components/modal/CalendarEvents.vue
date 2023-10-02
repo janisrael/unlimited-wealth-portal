@@ -31,7 +31,7 @@
           style="margin-bottom: 8px; padding: 0px 20px"
         >
           <div class="events-box" @click="goToModal(event)">
-            <el-col :span="4" v-if="event.speaker && event.speaker.avatar">
+            <el-col :span="4" v-if="event.speaker && event.speaker.avatar" class="el-col-xl-3 el-col-lg-4 el-col-md-4">
                           <country-flag
                   :country="event.region === 'uk'
                     ? 'gb'
@@ -60,7 +60,7 @@
                 </el-avatar>
               </el-tooltip>
             </el-col>
-            <el-col :span="20" style="margin-top: .3rem;">
+            <el-col :span="20" style="margin-top: .3rem;" class="el-col-xl-21 el-col-lg-20 el-col-md-20">
               <div class="bookings-title">
                 {{ event.name }}
                 <!-- {{ event.event_type_name }} - -->
@@ -98,6 +98,7 @@
               :span="4"
               v-if="event.speaker && event.speaker.avatar"
               style="padding-top;: 5px"
+              class="el-col-xl-3 el-col-lg-4 el-col-md-4"
             >
             <country-flag
                 :country="event.region === 'uk'
@@ -128,7 +129,7 @@
                 </el-avatar>
               </el-tooltip>
             </el-col>
-            <el-col :span="20" style="margin-top: .3rem;">
+            <el-col :span="20" style="margin-top: .3rem;" class="el-col-xl-21 el-col-lg-20 el-col-md-20">
               <div class="bookings-title">
                 {{ event.name }}
                 <!-- {{ event.event_type_name }} - -->
