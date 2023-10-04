@@ -534,7 +534,7 @@ export default {
       loading: false,
       this_load: true,
       local_timezone: this.getLocalTimezone(),
-      coockie_timezone: "",
+      cookie_timezone: "",
     };
   },
   computed: {
@@ -574,7 +574,7 @@ export default {
       let now = this.$moment.utc();
       // console.log(now, event.start_at.local, "event.start_at.local");
       var start_date = this.$moment(event.start_at.utc).utc(true);
-      var end_date = this.$moment(event.start_at.utc).utc(true);
+      var end_date = this.$moment(event.end_at.utc).utc(true);
 
       if (start_date < now && end_date > now) {
         return true;
