@@ -60,7 +60,12 @@
           <img :src="default_banner" style="display: none" />
           <div
             class="upcoming-booking-image-wrapper"
-            :style="{ 'background-image': 'url(' + default_banner + ')' }"
+            :style="{
+              'background-image':
+                'linear-gradient(rgba(0, 0, 0, 0.2),rgba(0, 0, 0, 0.3)) , url(' +
+                default_banner +
+                ')',
+            }"
           >
             <span
               slot="title"
@@ -73,7 +78,7 @@
               "
             >
               <!-- {{ selected_booking.event.name }} -->
-              <div style="font-size: 18px; text-shadow: 1px 1px 2px #343434">
+              <div style="font-size: 20px; text-shadow: 1px 1px 1px #878686">
                 {{ selected_booking.event.name.split(",")[0] }}
               </div>
               <!-- <span> {{ selected_booking.event.name.split(",")[(1, 2)] }}</span> -->
@@ -104,7 +109,7 @@
             style="
               padding: 14px;
               position: relative;
-              border-bottom: 1px solid #a1a0b2;
+              border-bottom: 1px solid rgb(181, 229, 255, 0.2);
             "
           >
             <el-avatar
@@ -244,7 +249,7 @@ export default {
       const start_formatted_date = new Date(new_start);
       const end_formatted_date = new Date(new_end);
       /* eslint-disable */
-      var timeZone = this.$cookies.get("_detected_current_tz").timezone;
+      var timeZone = this.$cookies.get("_detected_current_tz");
 
       var start_local_date_formatted = new Date(
         start_formatted_date
@@ -277,14 +282,10 @@ export default {
     getCountdownDate() {
       let pluralize = require("pluralize");
 
-      // var start = this.selected_booking.start_at.utc + " UTC";
-
-      var start =
-        this.$moment(this.selected_booking.start_at.utc).format(
-          "MMMM DD YYYY, h:mm:ss a"
-        ) + " UTC";
-
-      var countdowndate = new Date(start).getTime();
+      var start = this.selected_booking.start_at.utc;
+      var new_start =
+        this.$moment(start).format("MMMM DD YYYY, HH:mm") + " UTC";
+      var countdowndate = new Date(new_start).getTime();
 
       //FOR TESTING ONLY
       // countdowndate = new Date("September 5, 2023 16:19:00").getTime();

@@ -4,7 +4,6 @@
       <el-calendar v-model="calendar_date">
         <template slot="dateCell" slot-scope="{ data }">
           <div
-            :class="data.isSelected ? 'is-selected' : ''"
             class="calendar-date"
             @click="getDate(data)"
           >
@@ -22,7 +21,7 @@
       </el-calendar>
     </el-col>
 
-    <el-col :span="24" style="padding: 0 40px">
+    <el-col :span="24" style="padding: 0 40px" class="upcoming-bookings-container">
       <h4 style="font-size: 14px; font-weight: 600">
         My Upcoming Bookings &nbsp;
         <span v-loading="loading" element-loading-background="#2D2953"></span>
@@ -39,9 +38,10 @@
         <div
           class="events-box"
           @click="getBookingDetails(event)"
-          :class="{ 'join-now-bg': isReadyToJoin(event) }"
+          :class="[!isReadyToJoin(event) ? '' : [readyToJoinAnimation(i), 'join-now-bg'] ]"
         >
-          <el-col :span="4">
+         <!-- :class="{'join-now-bg' : isReadyToJoin(event) }]" -->
+          <el-col :span="3">
             <el-tooltip
               class="item speaker-icon"
               :content="event.speaker ? event.speaker.name : 'Smartcharts'"
@@ -61,15 +61,22 @@
               </el-avatar>
             </el-tooltip>
           </el-col>
-          <el-col :span="20" style="padding-top: 5px">
+          <el-col :span="20" style="padding-top: 0px">
             <div class="bookings-title">
-              {{ event.event_type_name }} -
-              <span style="text-transform: uppercase">{{
-                event.event_region
-              }}</span>
+              <span> {{ eventFullName(event) }}</span>
+              <span><country-flag
+                  :country="event.event_region === 'uk'
+                    ? 'gb'
+                    : event.event_region
+                    "
+                  size="small"
+                  style="margin:-0.1em -1.2em -1.3em -1em; !important"
+                /></span>
+
+              <!-- {{ event.event_type_name }} - -->
             </div>
             <div class="bookings-sub-title">
-              {{ getFormatedLocalTime(event) }} &nbsp;
+              {{ getFormatedLocalTime(event) }}
               <el-badge
                 v-if="event.status === 'Progress'"
                 value="Pending"
@@ -77,6 +84,9 @@
               >
               </el-badge>
             </div>
+          </el-col>
+          <el-col :span="1" style="text-align: right;">
+
           </el-col>
         </div>
       </el-col>
@@ -153,6 +163,16 @@ export default {
     }
   },
   methods: {
+    readyToJoinAnimation(i) {
+      const n = i + 1;
+      return (n % 2 == 0) ? "animation-1" : "animation-2";
+    },
+    eventFullName(e) {
+      var name = e.event_type_name;
+      var sched = this.$moment(e.start_at.local).format("ddd do MMM YYYY, HH:mm");
+
+      return name + ", " + sched + ", FX";
+    },
     isReadyToJoin(event) {
       let now = new Date().getTime();
       let start = new Date(event.start_at.utc + " UTC").getTime();
@@ -246,7 +266,7 @@ export default {
           this.removeCompletedEvents();
 
           this.all_bookings.sort(function (a, b) {
-            return new Date(a.start_at.local) - new Date(b.start_at.local);
+            return new Date(a.start_at.utc) - new Date(b.start_at.utc);
           });
         }
       });
@@ -299,7 +319,7 @@ export default {
       const start_formatted_date = new Date(new_start);
 
       /* eslint-disable */
-      var timeZone = this.$cookies.get("_detected_current_tz").timezone;
+      var timeZone = this.$cookies.get("_detected_current_tz");
 
       var local_date_formatted = new Date(start_formatted_date).toLocaleString(
         "default",
@@ -398,11 +418,39 @@ export default {
 </script>
 
 <style scoped>
-.join-now-bg {
+.join-now-bg{
   background: #a4f14a57;
-  border: 0.5px solid #a4f14a;
+  /* border: 0.5px solid #a4f14a; */
+  /* animation: jump-shaking-1 3s infinite; */
+}
+.animation-1{
+  animation: jump-shaking-1 3s infinite;
+}
+.animation-2{
+  animation: jump-shaking-2 3s infinite;
 }
 .green-border {
   border: 1.5px solid #a4f14a57;
+}
+@keyframes jump-shaking-1 {
+  0% { transform: translateX(0) }
+  3% { transform: translateY(-1px) }
+  6% { transform: translateY(-1px) rotate(0.5deg) }
+  9% { transform: translateY(-1px) rotate(-0.5deg) }
+  12% { transform: translateY(-1px) rotate(0.5deg) }
+  15% { transform: translateY(-1px) rotate(-0.5deg) }
+  18% { transform: translateY(0) rotate(0) }
+  50% { transform: translateY(0) rotate(0) }
+  100% { transform: translateY(0) rotate(0) }
+}
+@keyframes jump-shaking-2 {
+  0% { transform: translateY(0) rotate(0) }
+  20% { transform: translateY(0) rotate(0) }
+  50% { transform: translateY(-1px) }
+  85% { transform: translateY(-1px) rotate(0.5deg) }
+  89% { transform: translateY(-1px) rotate(-0.5deg) }
+  92% { transform: translateY(-1px) rotate(0.5deg) }
+  97% { transform: translateY(-1px) rotate(-0.5deg) }
+  100% { transform: translateY(0) rotate(0) }
 }
 </style>

@@ -186,8 +186,9 @@ button.el-button.btn-failed.el-button--info.el-button--mini.is-plain {
 	color: #a2b0d5;
 }
 .bookings-title {
-	font-size: 14px;
+	font-size: 12px;
 	font-weight: 600;
+  margin-top: -5px !important;
 }
 .left-panel-wrapper {
 	display: inline-block;
@@ -603,11 +604,11 @@ span.modal-span {
 }
 /* .slick-track {
   width: 100% !important;
-  
+
 }
 
 .slick-slide {
-  
+
   width: 100% !important;
 } */
 
@@ -765,6 +766,8 @@ span.modal-span {
 	right: 30px;
 	border-radius: 4px;
 	border: 0.5px solid #b5e5ff;
+  border-bottom: none;
+  margin: 0 auto 0;
 }
 .upcoming-booking-modal
 	.el-dialog
