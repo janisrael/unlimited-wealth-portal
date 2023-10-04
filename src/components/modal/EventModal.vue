@@ -290,7 +290,8 @@
               >
                 <vue-core-video-player
                   v-if="video_url"
-                  @play="handlePLay()"
+                  @play="handlePlay()"
+                  @loadstart="handleVideoLoaded()"
                   :cover="event_type.image_url"
                   :title="event_type.name"
                   :logo="require(`@/assets/images/speakers/smartcharts.png`)"
@@ -483,11 +484,7 @@ export default {
     },
     event_type_bookings: {
       type: Array,
-    },
-    play_id: {
-      type: String,
-      required: false,
-    },
+    }
   },
   data() {
     return {
@@ -535,6 +532,7 @@ export default {
       this_load: true,
       local_timezone: this.getLocalTimezone(),
       cookie_timezone: "",
+      play_id: "",
     };
   },
   computed: {
@@ -685,7 +683,7 @@ export default {
       this.dialog_visible = false;
       this.$emit("close");
     },
-    handlePLay() {
+    handlePlay() {
       // targeting <video> element of vue-core-video-player
       let vcpPlayerEl = document.querySelector(".vcp-container video");
       let now = new Date();
@@ -737,8 +735,7 @@ export default {
     handleVideoLoaded() {
       let play_id = generateRandomString(8);
       this.play_id = play_id;
-      let data = this.active_webinar;
-
+      let data = this.active_event;
       let payload = {
         type: 'event.recording.play',
         timestamp: Math.floor(Date.now() / 1000),
@@ -747,7 +744,7 @@ export default {
           object: 'event-recording-view-log',
           event_id: data.id,
           event_type_id: data.event_type_id,
-          video_url: data.video_recording_url,
+          video_url: this.video_url,
         }
       }
 
