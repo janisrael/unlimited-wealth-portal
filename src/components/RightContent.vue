@@ -174,15 +174,20 @@ export default {
         if (this.isInProgress(value)) {
           var now = new this.$moment.utc();
           var startDay = new this.$moment(value.start_at.utc).utc(true);
-          if (now.isSame(startDay, 'day')) {
+          var endDay = new this.$moment(value.end_at.utc).utc(true);
+          if (now.isSame(startDay, 'day') && now.isSame(endDay, 'day')) {
             value.session_start = Number(startDay.valueOf());
             value.is_series = false;
+            this.setJoinEnabledCookie(value.id, value.end_at.utc)
           } else {
             value.session = this.eventSession(value);
             value.session_start = Number(value.session.start);
             value.start_at.utc = new this.$moment(value.session.start).utc();
             value.end_at.utc = new this.$moment(value.session.end).utc();
             value.is_series = true;
+            if (value.session.is_open) {
+              this.setJoinEnabledCookie(value.event_id, value.end_at.utc);
+            }
           }
           inprogress.push(value);
         } else {
@@ -199,7 +204,7 @@ export default {
     readyToJoinAnimation(i, b) {
       var css_class = "";
 
-      if (! this.$cookies.isKey('_f_jbs_' + b.id)) {
+      if (!this.$cookies.isKey('_f_jbs_' + b.id)) {
         var n = i + 1;
         css_class = (n % 2 == 0) ? "animation-1" : "animation-2";
       }
@@ -253,12 +258,16 @@ export default {
       });
 
       let is_open = now.isBetween(new this.$moment(filtered[0].st), new this.$moment(filtered[0].et));
+
       return {
         is_open: is_open,
         start: filtered[0].st,
         end: filtered[0].et,
         schedules: filtered
       };
+    },
+    setJoinEnabledCookie(eid,exp) {
+      this.$cookies.set('_f_ev_ip_' + eid, "1", this.$moment(exp).utc(true).toString());
     },
     getEventsDate(date) {
       var events = [];
@@ -460,7 +469,16 @@ export default {
         .then((response) => {
           if (response.status === 200) {
             this.currentComponent = UpcomingBookingDetails;
-            this.selected_booking = response.data.data;
+            var selected = response.data.data;
+            var is_session = false;
+            var startDay = new this.$moment(selected.start_at.utc).utc(true);
+            var endDay = new this.$moment(selected.end_at.utc).utc(true);
+            if (!startDay.isSame(endDay, 'day')) {
+              is_session = true;
+              selected.session = this.eventSession(selected);
+            }
+            selected.is_session = is_session;
+            this.selected_booking = selected;
             this.loading = false;
           } else {
             this.loading = false;
