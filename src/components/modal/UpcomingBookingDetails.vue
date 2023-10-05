@@ -170,7 +170,7 @@ export default {
   methods: {
     setJoinedCookie(b) {
       console.log(b.id, 'clicked');
-      this.$cookies.set('_f_jbs_' + b.id, "1", this.$moment(b.end_at.utc).utc(true).toString());
+      this.$cookies.set('_f_jbs_' + b.id, "1", "8h");
     },
     formatText(value) {
       let str = value.substring(value.indexOf(","));
@@ -372,8 +372,21 @@ export default {
                 return `Event starts in ${pluralize("minute", minutes, true)}`;
               } else {
                 // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                this.can_join_booking = true;
-                return `JOIN`;
+                //this.can_join_booking = true;
+
+                if (this.selected_booking.is_session) {
+                  if (this.selected_booking.session.is_open) {
+                    this.can_join_booking = true;
+                    return `JOIN`;
+                  } else {
+                    var start = new this.$moment(this.selected_booking.session.start).utc();
+                    return `Session resumes in ` + new this.$moment(start).utc(true).fromNow();
+                  }
+                } else {
+                  this.can_join_booking = true;
+                  return `JOIN`;
+                }
+
               }
             }
           }
