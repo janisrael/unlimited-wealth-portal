@@ -138,6 +138,7 @@
                   type="success"
                   :disabled="!can_join_booking"
                   :class="{ 'btn-success-custom': can_join_booking }"
+                  @click="can_join_booking ? setJoinedCookie(selected_booking) : ''"
                   >{{ getCountdownDate }}</el-button
                 >
               </el-link>
@@ -167,6 +168,10 @@ export default {
     };
   },
   methods: {
+    setJoinedCookie(b) {
+      console.log(b.id, 'clicked');
+      this.$cookies.set('_f_jbs_' + b.id, "1", this.$moment(b.end_at.utc).utc(true).toString());
+    },
     formatText(value) {
       let str = value.substring(value.indexOf(","));
 

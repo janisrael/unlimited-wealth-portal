@@ -20,7 +20,7 @@
       </h4>
       <el-col v-for="(event, i) in list_inprogress" :key="i" :span="24" style="margin-bottom: 8px">
         <div class="events-box" @click="getBookingDetails(event)"
-          :class="[!isInProgress(event) ? '' : [readyToJoinAnimation(i), 'join-now-bg']]">
+          :class="[!isInProgress(event) ? '' : [readyToJoinAnimation(i, event), 'join-now-bg']]">
           <!-- :class="{'join-now-bg' : isInProgress(event) }]" -->
           <el-col :span="4" class="el-col-xl-3 el-col-lg-4 el-col-md-4">
             <country-flag :country="event.event_region === 'uk'
@@ -33,7 +33,7 @@
               text-shadow: 0 0 #FFF;" />
             <el-tooltip class="item speaker-icon" :content="event.speaker ? event.speaker.name : 'Smartcharts'"
               placement="top" effect="light">
-              <el-avatar class="speaker-avatar-circle" :class="{ 'green-border': isInProgress(event) }" :size="35" :src="require(`@/assets/images/speakers/${event.speaker ? event.speaker.avatar : 'smartcharts.png'
+              <el-avatar class="speaker-avatar-circle" :size="35" :src="require(`@/assets/images/speakers/${event.speaker ? event.speaker.avatar : 'smartcharts.png'
                 }`)
                 " style="margin-left: -10px; margin-top: .2em; position:static;
                ">
@@ -65,8 +65,7 @@
         No bookings to show
       </div>
       <el-col v-for="(event, i) in list_upcoming" :key="i" :span="24" style="margin-bottom: 8px">
-        <div class="events-box" @click="getBookingDetails(event)"
-          :class="[!isInProgress(event) ? '' : [readyToJoinAnimation(i), 'join-now-bg']]">
+        <div class="events-box" @click="getBookingDetails(event)">
           <!-- :class="{'join-now-bg' : isInProgress(event) }]" -->
           <el-col :span="4" class="el-col-xl-3 el-col-lg-4 el-col-md-4">
             <country-flag :country="event.event_region === 'uk'
@@ -79,7 +78,7 @@
               text-shadow: 0 0 #FFF;" />
             <el-tooltip class="item speaker-icon" :content="event.speaker ? event.speaker.name : 'Smartcharts'"
               placement="top" effect="light">
-              <el-avatar class="speaker-avatar-circle" :class="{ 'green-border': isInProgress(event) }" :size="35" :src="require(`@/assets/images/speakers/${event.speaker ? event.speaker.avatar : 'smartcharts.png'
+              <el-avatar class="speaker-avatar-circle" :size="35" :src="require(`@/assets/images/speakers/${event.speaker ? event.speaker.avatar : 'smartcharts.png'
                 }`)
                 " style="margin-left: -10px; margin-top: .2em; position:static;
                ">
@@ -197,9 +196,14 @@ export default {
       });
       this.list_upcoming = upcoming;
     },
-    readyToJoinAnimation(i) {
-      const n = i + 1;
-      return (n % 2 == 0) ? "animation-1" : "animation-2";
+    readyToJoinAnimation(i, b) {
+      var css_class = "";
+
+      if (! this.$cookies.isKey('_f_jbs_' + b.id)) {
+        var n = i + 1;
+        css_class = (n % 2 == 0) ? "animation-1" : "animation-2";
+      }
+      return css_class;
     },
     eventFullName(e) {
       var name = e.event_type_name;
@@ -482,14 +486,12 @@ export default {
       this.removeCompletedEvents();
     },
     removeCompletedEvents() {
+      let moment = this.$moment;
       let filtered = this.all_bookings.filter(function (item) {
-        let now = new Date(new Date().toUTCString()).getTime();
-        // let end = new Date(item.end_at.utc + " UTC").getTime(); // dont work on safari
-        let end = new Date(item.end_at.utc).getTime();
-
-        return Number(end) > Number(now);
+        var now = new moment().utc();
+        var end = new moment(item.end_at.utc).utc(true);
+        return Number(end.valueOf()) > Number(now.valueOf());
       });
-
       this.all_bookings = filtered;
     },
   },
