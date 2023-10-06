@@ -170,6 +170,7 @@ export default {
       verification: true,
       original_data: [],
       loading: false,
+      pollingClearInterval: null,
     };
   },
   beforeMount() {
@@ -181,6 +182,8 @@ export default {
     var current_url = window.location.href;
     var substr = "";
 
+    this.keepAliveApiPoll(localStorage.getItem("token"));
+
     current_url.includes("token")
       ? (substr = current_url.substring(current_url.indexOf("=") + 1))
       : false;
@@ -189,13 +192,13 @@ export default {
       // check if url has token provided
       this.verifyToken(substr);
     } else {
-      if (sessionStorage.getItem("token")) {
+      if (localStorage.getItem("token")) {
         this.use_region =
           this.selected_region =
           this.region =
-            sessionStorage.getItem("region");
+            localStorage.getItem("region");
 
-        this.token = sessionStorage.getItem("token");
+        this.token = localStorage.getItem("token");
         this.verification = true;
         this.getEventTypes();
         this.currentRightComponent = RightContent;
@@ -217,9 +220,9 @@ export default {
     },
   },
   created() {
-    if (sessionStorage.getItem("active_type")) {
-      this.type = sessionStorage.getItem("active_type");
-      this.radio = sessionStorage.getItem("active_type");
+    if (localStorage.getItem("active_type")) {
+      this.type = localStorage.getItem("active_type");
+      this.radio = localStorage.getItem("active_type");
     }
   },
   methods: {
@@ -254,8 +257,8 @@ export default {
         .then((response) => {
           if (response.status === 200) {
             this.$store.dispatch("assignCustomer", response.data);
-            if (!sessionStorage.getItem("region")) {
-              sessionStorage.setItem(
+            if (!localStorage.getItem("region")) {
+              localStorage.setItem(
                 "region",
                 response.data.customer.use_region
               );
@@ -267,15 +270,15 @@ export default {
               this.use_region =
                 this.selected_region =
                 this.region =
-                  sessionStorage.getItem("region");
+                  localStorage.getItem("region");
             }
 
-            sessionStorage.setItem(
+            localStorage.setItem(
               "token",
               response.data.app_session.session_key
             );
 
-            this.token = sessionStorage.getItem("token");
+            this.token = localStorage.getItem("token");
             this.verification = true;
             this.currentRightComponent = RightContent;
             this.getEventTypes();
@@ -286,12 +289,12 @@ export default {
           }
         })
         .catch((err) => {
-          if (sessionStorage.getItem("token")) {
+          if (localStorage.getItem("token")) {
             this.use_region =
               this.selected_region =
               this.region =
-                sessionStorage.getItem("region");
-            this.token = sessionStorage.getItem("token");
+                localStorage.getItem("region");
+            this.token = localStorage.getItem("token");
             this.verification = true;
             this.currentRightComponent = RightContent;
             this.getEventTypes();
@@ -303,7 +306,7 @@ export default {
         });
     },
     clearSession() {
-      window.sessionStorage.clear();
+      window.localStorage.clear();
       document.location.href = "/";
       // setTimeout(() => {
       this.$nextTick(() => {
@@ -316,15 +319,15 @@ export default {
       this.use_region =
         this.selected_region =
         this.region =
-          sessionStorage.getItem("region");
+          localStorage.getItem("region");
       this.verification = true;
-      this.token = sessionStorage.getItem("token");
+      this.token = localStorage.getItem("token");
       this.getEventTypes();
     },
     login(data) {
-      sessionStorage.removeItem("token");
-      sessionStorage.setItem("token", data.app_session.session_key);
-      // window.sessionStorage.setItem('token', 'n8RwzOAnck4xUS9QrRRYWxzhB13SQ9aNsxIpEmpj4V') // static token
+      localStorage.removeItem("token");
+      localStorage.setItem("token", data.app_session.session_key);
+      // window.localStorage.setItem('token', 'n8RwzOAnck4xUS9QrRRYWxzhB13SQ9aNsxIpEmpj4V') // static token
       this.token = data.app_session.session_key;
 
       this.checkToken(data);
@@ -338,9 +341,9 @@ export default {
       });
       let _region = "";
       _region =
-        sessionStorage.getItem("region") === "gb"
+        localStorage.getItem("region") === "gb"
           ? "uk"
-          : sessionStorage.getItem("region");
+          : localStorage.getItem("region");
 
       this.loading = true;
       var url = process.env.VUE_APP_API_URL + "/api/event-types/" + _region;
@@ -423,12 +426,12 @@ export default {
         }
         this.region = command;
       }
-      if (command !== sessionStorage.getItem("region")) {
-        sessionStorage.setItem("region", this.use_region);
+      if (command !== localStorage.getItem("region")) {
+        localStorage.setItem("region", this.use_region);
         this.region =
           this.use_region =
           this.selected_region =
-            sessionStorage.getItem("region");
+            localStorage.getItem("region");
 
         this.$nextTick(() => {
           /* eslint-disable */
@@ -447,7 +450,7 @@ export default {
     },
     getTypes(type) {
       this.radio = type;
-      sessionStorage.setItem("active_type", type);
+      localStorage.setItem("active_type", type);
     },
     filter_data() {
       let event_types = this.event_types;
@@ -457,6 +460,37 @@ export default {
       });
 
       this.event_types = ret;
+    },
+    keepAliveApiPoll(token) {
+      let nextInterval = parseInt(process.env.VUE_APP_KEEP_ALIVE_INTERVAL) || 1;
+      if (!localStorage.getItem("_nxt_kat")) {
+        let nowPlusOneMin = this.$moment(Date.now()).add(parseInt(nextInterval), "minutes").valueOf();
+        localStorage.setItem("_nxt_kat", String(nowPlusOneMin));
+      }
+      this.pollingClearInterval = setInterval(() => {
+        let currInt = localStorage.getItem("_nxt_kat");
+        if (
+          Date.now() > parseInt(currInt)
+        ) {
+        this.axios
+          .get(`${process.env.VUE_APP_API_URL}/api/session/keep-alive`, {
+            headers: {
+              "X-Session-Key": token,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          })
+          .then(() => {
+            let lastInterval = parseInt(localStorage.getItem("_nxt_kat"));
+            let newInterval = this.$moment(lastInterval).add(nextInterval, "minutes").valueOf();
+            localStorage.setItem("_nxt_kat", newInterval);
+          }).catch(() => {
+            clearInterval(this.pollingClearInterval);
+            localStorage.removeItem("_nxt_kat");
+          });
+        }
+
+      }, 5000);
     },
   },
 };

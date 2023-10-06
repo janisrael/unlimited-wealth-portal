@@ -212,7 +212,7 @@ export default {
           this.axios
             .post(url, null, {
               headers: {
-                "X-Session-Key": sessionStorage.getItem("token"),
+                "X-Session-Key": localStorage.getItem("token"),
                 "Content-Type": "application/json",
                 Accept: "application/json",
               },
