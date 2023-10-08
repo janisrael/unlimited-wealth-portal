@@ -317,15 +317,11 @@ export default {
       }));
 
       // store the book events to session storage, use to get the full event name during event listener
-      sessionStorage.setItem(
+      localStorage.setItem(
         "pending_booking",
         JSON.stringify(arr_booking_req)
       );
 
-      console.log(
-        JSON.parse(sessionStorage.getItem("pending_booking")),
-        "pending"
-      );
       this.rebuildEventList();
     },
     async rebuildEventList() {

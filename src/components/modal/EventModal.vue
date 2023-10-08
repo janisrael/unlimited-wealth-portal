@@ -587,7 +587,7 @@ export default {
         (b) => b._related_booking.progress === "pending"
       );
       if (!event_match) {
-        sessionStorage.removeItem("pending_booking");
+        localStorage.removeItem("pending_booking");
       }
       return events_list;
     },
@@ -721,7 +721,7 @@ export default {
             duration: vcpPlayerEl.duration,
             percent_progress: parseFloat(Number(decimalProgress).toFixed(2)),
             playing_timestamp: Math.ceil(vcpPlayerEl.currentTime),
-            customer_id: window.sessionStorage.getItem("customer_id"),
+            customer_id: window.localStorage.getItem("customer_id"),
           },
         };
 
