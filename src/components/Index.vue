@@ -464,13 +464,13 @@ export default {
     keepAliveApiPoll(token) {
       let nextInterval = parseInt(process.env.VUE_APP_KEEP_ALIVE_INTERVAL) || 1;
       if (!localStorage.getItem("_nxt_kat")) {
-        let nowPlusOneMin = this.$moment(Date.now()).add(parseInt(nextInterval), "minutes").valueOf();
+        let nowPlusOneMin = this.$moment().utc().add(parseInt(nextInterval), "minutes").valueOf();
         localStorage.setItem("_nxt_kat", String(nowPlusOneMin));
       }
       this.pollingClearInterval = setInterval(() => {
-        let currInt = localStorage.getItem("_nxt_kat");
+        let currInt = Number(localStorage.getItem("_nxt_kat"));
         if (
-          Date.now() > parseInt(currInt)
+          Number(this.$moment().valueOf()) > currInt
         ) {
         this.axios
           .get(`${process.env.VUE_APP_API_URL}/api/session/keep-alive`, {
@@ -481,9 +481,7 @@ export default {
             },
           })
           .then(() => {
-            let lastInterval = parseInt(localStorage.getItem("_nxt_kat"));
-            let newInterval = this.$moment(lastInterval).add(nextInterval, "minutes").valueOf();
-            localStorage.setItem("_nxt_kat", newInterval);
+            localStorage.setItem("_nxt_kat", this.$moment(currInt).add(nextInterval, "minutes").valueOf());
           }).catch(() => {
             clearInterval(this.pollingClearInterval);
             localStorage.removeItem("_nxt_kat");
