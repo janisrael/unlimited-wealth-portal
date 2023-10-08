@@ -240,9 +240,9 @@ export default {
               this.event_list = events_with_booking.filter((event) => {
                 let now = new Date().getTime();
                 // let start = new Date(event.start_at.utc + " UTC").getTime(); // now working on safari
-                let start = new Date(event.start_at.utc).getTime();
+                let end = new Date(event.end_at.utc).getTime();
                 return (
-                  Number(start) > Number(now) ||
+                  Number(end) > Number(now) ||
                   event._related_booking.id !== undefined
                 );
               });
@@ -271,7 +271,15 @@ export default {
             },
           })
           .then((response) => {
-            this.event_list = response.data.data;
+            let event_list = response.data.data;
+            this.event_list = event_list.filter((event) => {
+              let now = new Date().getTime();
+              // let start = new Date(event.start_at.utc + " UTC").getTime(); // now working on safari
+              let end = new Date(event.end_at.utc).getTime();
+              return (
+                Number(end) < Number(now)
+              );
+            });
             if (this.event_list.length === 0 && this.type === "recording") {
               this.currentComponent = NoRecording;
             } else {
