@@ -182,8 +182,6 @@ export default {
     var current_url = window.location.href;
     var substr = "";
 
-    this.keepAliveApiPoll(localStorage.getItem("token"));
-
     current_url.includes("token")
       ? (substr = current_url.substring(current_url.indexOf("=") + 1))
       : false;
@@ -209,6 +207,7 @@ export default {
     }
 
     this.getDetectedTimezone();
+    this.keepAliveApiPoll(localStorage.getItem("token"));
   },
   watch: {
     search: function () {
@@ -487,7 +486,6 @@ export default {
             localStorage.removeItem("_nxt_kat");
           });
         }
-
       }, 5000);
     },
   },
