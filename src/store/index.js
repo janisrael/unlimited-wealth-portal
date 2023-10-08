@@ -18,7 +18,7 @@ const store = new Vuex.Store({
         },
         ASSIGN_CUSTOMER: (state, payload) => {
             state.customer = payload;
-            window.sessionStorage.setItem("customer_id", payload.customer.id);
+            window.localStorage.setItem("customer_id", payload.customer.id);
         },
         SET_ALL_UPCOMING_EVENTS_BY_REGION: (state, payload) => {
             // check wwhat region

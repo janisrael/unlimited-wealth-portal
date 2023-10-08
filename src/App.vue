@@ -18,12 +18,12 @@ export default {
   },
   data() {
     return {
-      customer_id: sessionStorage.getItem("customer_id"),
+      customer_id: localStorage.getItem("customer_id"),
       data: {},
       category: "",
       // triggerRebuild: null,
       messages: this.$pnGetMessage(
-        "customers." + sessionStorage.getItem("customer_id") + ".booking",
+        "customers." + localStorage.getItem("customer_id") + ".booking",
         this.receptor,
         10
       ),
@@ -32,22 +32,22 @@ export default {
     };
   },
   mounted() {
-    if (sessionStorage.getItem("customer_id")) {
+    if (localStorage.getItem("customer_id")) {
       console.log("has customer id");
       this.$pnSubscribe({
         channels: [
-          "customers." + sessionStorage.getItem("customer_id") + ".booking",
+          "customers." + localStorage.getItem("customer_id") + ".booking",
         ],
         withPresence: true,
       });
 
       // this.messages = this.$pnGetMessage(
-      //   "customers." + sessionStorage.getItem("customer_id") + ".booking",
+      //   "customers." + localStorage.getItem("customer_id") + ".booking",
       //   this.receptor,
       //   10
       // );
       this.$pnGetPresence(
-        "customers." + sessionStorage.getItem("customer_id") + ".booking",
+        "customers." + localStorage.getItem("customer_id") + ".booking",
         this.presence
       );
 
@@ -89,9 +89,9 @@ export default {
           let type = listenerRes.type;
 
           if (type === "booking.failed") {
-            if (sessionStorage.getItem("pending_booking")) {
+            if (localStorage.getItem("pending_booking")) {
               // for getting the complete name of event, this data assign during handlebooking method,
-              event_req = JSON.parse(sessionStorage.getItem("pending_booking"));
+              event_req = JSON.parse(localStorage.getItem("pending_booking"));
               event_match = event_req.find((b) => b.event_id === event_id);
             }
             if (event_match) {
