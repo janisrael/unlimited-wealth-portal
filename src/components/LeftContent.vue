@@ -18,7 +18,7 @@
             :xl="8"
             style="padding-right: 20px; padding-top: 20px"
           >
-            <div>
+            <div @click="getModal(event_type, 'daily_webinars')">
               <el-card class="box-card card-left-panel" shadow="hover">
                 <div slot="header" class="clearfix">
                   <lazy-background
@@ -68,7 +68,7 @@
             :xl="8"
             style="padding-right: 20px; padding-top: 20px"
           >
-            <div>
+            <div @click="getModal(event_type, 'daily_webinars')">
               <el-card class="box-card card-left-panel" shadow="hover">
                 <div slot="header" class="clearfix">
                   <lazy-background
@@ -203,6 +203,7 @@
 import EventModal from "./modal/EventModal.vue";
 import LockedEvent from "./modal/LockedEvent.vue";
 import NoRecording from "./modal/NoRecording.vue";
+import DailyWebinars from "./modal/DailyWebinars.vue";
 /* eslint-disable */
 export default {
   name: "LeftContent",
@@ -210,6 +211,7 @@ export default {
     EventModal,
     LockedEvent,
     NoRecording,
+    DailyWebinars,
   },
   props: {
     type: {
@@ -320,95 +322,96 @@ export default {
 
       return events;
     },
-    getModal(event_type) {
+    getModal(event_type, type) {
       const loading = this.$loading({
         lock: true,
         text: "Loading",
         // spinner: 'el-icon-loading',
         background: "transparent",
       });
-      this.selected_event_type = event_type;
-
-      if (event_type.policy.is_accessible === false) {
-        this.currentComponent = LockedEvent;
-        loading.close();
-        return;
-      }
-
-      var url = "";
-      var events = [];
-      if (this.type === "upcoming") {
-        url =
-          process.env.VUE_APP_API_URL +
-          "/api/events/upcoming?region=" +
-          this.region +
-          "&event_type_id=" +
-          event_type.id;
-        this.axios
-          .get(url, {
-            headers: {
-              "X-Session-Key": this.token,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          })
-          .then((response) => {
-            if (response.status === 200) {
-              events = response.data.data;
-
-              this.event_list = [];
-              let events_with_booking = this.withBooking(events);
-
-              this.event_list = events_with_booking.filter((event) => {
-                let now = new Date().getTime();
-                // let start = new Date(event.start_at.utc + " UTC").getTime(); // now working on safari
-                let end = new Date(event.end_at.utc).getTime();
-                return (
-                  Number(end) > Number(now) ||
-                  event._related_booking.id !== undefined
-                );
-              });
-
-              this.event_list.sort(function (a, b) {
-                return new Date(a.start_at.local) - new Date(b.start_at.local);
-              });
-            }
-          });
-
-        this.currentComponent = EventModal;
+      if (type === "daily_webinars") {
+        // daily webinars
+        this.currentComponent = DailyWebinars;
         loading.close();
       } else {
-        url =
-          process.env.VUE_APP_API_URL +
-          "/api/events/recordings?region=" +
-          this.region +
-          "&event_type_id=" +
-          event_type.id;
-        this.axios
-          .get(url, {
-            headers: {
-              "X-Session-Key": this.token,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          })
-          .then((response) => {
-            let event_list = response.data.data;
-            this.event_list = event_list.filter((event) => {
-              let now = new Date().getTime();
-              // let start = new Date(event.start_at.utc + " UTC").getTime(); // now working on safari
-              let end = new Date(event.end_at.utc).getTime();
-              return (
-                Number(end) < Number(now)
-              );
+        this.selected_event_type = event_type;
+
+        if (event_type.policy.is_accessible === false) {
+          this.currentComponent = LockedEvent;
+          loading.close();
+          return;
+        }
+
+        var url = "";
+        var events = [];
+        if (this.type === "upcoming") {
+          url =
+            process.env.VUE_APP_API_URL +
+            "/api/events/upcoming?region=" +
+            this.region +
+            "&event_type_id=" +
+            event_type.id;
+          this.axios
+            .get(url, {
+              headers: {
+                "X-Session-Key": this.token,
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            })
+            .then((response) => {
+              if (response.status === 200) {
+                events = response.data.data;
+
+                this.event_list = [];
+                let events_with_booking = this.withBooking(events);
+
+                this.event_list = events_with_booking.filter((event) => {
+                  let now = new Date().getTime();
+                  // let start = new Date(event.start_at.utc + " UTC").getTime(); // now working on safari
+                  let start = new Date(event.start_at.utc).getTime();
+                  return (
+                    Number(start) > Number(now) ||
+                    event._related_booking.id !== undefined
+                  );
+                });
+
+                this.event_list.sort(function (a, b) {
+                  return (
+                    new Date(a.start_at.local) - new Date(b.start_at.local)
+                  );
+                });
+              }
             });
-            if (this.event_list.length === 0 && this.type === "recording") {
-              this.currentComponent = NoRecording;
-            } else {
-              this.currentComponent = EventModal;
-            }
-            loading.close();
-          });
+
+          this.currentComponent = EventModal;
+          
+          loading.close();
+        } else {
+          url =
+            process.env.VUE_APP_API_URL +
+            "/api/events/recordings?region=" +
+            this.region +
+            "&event_type_id=" +
+            event_type.id;
+          this.axios
+            .get(url, {
+              headers: {
+                "X-Session-Key": this.token,
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            })
+            .then((response) => {
+              this.event_list = response.data.data;
+              if (this.event_list.length === 0 && this.type === "recording") {
+                this.currentComponent = NoRecording;
+              } else {
+                this.currentComponent = EventModal;
+              }
+              loading.close();
+            });
+        }
       }
     },
     handleCancelEvent(data) {
