@@ -73,9 +73,9 @@ export default {
             })
             .then((response) => {
               if (response.status === 200) {
-                sessionStorage.clear();
+                localStorage.clear();
                 this.$store.dispatch("assignCustomer", response.data);
-                sessionStorage.setItem(
+                localStorage.setItem(
                   "region",
                   response.data.customer.use_region
                 );

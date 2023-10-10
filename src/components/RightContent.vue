@@ -20,7 +20,7 @@
       </h4>
       <el-col v-for="(event, i) in list_inprogress" :key="i" :span="24" style="margin-bottom: 8px">
         <div class="events-box" @click="getBookingDetails(event)"
-          :class="[!isInProgress(event) ? '' : [readyToJoinAnimation(i), 'join-now-bg']]">
+          :class="[!isInProgress(event) ? '' : [readyToJoinAnimation(i, event), 'join-now-bg']]">
           <!-- :class="{'join-now-bg' : isInProgress(event) }]" -->
           <el-col :span="4" class="el-col-xl-3 el-col-lg-4 el-col-md-4">
             <country-flag :country="event.event_region === 'uk'
@@ -33,7 +33,7 @@
               text-shadow: 0 0 #FFF;" />
             <el-tooltip class="item speaker-icon" :content="event.speaker ? event.speaker.name : 'Smartcharts'"
               placement="top" effect="light">
-              <el-avatar class="speaker-avatar-circle" :class="{ 'green-border': isInProgress(event) }" :size="35" :src="require(`@/assets/images/speakers/${event.speaker ? event.speaker.avatar : 'smartcharts.png'
+              <el-avatar class="speaker-avatar-circle" :size="35" :src="require(`@/assets/images/speakers/${event.speaker ? event.speaker.avatar : 'smartcharts.png'
                 }`)
                 " style="margin-left: -10px; margin-top: .2em; position:static;
                ">
@@ -65,8 +65,7 @@
         No bookings to show
       </div>
       <el-col v-for="(event, i) in list_upcoming" :key="i" :span="24" style="margin-bottom: 8px">
-        <div class="events-box" @click="getBookingDetails(event)"
-          :class="[!isInProgress(event) ? '' : [readyToJoinAnimation(i), 'join-now-bg']]">
+        <div class="events-box" @click="getBookingDetails(event)">
           <!-- :class="{'join-now-bg' : isInProgress(event) }]" -->
           <el-col :span="4" class="el-col-xl-3 el-col-lg-4 el-col-md-4">
             <country-flag :country="event.event_region === 'uk'
@@ -79,7 +78,7 @@
               text-shadow: 0 0 #FFF;" />
             <el-tooltip class="item speaker-icon" :content="event.speaker ? event.speaker.name : 'Smartcharts'"
               placement="top" effect="light">
-              <el-avatar class="speaker-avatar-circle" :class="{ 'green-border': isInProgress(event) }" :size="35" :src="require(`@/assets/images/speakers/${event.speaker ? event.speaker.avatar : 'smartcharts.png'
+              <el-avatar class="speaker-avatar-circle" :size="35" :src="require(`@/assets/images/speakers/${event.speaker ? event.speaker.avatar : 'smartcharts.png'
                 }`)
                 " style="margin-left: -10px; margin-top: .2em; position:static;
                ">
@@ -175,15 +174,20 @@ export default {
         if (this.isInProgress(value)) {
           var now = new this.$moment.utc();
           var startDay = new this.$moment(value.start_at.utc).utc(true);
-          if (now.isSame(startDay, 'day')) {
+          var endDay = new this.$moment(value.end_at.utc).utc(true);
+          if (now.isSame(startDay, 'day') && now.isSame(endDay, 'day')) {
             value.session_start = Number(startDay.valueOf());
             value.is_series = false;
+            this.setJoinEnabledCookie(value.id, value.end_at.utc)
           } else {
             value.session = this.eventSession(value);
             value.session_start = Number(value.session.start);
             value.start_at.utc = new this.$moment(value.session.start).utc();
             value.end_at.utc = new this.$moment(value.session.end).utc();
             value.is_series = true;
+            if (value.session.is_open) {
+              this.setJoinEnabledCookie(value.event_id, value.end_at.utc);
+            }
           }
           inprogress.push(value);
         } else {
@@ -197,9 +201,14 @@ export default {
       });
       this.list_upcoming = upcoming;
     },
-    readyToJoinAnimation(i) {
-      const n = i + 1;
-      return (n % 2 == 0) ? "animation-1" : "animation-2";
+    readyToJoinAnimation(i, b) {
+      var css_class = "";
+
+      if (!this.$cookies.isKey('_f_jbs_' + b.id)) {
+        var n = i + 1;
+        css_class = (n % 2 == 0) ? "animation-1" : "animation-2";
+      }
+      return css_class;
     },
     eventFullName(e) {
       var name = e.event_type_name;
@@ -249,12 +258,16 @@ export default {
       });
 
       let is_open = now.isBetween(new this.$moment(filtered[0].st), new this.$moment(filtered[0].et));
+
       return {
         is_open: is_open,
         start: filtered[0].st,
         end: filtered[0].et,
         schedules: filtered
       };
+    },
+    setJoinEnabledCookie(eid,exp) {
+      this.$cookies.set('_f_ev_ip_' + eid, "1", this.$moment(exp).utc(true).toString());
     },
     getEventsDate(date) {
       var events = [];
@@ -456,7 +469,16 @@ export default {
         .then((response) => {
           if (response.status === 200) {
             this.currentComponent = UpcomingBookingDetails;
-            this.selected_booking = response.data.data;
+            var selected = response.data.data;
+            var is_session = false;
+            var startDay = new this.$moment(selected.start_at.utc).utc(true);
+            var endDay = new this.$moment(selected.end_at.utc).utc(true);
+            if (!startDay.isSame(endDay, 'day')) {
+              is_session = true;
+              selected.session = this.eventSession(selected);
+            }
+            selected.is_session = is_session;
+            this.selected_booking = selected;
             this.loading = false;
           } else {
             this.loading = false;
@@ -482,14 +504,12 @@ export default {
       this.removeCompletedEvents();
     },
     removeCompletedEvents() {
+      let moment = this.$moment;
       let filtered = this.all_bookings.filter(function (item) {
-        let now = new Date(new Date().toUTCString()).getTime();
-        // let end = new Date(item.end_at.utc + " UTC").getTime(); // dont work on safari
-        let end = new Date(item.end_at.utc).getTime();
-
-        return Number(end) > Number(now);
+        var now = new moment().utc();
+        var end = new moment(item.end_at.utc).utc(true);
+        return Number(end.valueOf()) > Number(now.valueOf());
       });
-
       this.all_bookings = filtered;
     },
   },
