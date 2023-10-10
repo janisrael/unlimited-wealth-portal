@@ -3,17 +3,10 @@
     <el-col :span="24" style="padding: 0 20px">
       <el-calendar v-model="calendar_date">
         <template slot="dateCell" slot-scope="{ data }">
-          <div
-            class="calendar-date"
-            @click="getDate(data)"
-          >
+          <div class="calendar-date" @click="getDate(data)">
             {{ data.day.split("-").slice(2).join("-") }}
             <div style="display: block; width: 100%; margin-top: -7px">
-              <span
-                v-for="(dot, index) in getDots(data)"
-                :key="index"
-                class="dot"
-              >
+              <span v-for="(dot, index) in getDots(data)" :key="index" class="dot">
               </span>
             </div>
           </div>
@@ -21,86 +14,96 @@
       </el-calendar>
     </el-col>
 
-    <el-col :span="24" style="padding: 0 40px" class="upcoming-bookings-container">
+    <el-col v-if="list_inprogress.length !== 0" :span="24" style="padding: 0 20px" class="in-progress-bookings-container">
       <h4 style="font-size: 14px; font-weight: 600">
-        My Upcoming Bookings &nbsp;
-        <span v-loading="loading" element-loading-background="#2D2953"></span>
+        In Progress &nbsp;
       </h4>
-      <div v-if="all_bookings.length === 0" class="no-booking-caption">
-        No bookings available
-      </div>
-      <el-col
-        v-for="(event, i) in all_bookings"
-        :key="i"
-        :span="24"
-        style="margin-bottom: 8px"
-      >
-        <div
-          class="events-box"
-          @click="getBookingDetails(event)"
-          :class="[!isReadyToJoin(event) ? '' : [readyToJoinAnimation(i), 'join-now-bg'] ]"
-        >
-         <!-- :class="{'join-now-bg' : isReadyToJoin(event) }]" -->
-          <el-col :span="3">
-            <el-tooltip
-              class="item speaker-icon"
-              :content="event.speaker ? event.speaker.name : 'Smartcharts'"
-              placement="top"
-              effect="light"
-            >
-              <el-avatar
-                class="speaker-avatar-circle"
-                :class="{ 'green-border': isReadyToJoin(event) }"
-                :size="40"
-                :src="
-                  require(`@/assets/images/speakers/${
-                    event.speaker ? event.speaker.avatar : 'smartcharts.png'
-                  }`)
-                "
-              >
+      <el-col v-for="(event, i) in list_inprogress" :key="i" :span="24" style="margin-bottom: 8px">
+        <div class="events-box" @click="getBookingDetails(event)"
+          :class="[!isInProgress(event) ? '' : [readyToJoinAnimation(i), 'join-now-bg']]">
+          <!-- :class="{'join-now-bg' : isInProgress(event) }]" -->
+          <el-col :span="4" class="el-col-xl-3 el-col-lg-4 el-col-md-4">
+            <country-flag :country="event.event_region === 'uk'
+              ? 'gb'
+              : event.event_region
+              " size="small" style="float: left;
+              /* margin: -1em 0.1em 0.1em -1em !important; */
+              padding: 0;
+              transform: scale(0.40);
+              text-shadow: 0 0 #FFF;" />
+            <el-tooltip class="item speaker-icon" :content="event.speaker ? event.speaker.name : 'Smartcharts'"
+              placement="top" effect="light">
+              <el-avatar class="speaker-avatar-circle" :class="{ 'green-border': isInProgress(event) }" :size="35" :src="require(`@/assets/images/speakers/${event.speaker ? event.speaker.avatar : 'smartcharts.png'
+                }`)
+                " style="margin-left: -10px; margin-top: .2em; position:static;
+               ">
               </el-avatar>
             </el-tooltip>
           </el-col>
-          <el-col :span="20" style="padding-top: 0px">
+          <el-col :span="20" style="margin-top: .3rem;" class="el-col-xl-21 el-col-lg-20 el-col-md-20">
             <div class="bookings-title">
-              <span> {{ eventFullName(event) }}</span>
-              <span><country-flag
-                  :country="event.event_region === 'uk'
-                    ? 'gb'
-                    : event.event_region
-                    "
-                  size="small"
-                  style="margin:-0.1em -1.2em -1.3em -1em; !important"
-                /></span>
-
+              {{ eventFullName(event) }}
               <!-- {{ event.event_type_name }} - -->
             </div>
             <div class="bookings-sub-title">
-              {{ getFormatedLocalTime(event) }}
-              <el-badge
-                v-if="event.status === 'Progress'"
-                value="Pending"
-                class="item"
-              >
+              {{ event.is_series && !isInProgress(event) ? "Session resumes at " : "" }} {{ getFormatedLocalTime(event) }}
+              <el-badge v-if="event.status === 'Progress'" value="Pending" class="item">
               </el-badge>
             </div>
-          </el-col>
-          <el-col :span="1" style="text-align: right;">
-
           </el-col>
         </div>
       </el-col>
     </el-col>
 
-    <component
-      :is="currentComponent"
-      :date="date"
-      :event_on_this_day="event_on_this_day"
-      :my_events_for_today="my_events_for_today"
-      :selected_booking="selected_booking"
-      @close="CloseModal()"
-      @cancel_event="handleCancelEvent"
-    />
+
+    <el-col :span="24" style="padding: 0 20px" class="upcoming-bookings-container">
+      <h4 style="font-size: 14px; font-weight: 600">
+        My Upcoming Bookings &nbsp;
+        <span v-loading="loading" element-loading-background="#2D2953"></span>
+      </h4>
+      <div v-if="list_upcoming.length === 0" class="no-booking-caption">
+        No bookings to show
+      </div>
+      <el-col v-for="(event, i) in list_upcoming" :key="i" :span="24" style="margin-bottom: 8px">
+        <div class="events-box" @click="getBookingDetails(event)"
+          :class="[!isInProgress(event) ? '' : [readyToJoinAnimation(i), 'join-now-bg']]">
+          <!-- :class="{'join-now-bg' : isInProgress(event) }]" -->
+          <el-col :span="4" class="el-col-xl-3 el-col-lg-4 el-col-md-4">
+            <country-flag :country="event.event_region === 'uk'
+              ? 'gb'
+              : event.event_region
+              " size="small" style="float: left;
+              /* margin: -1em 0.1em 0.1em -1em !important; */
+              padding: 0;
+              transform: scale(0.40);
+              text-shadow: 0 0 #FFF;" />
+            <el-tooltip class="item speaker-icon" :content="event.speaker ? event.speaker.name : 'Smartcharts'"
+              placement="top" effect="light">
+              <el-avatar class="speaker-avatar-circle" :class="{ 'green-border': isInProgress(event) }" :size="35" :src="require(`@/assets/images/speakers/${event.speaker ? event.speaker.avatar : 'smartcharts.png'
+                }`)
+                " style="margin-left: -10px; margin-top: .2em; position:static;
+               ">
+              </el-avatar>
+            </el-tooltip>
+          </el-col>
+          <el-col :span="20" style="margin-top: .3rem;" class="el-col-xl-21 el-col-lg-20 el-col-md-20">
+            <div class="bookings-title">
+              {{ eventFullName(event) }}
+              <!-- {{ event.event_type_name }} - -->
+            </div>
+            <div class="bookings-sub-title">
+              {{ getFormatedLocalTime(event) }}
+              <el-badge v-if="event.status === 'Progress'" value="Pending" class="item">
+              </el-badge>
+            </div>
+          </el-col>
+        </div>
+      </el-col>
+    </el-col>
+
+    <component :is="currentComponent" :date="date" :event_on_this_day="event_on_this_day"
+      :my_events_for_today="my_events_for_today" :selected_booking="selected_booking" @close="CloseModal()"
+      @cancel_event="handleCancelEvent" />
   </div>
 </template>
 
@@ -137,7 +140,9 @@ export default {
       calendar_date: new Date(),
       selected_booking: {},
       loading: false,
-      coockie_timezone: "",
+      cookie_timezone: "",
+      list_inprogress: [],
+      list_upcoming: [],
     };
   },
   watch: {
@@ -159,29 +164,97 @@ export default {
     this.getEventsDate();
     this.getMyBookings();
     if (this.$cookies.get("timezone")) {
-      this.coockie_timezone = this.$cookies.get("timezone").timezone;
+      this.cookie_timezone = this.$cookies.get("timezone").timezone;
     }
   },
   methods: {
+    groupBookings() {
+      let inprogress = [];
+      let upcoming = [];
+      this.all_bookings.forEach((value) => {
+        if (this.isInProgress(value)) {
+          var now = new this.$moment.utc();
+          var startDay = new this.$moment(value.start_at.utc).utc(true);
+          if (now.isSame(startDay, 'day')) {
+            value.session_start = Number(startDay.valueOf());
+            value.is_series = false;
+          } else {
+            value.session = this.eventSession(value);
+            value.session_start = Number(value.session.start);
+            value.start_at.utc = new this.$moment(value.session.start).utc();
+            value.end_at.utc = new this.$moment(value.session.end).utc();
+            value.is_series = true;
+          }
+          inprogress.push(value);
+        } else {
+          upcoming.push(value);
+        }
+      });
+
+      //clear the list first for hot reload
+      this.list_inprogress = inprogress.sort(function (a, b) {
+        return a.session_start - b.session_start;
+      });
+      this.list_upcoming = upcoming;
+    },
     readyToJoinAnimation(i) {
       const n = i + 1;
       return (n % 2 == 0) ? "animation-1" : "animation-2";
     },
     eventFullName(e) {
       var name = e.event_type_name;
-      var sched = this.$moment(e.start_at.local).format("ddd do MMM YYYY, HH:mm");
+      var sched = this.$moment(e.start_at.local).format("ddd Do MMM YYYY, HH:mm");
 
       return name + ", " + sched + ", FX";
     },
+    isInProgress(event) {
+      let now = new this.$moment.utc();
+      let start = new this.$moment(event.start_at.utc).utc(true);
+      let end = new this.$moment(event.end_at.utc).utc(true);
+
+      return now.isBetween(start, end);
+    },
     isReadyToJoin(event) {
-      let now = new Date().getTime();
-      let start = new Date(event.start_at.utc + " UTC").getTime();
-      if (
-        Number(start) < Number(now) ||
-        (Number(start) - Number(now)) / 1000 / 60 < 15
-      ) {
-        return true;
-      } else return false;
+      //support for 3 to 4 days events
+
+      var start_time = new this.$moment(event.start_at.utc).utc(true);
+      var end_time = new this.$moment(event.end_at.utc).utc(true);
+
+      var today_session_start = new this.$moment.utc().hours(Number(start_time.format("H"))).minutes(Number(start_time.format("H")));
+      var today_session_end = new this.$moment.utc().hours(Number(end_time.format("H"))).minutes(Number(end_time.format("m")));
+
+      if (Number(end_time.format("H")) < Number(start_time.format("H"))) {
+        today_session_end = today_session_end.add(1, 'd');
+      }
+
+      return (new this.$moment.utc().isBetween(today_session_start, today_session_end)) ? true : false;
+    },
+    eventSession(booking) {
+      let now = new this.$moment.utc();
+      let start_time = new this.$moment(booking.start_at.utc, "YYYY-MM-DD HH:mm").utc(true);
+      let end_time = new this.$moment(booking.end_at.utc, "YYYY-MM-DD HH:mm").utc(true);
+
+      const duration = new this.$moment.duration(end_time.diff(start_time));
+      var schedules = [];
+      for (; Number(start_time.valueOf()) <= Number(end_time.valueOf());) {
+        var et = start_time.clone().add(Number(duration.hours()), 'hours').add(Number(duration.minutes()));
+
+        let data = { st: start_time.valueOf(), et: et.valueOf() };
+        schedules.push(data);
+        start_time = start_time.add(1, 'd');
+      }
+
+      let filtered = schedules.filter(function (item) {
+        return Number(item.et) > Number(now);
+      });
+
+      let is_open = now.isBetween(new this.$moment(filtered[0].st), new this.$moment(filtered[0].et));
+      return {
+        is_open: is_open,
+        start: filtered[0].st,
+        end: filtered[0].et,
+        schedules: filtered
+      };
     },
     getEventsDate(date) {
       var events = [];
@@ -224,7 +297,7 @@ export default {
           }
         });
     },
-    errorHandler() {},
+    errorHandler() { },
     getDate(data) {
       this.date = data;
       this.event_list.forEach((value) => {
@@ -268,6 +341,8 @@ export default {
           this.all_bookings.sort(function (a, b) {
             return new Date(a.start_at.utc) - new Date(b.start_at.utc);
           });
+          this.groupBookings();
+          console.log(this.list_inprogress, '- inprogress');
         }
       });
     },
@@ -312,6 +387,7 @@ export default {
     getFormatedLocalTime(event) {
       // var d = (event.start_at ? event.start_at.utc : event.start_date) + " UTC";
       var d = event.start_at ? event.start_at.utc : event.start_date;
+
 
       var new_start =
         this.$moment(d).format("MMMM DD YYYY, h:mm:ss a") + " UTC";
@@ -406,12 +482,15 @@ export default {
       this.removeCompletedEvents();
     },
     removeCompletedEvents() {
-      this.all_bookings = this.all_bookings.filter(function (item) {
-        let now = new Date().getTime();
+      let filtered = this.all_bookings.filter(function (item) {
+        let now = new Date(new Date().toUTCString()).getTime();
         // let end = new Date(item.end_at.utc + " UTC").getTime(); // dont work on safari
         let end = new Date(item.end_at.utc).getTime();
+
         return Number(end) > Number(now);
       });
+
+      this.all_bookings = filtered;
     },
   },
 };
@@ -419,7 +498,11 @@ export default {
 
 <style scoped>
 .join-now-bg{
-  background: #a4f14a57;
+  /* background-image: linear-gradient(
+		#8db83c,
+		#6c9224
+	) !important */
+  background: #6c9224;
   /* border: 0.5px solid #a4f14a; */
   /* animation: jump-shaking-1 3s infinite; */
 }

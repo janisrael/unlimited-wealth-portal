@@ -290,7 +290,8 @@
               >
                 <vue-core-video-player
                   v-if="video_url"
-                  @play="handlePLay()"
+                  @play="handlePlay()"
+                  @loadstart="handleVideoLoaded()"
                   :cover="event_type.image_url"
                   :title="event_type.name"
                   :logo="require(`@/assets/images/speakers/smartcharts.png`)"
@@ -443,6 +444,7 @@
 import VueSlickCarousel from "vue-slick-carousel";
 import "vue-slick-carousel/dist/vue-slick-carousel.css";
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
+import { generateRandomString } from "../../utils";
 export default {
   name: "EventModal",
   components: {
@@ -482,7 +484,7 @@ export default {
     },
     event_type_bookings: {
       type: Array,
-    },
+    }
   },
   data() {
     return {
@@ -529,7 +531,8 @@ export default {
       loading: false,
       this_load: true,
       local_timezone: this.getLocalTimezone(),
-      coockie_timezone: "",
+      cookie_timezone: "",
+      play_id: "",
     };
   },
   computed: {
@@ -569,7 +572,7 @@ export default {
       let now = this.$moment.utc();
       // console.log(now, event.start_at.local, "event.start_at.local");
       var start_date = this.$moment(event.start_at.utc).utc(true);
-      var end_date = this.$moment(event.start_at.utc).utc(true);
+      var end_date = this.$moment(event.end_at.utc).utc(true);
 
       if (start_date < now && end_date > now) {
         return true;
@@ -680,7 +683,7 @@ export default {
       this.dialog_visible = false;
       this.$emit("close");
     },
-    handlePLay() {
+    handlePlay() {
       // targeting <video> element of vue-core-video-player
       let vcpPlayerEl = document.querySelector(".vcp-container video");
       let now = new Date();
@@ -697,6 +700,7 @@ export default {
       let interval = setInterval(() => {
         // do nothing if video is paused
         if (vcpPlayerEl.paused || isNaN(vcpPlayerEl.duration)) {
+          clearInterval(interval);
           return;
         }
 
@@ -709,6 +713,7 @@ export default {
           type: "event.recording.view",
           timestamp: Math.floor(utc_timestamp / 1000),
           data: {
+            play_id: this.play_id,
             object: "event-recording-view-log",
             event_id: this.active_event.id,
             event_type_id: this.event_type.id,
@@ -726,6 +731,28 @@ export default {
           }
         });
       }, process.env.VUE_APP_SC2_EVENT_POST_INTERVAL_MS);
+    },
+    handleVideoLoaded() {
+      let play_id = generateRandomString(8);
+      this.play_id = play_id;
+      let data = this.active_event;
+      let payload = {
+        type: 'event.recording.play',
+        timestamp: Math.floor(Date.now() / 1000),
+        data: {
+          id: play_id,
+          object: 'event-recording-view-log',
+          event_id: data.id,
+          event_type_id: data.event_type_id,
+          video_url: this.video_url,
+        }
+      }
+
+      this.$store.dispatch('logVideoEvent', payload).then(response => {
+        if (response.status === 204) {
+          window.ENV.APP_ENV === 'local' && console.log('event.recording.play', payload);
+        }
+      })
     },
     getDate(date) {
       var days = [

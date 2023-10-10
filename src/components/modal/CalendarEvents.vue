@@ -31,7 +31,19 @@
           style="margin-bottom: 8px; padding: 0px 20px"
         >
           <div class="events-box" @click="goToModal(event)">
-            <el-col :span="3" v-if="event.speaker && event.speaker.avatar">
+            <el-col :span="4" v-if="event.speaker && event.speaker.avatar" class="el-col-xl-3 el-col-lg-4 el-col-md-4">
+                          <country-flag
+                  :country="event.region === 'uk'
+                    ? 'gb'
+                    : event.region
+                    "
+                  size="small"
+                  style="float: left;
+              /* margin: -1em 0.1em 0.1em -1em !important; */
+              padding: 0;
+              transform: scale(0.40);
+              text-shadow: 0 0 #FFF;"
+                />
               <el-tooltip
                 class="item speaker-icon"
                 :content="event.speaker.name"
@@ -40,28 +52,19 @@
               >
                 <el-avatar
                   class="speaker-avatar-circle"
-                  :size="40"
+                  :size="35"
                   :src="
-                    require(`@/assets/images/speakers/${event.speaker.avatar}`)
-                  "
+                    require(`@/assets/images/speakers/${event.speaker.avatar}`)"
+                  style="margin-left: -10px; margin-top: .2em; position:static;"
                 >
                 </el-avatar>
               </el-tooltip>
             </el-col>
-            <el-col :span="20">
+            <el-col :span="20" style="margin-top: .3rem;" class="el-col-xl-21 el-col-lg-20 el-col-md-20">
               <div class="bookings-title">
-                  <span> {{ event.name }} </span>
-                  <span><country-flag
-                      :country="event.region === 'uk'
-                        ? 'gb'
-                        : event.region
-                        "
-                      size="small"
-                      style="margin:-0.1em -1.2em -1.3em -1em; !important"
-                    /></span>
-
-                  <!-- {{ event.event_type_name }} - -->
-                </div>
+                {{ event.name }}
+                <!-- {{ event.event_type_name }} - -->
+              </div>
               <div class="bookings-sub-title">
                 {{ getFormatedLocalTime(event) }}
               </div>
@@ -92,10 +95,23 @@
         >
           <div class="events-box other-events" @click="goToModal(event)">
             <el-col
-              :span="3"
+              :span="4"
               v-if="event.speaker && event.speaker.avatar"
               style="padding-top;: 5px"
+              class="el-col-xl-3 el-col-lg-4 el-col-md-4"
             >
+            <country-flag
+                :country="event.region === 'uk'
+                  ? 'gb'
+                  : event.region
+                  "
+                size="small"
+                style="float: left;
+              /* margin: -1em 0.1em 0.1em -1em !important; */
+              padding: 0;
+              transform: scale(0.40);
+              text-shadow: 0 0 #FFF;"
+              />
               <el-tooltip
                 class="item speaker-icon"
                 :content="event.speaker.name"
@@ -104,25 +120,18 @@
               >
                 <el-avatar
                   class="speaker-avatar-circle"
-                  :size="40"
+                  :size="35"
                   :src="
                     require(`@/assets/images/speakers/${event.speaker.avatar}`)
                   "
+                  style="margin-left: -10px; margin-top: .2em; position:static;"
                 >
                 </el-avatar>
               </el-tooltip>
             </el-col>
-            <el-col :span="20">
+            <el-col :span="20" style="margin-top: .3rem;" class="el-col-xl-21 el-col-lg-20 el-col-md-20">
               <div class="bookings-title">
-                <span> {{event.name}} </span>
-                <span><country-flag
-                    :country="event.region === 'uk'
-                      ? 'gb'
-                      : event.region
-                      "
-                    size="small"
-                    style="margin:-0.1em -1.2em -1.3em -1em; !important"
-                  /></span>
+                {{ event.name }}
                 <!-- {{ event.event_type_name }} - -->
               </div>
               <div class="bookings-sub-title">
@@ -298,7 +307,7 @@ export default {
 
 <style scoped>
 .bookings-title {
-  font-size: 12px;
+  /* font-size: 12px; */
   font-weight: 600;
   color: #ffffff;
 }

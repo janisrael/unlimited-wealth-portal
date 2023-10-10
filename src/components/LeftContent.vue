@@ -1,61 +1,183 @@
 <template>
   <div class="left-panel-wrapper">
     <el-row>
-      <el-col :span="24" style="padding: 0px 0px 0px 20px !important">
-        <!-- eslint-disable -->
-        <el-col
-          v-for="(event_type, i) in event_types"
-          v-if="event_type.policy.is_visible === true"
-          :key="i"
-          :xs="24"
-          :sm="24"
-          :md="12"
-          :lg="8"
-          :xl="8"
-          style="padding-right: 20px; padding-top: 20px"
+      <el-col :span="24">
+        <div
+          class="el-calendar__title"
+          style="text-align: left; padding: 20px 0px 0px 20px"
         >
-          <div @click="getModal(event_type)">
-            <el-card class="box-card card-left-panel" shadow="hover">
-              <div slot="header" class="clearfix">
-                <lazy-background
-                  :src="event_type.image_url"
-                  @onLoad="onLoad(event_type.name)"
-                  @onError="onError(event_type)"
-                  image-class="cam-viewport"
-                  :blur="0"
-                  position="left center"
-                  size="cover"
-                  style="
-                    background-size: cover;
-                    background-position: left center;
-                  "
-                  class="card-header-content"
-                >
-                  <div slot="content">
-                    <div class="card-header-content">
-                      <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
+          Daily webinars
+        </div>
+        <el-col :span="24" style="padding: 0px 0px 0px 20px !important">
+          <!-- eslint-disable -->
+          <el-col
+            :xs="24"
+            :sm="24"
+            :md="12"
+            :lg="8"
+            :xl="8"
+            style="padding-right: 20px; padding-top: 20px"
+          >
+            <div>
+              <el-card class="box-card card-left-panel" shadow="hover">
+                <div slot="header" class="clearfix">
+                  <lazy-background
+                    src=""
+                    image-class="cam-viewport"
+                    :blur="0"
+                    position="left center"
+                    size="cover"
+                    style="
+                      background-size: cover;
+                      background-position: left center;
+                    "
+                    class="card-header-content"
+                  >
+                    <div slot="content">
+                      <div class="card-header-content">
+                        <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
                             <i  class="el-icon-lock"></i>
                           </div> -->
-                      <!-- <div class="card-content-title">{{ event.name }}</div>     -->
-                      <div class="card-content-title"></div>
-                      <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
-                      <div class="card-content-sched" v-if="type == 'upcoming'">
-                        <div v-if="event_type.upcoming_event">
+                        <!-- <div class="card-content-title">{{ event.name }}</div>     -->
+                        <div class="card-content-title"></div>
+                        <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
+                        <div class="card-content-sched">
+                          <!-- <div v-if="event_type.upcoming_event">
                           Coming up at
                           {{ getFormatedDate(event_type.upcoming_event) }}
+                        </div> -->
+                          <!-- <div v-else style="visibility: hidden">-</div> -->
                         </div>
-                        <div v-else style="visibility: hidden">-</div>
                       </div>
                     </div>
-                  </div>
-                </lazy-background>
-              </div>
-              <div class="text item">
-                <span v-if="!event_type.description"> -</span>
-                {{ event_type.description }}
-              </div>
-            </el-card>
-          </div>
+                  </lazy-background>
+                </div>
+                <div class="text item">
+                  <!-- <span v-if="!event_type.description"> -</span> -->
+                  Asia webinar
+                </div>
+              </el-card>
+            </div>
+          </el-col>
+
+          <el-col
+            :xs="24"
+            :sm="24"
+            :md="12"
+            :lg="8"
+            :xl="8"
+            style="padding-right: 20px; padding-top: 20px"
+          >
+            <div>
+              <el-card class="box-card card-left-panel" shadow="hover">
+                <div slot="header" class="clearfix">
+                  <lazy-background
+                    src=""
+                    image-class="cam-viewport"
+                    :blur="0"
+                    position="left center"
+                    size="cover"
+                    style="
+                      background-size: cover;
+                      background-position: left center;
+                    "
+                    class="card-header-content"
+                  >
+                    <div slot="content">
+                      <div class="card-header-content">
+                        <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
+                            <i  class="el-icon-lock"></i>
+                          </div> -->
+                        <!-- <div class="card-content-title">{{ event.name }}</div>     -->
+                        <div class="card-content-title"></div>
+                        <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
+                        <div class="card-content-sched">
+                          <!-- <div v-if="event_type.upcoming_event">
+                          Coming up at
+                          {{ getFormatedDate(event_type.upcoming_event) }}
+                        </div> -->
+                          <!-- <div v-else style="visibility: hidden">-</div> -->
+                        </div>
+                      </div>
+                    </div>
+                  </lazy-background>
+                </div>
+                <div class="text item">
+                  <!-- <span v-if="!event_type.description"> -</span> -->
+                  Europe Webinar
+                </div>
+              </el-card>
+            </div>
+          </el-col>
+        </el-col>
+      </el-col>
+      <!-- events-->
+      <el-col :span="24">
+        <div
+          class="el-calendar__title"
+          style="text-align: left; padding: 20px 0px 0px 20px"
+        >
+          Events
+        </div>
+        <el-col :span="24" style="padding: 0px 0px 0px 20px !important">
+          <!-- eslint-disable -->
+          <el-col
+            v-for="(event_type, i) in event_types"
+            v-if="event_type.policy.is_visible === true"
+            :key="i"
+            :xs="24"
+            :sm="24"
+            :md="12"
+            :lg="8"
+            :xl="8"
+            style="padding-right: 20px; padding-top: 20px"
+          >
+            <div @click="getModal(event_type)">
+              <el-card class="box-card card-left-panel" shadow="hover">
+                <div slot="header" class="clearfix">
+                  <lazy-background
+                    :src="event_type.image_url"
+                    @onLoad="onLoad(event_type.name)"
+                    @onError="onError(event_type)"
+                    image-class="cam-viewport"
+                    :blur="0"
+                    position="left center"
+                    size="cover"
+                    style="
+                      background-size: cover;
+                      background-position: left center;
+                    "
+                    class="card-header-content"
+                  >
+                    <div slot="content">
+                      <div class="card-header-content">
+                        <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
+                            <i  class="el-icon-lock"></i>
+                          </div> -->
+                        <!-- <div class="card-content-title">{{ event.name }}</div>     -->
+                        <div class="card-content-title"></div>
+                        <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
+                        <div
+                          class="card-content-sched"
+                          v-if="type == 'upcoming'"
+                        >
+                          <div v-if="event_type.upcoming_event">
+                            Coming up at
+                            {{ getFormatedDate(event_type.upcoming_event) }}
+                          </div>
+                          <div v-else style="visibility: hidden">-</div>
+                        </div>
+                      </div>
+                    </div>
+                  </lazy-background>
+                </div>
+                <div class="text item">
+                  <span v-if="!event_type.description"> -</span>
+                  {{ event_type.description }}
+                </div>
+              </el-card>
+            </div>
+          </el-col>
         </el-col>
       </el-col>
 

@@ -93,6 +93,7 @@
                     ? 'gb'
                     : selected_booking.event_region
                 "
+                style="transform: scale(0.8)"
               />
             </span>
             <!-- <img

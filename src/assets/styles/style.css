@@ -181,14 +181,17 @@ button.el-button.btn-failed.el-button--info.el-button--mini.is-plain {
 }
 
 .bookings-sub-title {
-	font-size: 12px;
+	font-size: .55vw;
 	font-weight: 600;
 	color: #a2b0d5;
 }
 .bookings-title {
-	font-size: 12px;
+	font-size:.65vw;
 	font-weight: 600;
-  margin-top: -5px !important;
+}
+.calendar-bookings-title {
+  font-size: .6vw;
+  font-weight: 600;
 }
 .left-panel-wrapper {
 	display: inline-block;
@@ -823,8 +826,8 @@ span.upcoming-pop-up-flag {
 	position: absolute;
 	right: 13px; */
 	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-	margin-left: -13px !important;
-	margin-top: -5px !important;
+	margin-left: -5px !important;
+	margin-top: 0px !important;
 }
 
 .carousel-formated-date {
