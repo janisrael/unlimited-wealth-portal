@@ -227,12 +227,12 @@ export default {
     //   this.$refs.leftComponent.rebuildEventList();
     // },
     getDetectedTimezone() {
-
       var current_tz = this.$cookies.get("_detected_current_tz");
-
+      console.log(current_tz, "current_tz");
       if (current_tz === null) {
         var url_timezone =
-          "https://api.ipgeolocation.io/timezone?apiKey="+process.env.VUE_APP_COOKIE_KEY;
+          "https://api.ipgeolocation.io/timezone?apiKey=" +
+          process.env.VUE_APP_COOKIE_KEY;
         this.axios
           .get(url_timezone)
           .then((response) => {

@@ -21,6 +21,7 @@ import VueLazyImageLoading from 'vue-lazy-image-loading';
 import VueMoment from 'vue-moment';
 import moment from 'moment-timezone';
 import VueCookies from 'vue-cookies';
+import vueVimeoPlayer from 'vue-vimeo-player';
 import PubNubVue from 'pubnub-vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
@@ -31,11 +32,12 @@ Vue.component(
 
 Vue.use(IconsPlugin);
 Vue.use(VueRouter);
-
+Vue.use(vueVimeoPlayer);
 Vue.use(VueCookies, {
 	expires: '1y',
 	path: '/',
-	domain: process.env.VUE_APP_COOKIE_DOMAIN ?? '', //should be from .env
+	domain:
+		process.env.VUE_APP_COOKIE_DOMAIN ?? '', //should be from .env
 	secure: '',
 	sameSite: 'Lax',
 });
