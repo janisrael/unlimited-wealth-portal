@@ -382,10 +382,33 @@ export default {
                   );
                 });
               }
+            })
+            .catch((err) => {
+              console.log(err);
+              this.$alert(
+                "You have been logged out because your session expires or you login on a different device.",
+                {
+                  confirmButtonText: "OK",
+                  callback: (action) => {
+                    this.$message({
+                      type: "info",
+                      showClose: false,
+                      message: `action: ${action}`,
+                    });
+                    localStorage.clear();
+                    document.location.href = "/";
+                    // setTimeout(() => {
+                    this.$nextTick(() => {
+                      /* eslint-disable */
+                      window.location.reload();
+                    });
+                  },
+                }
+              );
             });
 
           this.currentComponent = EventModal;
-          
+
           loading.close();
         } else {
           url =
@@ -410,6 +433,29 @@ export default {
                 this.currentComponent = EventModal;
               }
               loading.close();
+            })
+            .catch((err) => {
+              console.log(err);
+              this.$alert(
+                "You have been logged out because your session expires or you login on a different device.",
+                {
+                  confirmButtonText: "OK",
+                  callback: (action) => {
+                    this.$message({
+                      type: "info",
+                      showClose: false,
+                      message: `action: ${action}`,
+                    });
+                    localStorage.clear();
+                    document.location.href = "/";
+                    // setTimeout(() => {
+                    this.$nextTick(() => {
+                      /* eslint-disable */
+                      window.location.reload();
+                    });
+                  },
+                }
+              );
             });
         }
       }
@@ -450,10 +496,7 @@ export default {
       }));
 
       // store the book events to session storage, use to get the full event name during event listener
-      localStorage.setItem(
-        "pending_booking",
-        JSON.stringify(arr_booking_req)
-      );
+      localStorage.setItem("pending_booking", JSON.stringify(arr_booking_req));
 
       this.rebuildEventList();
     },

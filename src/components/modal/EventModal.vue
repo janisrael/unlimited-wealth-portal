@@ -484,7 +484,7 @@ export default {
     },
     event_type_bookings: {
       type: Array,
-    }
+    },
   },
   data() {
     return {
@@ -658,8 +658,6 @@ export default {
             if (response.status === 200) {
               let selected = this.selected_events;
               this.selected_events = [];
-              // make a disoatch to store all req booking, incase some is
-              // this.event_list = [];
               this.$emit("book_events", selected);
               this.loading = false;
               this.this_load = false;
@@ -737,22 +735,23 @@ export default {
       this.play_id = play_id;
       let data = this.active_event;
       let payload = {
-        type: 'event.recording.play',
+        type: "event.recording.play",
         timestamp: Math.floor(Date.now() / 1000),
         data: {
           id: play_id,
-          object: 'event-recording-view-log',
+          object: "event-recording-view-log",
           event_id: data.id,
           event_type_id: data.event_type_id,
           video_url: this.video_url,
-        }
-      }
+        },
+      };
 
-      this.$store.dispatch('logVideoEvent', payload).then(response => {
+      this.$store.dispatch("logVideoEvent", payload).then((response) => {
         if (response.status === 204) {
-          window.ENV.APP_ENV === 'local' && console.log('event.recording.play', payload);
+          window.ENV.APP_ENV === "local" &&
+            console.log("event.recording.play", payload);
         }
-      })
+      });
     },
     getDate(date) {
       var days = [
@@ -836,19 +835,16 @@ export default {
       // }
 
       // console.log(this.coockie_timezone, "left this.coockie_timezone");
-      var local_date_formatted = new Date(new_d).toLocaleString(
-        "default",
-        {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-          hour12: true,
-          hour: "numeric",
-          minute: "2-digit",
-          timeZoneName: "short",
-          timeZone: timeZone,
-        }
-      );
+      var local_date_formatted = new Date(new_d).toLocaleString("default", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour12: true,
+        hour: "numeric",
+        minute: "2-digit",
+        timeZoneName: "short",
+        timeZone: timeZone,
+      });
 
       return local_date_formatted;
     },
