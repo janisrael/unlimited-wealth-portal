@@ -6,7 +6,20 @@
           class="el-calendar__title"
           style="text-align: left; padding: 20px 0px 0px 20px"
         >
-          Daily webinars
+          Learn Forex Webinars
+          <!-- <el-popover
+            placement="bottom-start"
+            title="All events in one place"
+            width="200"
+            trigger="hover"
+            content="By clicking with your mouse on a specific date, you can see your booked events and other events, that happen trough-out the current month."
+          > -->
+          <i
+            class="el-icon-warning-outline"
+            style="color: #5ce6e6; cursor: pointer; margin-left: 10px"
+            slot="reference"
+          ></i>
+          <!-- </el-popover> -->
         </div>
         <el-col :span="24" style="padding: 0px 0px 0px 20px !important">
           <!-- eslint-disable -->
@@ -68,7 +81,19 @@
           class="el-calendar__title"
           style="text-align: left; padding: 20px 0px 0px 20px"
         >
-          Events
+          Unlimited Wealth Events
+          <!-- <el-popover
+            placement="bottom-start"
+            title="All events in one place"
+            width="200"
+            trigger="hover"
+          > -->
+          <i
+            class="el-icon-warning-outline"
+            style="color: #5ce6e6; cursor: pointer; margin-left: 10px"
+            slot="reference"
+          ></i>
+          <!-- </el-popover> -->
         </div>
         <el-col :span="24" style="padding: 0px 0px 0px 20px !important">
           <!-- eslint-disable -->
