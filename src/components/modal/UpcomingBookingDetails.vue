@@ -60,7 +60,12 @@
           <img :src="default_banner" style="display: none" />
           <div
             class="upcoming-booking-image-wrapper"
-            :style="{ 'background-image': 'linear-gradient(rgba(0, 0, 0, 0.2),rgba(0, 0, 0, 0.3)) , url(' + default_banner + ')' }"
+            :style="{
+              'background-image':
+                'linear-gradient(rgba(0, 0, 0, 0.2),rgba(0, 0, 0, 0.3)) , url(' +
+                default_banner +
+                ')',
+            }"
           >
             <span
               slot="title"
@@ -82,12 +87,13 @@
               </div>
               <country-flag
                 class="upcoming-pop-up-flag"
+                size="normal"
                 :country="
                   selected_booking.event_region === 'uk'
                     ? 'gb'
-                    : selected_booking.event_region"
-                size="normal"
-                style="transform: scale(0.80);"
+                    : selected_booking.event_region
+                "
+                style="transform: scale(0.8)"
               />
             </span>
             <!-- <img
@@ -104,7 +110,7 @@
             style="
               padding: 14px;
               position: relative;
-              border-bottom:  1px solid rgb(181, 229, 255, .2) ;
+              border-bottom: 1px solid rgb(181, 229, 255, 0.2);
             "
           >
             <el-avatar
@@ -283,7 +289,8 @@ export default {
       let pluralize = require("pluralize");
 
       var start = this.selected_booking.start_at.utc;
-      var new_start = this.$moment(start).format("MMMM DD YYYY, HH:mm") + " UTC";
+      var new_start =
+        this.$moment(start).format("MMMM DD YYYY, HH:mm") + " UTC";
       var countdowndate = new Date(new_start).getTime();
 
       //FOR TESTING ONLY

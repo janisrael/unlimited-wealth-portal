@@ -1,61 +1,158 @@
 <template>
   <div class="left-panel-wrapper">
     <el-row>
-      <el-col :span="24" style="padding: 0px 0px 0px 20px !important">
-        <!-- eslint-disable -->
-        <el-col
-          v-for="(event_type, i) in event_types"
-          v-if="event_type.policy.is_visible === true"
-          :key="i"
-          :xs="24"
-          :sm="24"
-          :md="12"
-          :lg="8"
-          :xl="8"
-          style="padding-right: 20px; padding-top: 20px"
+      <el-col :span="24">
+        <div
+          class="el-calendar__title"
+          style="text-align: left; padding: 20px 0px 0px 20px"
         >
-          <div @click="getModal(event_type)">
-            <el-card class="box-card card-left-panel" shadow="hover">
-              <div slot="header" class="clearfix">
-                <lazy-background
-                  :src="event_type.image_url"
-                  @onLoad="onLoad(event_type.name)"
-                  @onError="onError(event_type)"
-                  image-class="cam-viewport"
-                  :blur="0"
-                  position="left center"
-                  size="cover"
-                  style="
-                    background-size: cover;
-                    background-position: left center;
-                  "
-                  class="card-header-content"
-                >
-                  <div slot="content">
-                    <div class="card-header-content">
-                      <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
+          Learn Forex Webinars
+          <el-popover
+            placement="bottom-start"
+            width="200"
+            trigger="hover"
+            content="Available to all LFX customers with no need to book in advance"
+          >
+            <i
+              class="el-icon-warning-outline"
+              style="color: #5ce6e6; cursor: pointer; margin-left: 10px"
+              slot="reference"
+            ></i>
+          </el-popover>
+        </div>
+        <el-col :span="24" style="padding: 0px 0px 0px 20px !important">
+          <!-- eslint-disable -->
+          <el-col
+            v-for="(webinar, i) in daily_webinars"
+            :xs="24"
+            :sm="24"
+            :md="12"
+            :lg="8"
+            :xl="8"
+            style="padding-right: 20px; padding-top: 20px"
+          >
+            <div @click="getModal(webinar, 'daily_webinars')">
+              <el-card class="box-card card-left-panel" shadow="hover">
+                <div slot="header" class="clearfix">
+                  <lazy-background
+                    :src="webinar.thumnail_url"
+                    image-class="cam-viewport"
+                    :blur="0"
+                    position="left center"
+                    size="cover"
+                    style="
+                      background-size: cover;
+                      background-position: left center;
+                    "
+                    class="card-header-content"
+                  >
+                    <div slot="content">
+                      <div class="card-header-content">
+                        <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
                             <i  class="el-icon-lock"></i>
                           </div> -->
-                      <!-- <div class="card-content-title">{{ event.name }}</div>     -->
-                      <div class="card-content-title"></div>
-                      <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
-                      <div class="card-content-sched" v-if="type == 'upcoming'">
-                        <div v-if="event_type.upcoming_event">
+                        <!-- <div class="card-content-title">{{ event.name }}</div>     -->
+                        <div class="card-content-title"></div>
+                        <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
+                        <div class="card-content-sched">
+                          <!-- <div v-if="event_type.upcoming_event">
                           Coming up at
                           {{ getFormatedDate(event_type.upcoming_event) }}
+                        </div> -->
+                          <!-- <div v-else style="visibility: hidden">-</div> -->
                         </div>
-                        <div v-else style="visibility: hidden">-</div>
                       </div>
                     </div>
-                  </div>
-                </lazy-background>
-              </div>
-              <div class="text item">
-                <span v-if="!event_type.description"> -</span>
-                {{ event_type.description }}
-              </div>
-            </el-card>
-          </div>
+                  </lazy-background>
+                </div>
+                <div class="text item">
+                  <span v-if="!webinar.description"> -</span>
+                  {{ webinar.description }}
+                </div>
+              </el-card>
+            </div>
+          </el-col>
+        </el-col>
+      </el-col>
+      <!-- events-->
+      <el-col :span="24">
+        <div
+          class="el-calendar__title"
+          style="text-align: left; padding: 20px 0px 0px 20px"
+        >
+          Unlimited Wealth Events
+          <el-popover
+            placement="bottom-start"
+            width="200"
+            trigger="hover"
+            content="All UW events require a purchase of an Unlimited Wealth product. All events require booking in advance"
+          >
+            <i
+              class="el-icon-warning-outline"
+              style="color: #5ce6e6; cursor: pointer; margin-left: 10px"
+              slot="reference"
+            ></i>
+          </el-popover>
+        </div>
+        <el-col :span="24" style="padding: 0px 0px 0px 20px !important">
+          <!-- eslint-disable -->
+          <el-col
+            v-for="(event_type, i) in event_types"
+            v-if="event_type.policy.is_visible === true"
+            :key="i"
+            :xs="24"
+            :sm="24"
+            :md="12"
+            :lg="8"
+            :xl="8"
+            style="padding-right: 20px; padding-top: 20px"
+          >
+            <div @click="getModal(event_type)">
+              <el-card class="box-card card-left-panel" shadow="hover">
+                <div slot="header" class="clearfix">
+                  <lazy-background
+                    :src="event_type.image_url"
+                    @onLoad="onLoad(event_type.name)"
+                    @onError="onError(event_type)"
+                    image-class="cam-viewport"
+                    :blur="0"
+                    position="left center"
+                    size="cover"
+                    style="
+                      background-size: cover;
+                      background-position: left center;
+                    "
+                    class="card-header-content"
+                  >
+                    <div slot="content">
+                      <div class="card-header-content">
+                        <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
+                            <i  class="el-icon-lock"></i>
+                          </div> -->
+                        <!-- <div class="card-content-title">{{ event.name }}</div>     -->
+                        <div class="card-content-title"></div>
+                        <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
+                        <div
+                          class="card-content-sched"
+                          v-if="type == 'upcoming'"
+                        >
+                          <div v-if="event_type.upcoming_event">
+                            Coming up at
+                            {{ getFormatedDate(event_type.upcoming_event) }}
+                          </div>
+                          <div v-else style="visibility: hidden">-</div>
+                        </div>
+                      </div>
+                    </div>
+                  </lazy-background>
+                </div>
+                <div class="text item">
+                  <span v-if="!event_type.description"> -</span>
+                  {{ event_type.description }}
+                </div>
+              </el-card>
+            </div>
+          </el-col>
         </el-col>
       </el-col>
 
@@ -81,6 +178,7 @@
 import EventModal from "./modal/EventModal.vue";
 import LockedEvent from "./modal/LockedEvent.vue";
 import NoRecording from "./modal/NoRecording.vue";
+import DailyWebinars from "./modal/DailyWebinars.vue";
 /* eslint-disable */
 export default {
   name: "LeftContent",
@@ -88,6 +186,7 @@ export default {
     EventModal,
     LockedEvent,
     NoRecording,
+    DailyWebinars,
   },
   props: {
     type: {
@@ -98,10 +197,10 @@ export default {
       type: Array,
       required: true,
     },
-    // events: {
-    //   required: true,
-    //   type: Array,
-    // },
+    daily_webinars: {
+      required: true,
+      type: Array,
+    },
     tumbnail_region_title: {
       required: true,
       type: String,
@@ -198,95 +297,143 @@ export default {
 
       return events;
     },
-    getModal(event_type) {
+    getModal(event_type, type) {
       const loading = this.$loading({
         lock: true,
         text: "Loading",
         // spinner: 'el-icon-loading',
         background: "transparent",
       });
-      this.selected_event_type = event_type;
-
-      if (event_type.policy.is_accessible === false) {
-        this.currentComponent = LockedEvent;
-        loading.close();
-        return;
-      }
-
-      var url = "";
-      var events = [];
-      if (this.type === "upcoming") {
-        url =
-          process.env.VUE_APP_API_URL +
-          "/api/events/upcoming?region=" +
-          this.region +
-          "&event_type_id=" +
-          event_type.id;
-        this.axios
-          .get(url, {
-            headers: {
-              "X-Session-Key": this.token,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          })
-          .then((response) => {
-            if (response.status === 200) {
-              events = response.data.data;
-
-              this.event_list = [];
-              let events_with_booking = this.withBooking(events);
-
-              this.event_list = events_with_booking.filter((event) => {
-                let now = new Date().getTime();
-                // let start = new Date(event.start_at.utc + " UTC").getTime(); // now working on safari
-                let end = new Date(event.end_at.utc).getTime();
-                return (
-                  Number(end) > Number(now) ||
-                  event._related_booking.id !== undefined
-                );
-              });
-
-              this.event_list.sort(function (a, b) {
-                return new Date(a.start_at.local) - new Date(b.start_at.local);
-              });
-            }
-          });
-
-        this.currentComponent = EventModal;
+      if (type === "daily_webinars") {
+        // daily webinars
+        this.event_list.push(event_type);
+        this.currentComponent = DailyWebinars;
         loading.close();
       } else {
-        url =
-          process.env.VUE_APP_API_URL +
-          "/api/events/recordings?region=" +
-          this.region +
-          "&event_type_id=" +
-          event_type.id;
-        this.axios
-          .get(url, {
-            headers: {
-              "X-Session-Key": this.token,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          })
-          .then((response) => {
-            let event_list = response.data.data;
-            this.event_list = event_list.filter((event) => {
-              let now = new Date().getTime();
-              // let start = new Date(event.start_at.utc + " UTC").getTime(); // now working on safari
-              let end = new Date(event.end_at.utc).getTime();
-              return (
-                Number(end) < Number(now)
+        this.selected_event_type = event_type;
+
+        if (event_type.policy.is_accessible === false) {
+          this.currentComponent = LockedEvent;
+          loading.close();
+          return;
+        }
+
+        var url = "";
+        var events = [];
+        if (this.type === "upcoming") {
+          url =
+            process.env.VUE_APP_API_URL +
+            "/api/events/upcoming?region=" +
+            this.region +
+            "&event_type_id=" +
+            event_type.id;
+          this.axios
+            .get(url, {
+              headers: {
+                "X-Session-Key": this.token,
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            })
+            .then((response) => {
+              if (response.status === 200) {
+                events = response.data.data;
+
+                this.event_list = [];
+                let events_with_booking = this.withBooking(events);
+
+                this.event_list = events_with_booking.filter((event) => {
+                  let now = new Date().getTime();
+                  // let start = new Date(event.start_at.utc + " UTC").getTime(); // now working on safari
+                  let start = new Date(event.start_at.utc).getTime();
+                  return (
+                    Number(start) > Number(now) ||
+                    event._related_booking.id !== undefined
+                  );
+                });
+
+                this.event_list.sort(function (a, b) {
+                  return (
+                    new Date(a.start_at.local) - new Date(b.start_at.local)
+                  );
+                });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              this.$alert(
+                "You have been logged out because your session expires or you login on a different device.",
+                {
+                  confirmButtonText: "OK",
+                  callback: (action) => {
+                    this.$message({
+                      type: "info",
+                      showClose: false,
+                      message: `action: ${action}`,
+                    });
+                    localStorage.clear();
+                    document.location.href = "/";
+                    // setTimeout(() => {
+                    this.$nextTick(() => {
+                      /* eslint-disable */
+                      window.location.reload();
+                    });
+                  },
+                }
               );
             });
-            if (this.event_list.length === 0 && this.type === "recording") {
-              this.currentComponent = NoRecording;
-            } else {
-              this.currentComponent = EventModal;
-            }
-            loading.close();
-          });
+
+          this.currentComponent = EventModal;
+
+          loading.close();
+        } else {
+          url =
+            process.env.VUE_APP_API_URL +
+            "/api/events/recordings?region=" +
+            this.region +
+            "&event_type_id=" +
+            event_type.id;
+          this.axios
+            .get(url, {
+              headers: {
+                "X-Session-Key": this.token,
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            })
+            .then((response) => {
+              this.event_list = response.data.data;
+              if (this.event_list.length === 0 && this.type === "recording") {
+                this.currentComponent = NoRecording;
+              } else {
+                this.currentComponent = EventModal;
+              }
+              loading.close();
+            })
+            .catch((err) => {
+              console.log(err);
+              this.$alert(
+                "You have been logged out because your session expires or you login on a different device.",
+                {
+                  confirmButtonText: "OK",
+                  callback: (action) => {
+                    this.$message({
+                      type: "info",
+                      showClose: false,
+                      message: `action: ${action}`,
+                    });
+                    localStorage.clear();
+                    document.location.href = "/";
+                    // setTimeout(() => {
+                    this.$nextTick(() => {
+                      /* eslint-disable */
+                      window.location.reload();
+                    });
+                  },
+                }
+              );
+            });
+        }
       }
     },
     handleCancelEvent(data) {
@@ -325,10 +472,7 @@ export default {
       }));
 
       // store the book events to session storage, use to get the full event name during event listener
-      localStorage.setItem(
-        "pending_booking",
-        JSON.stringify(arr_booking_req)
-      );
+      localStorage.setItem("pending_booking", JSON.stringify(arr_booking_req));
 
       this.rebuildEventList();
     },

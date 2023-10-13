@@ -81,6 +81,7 @@
             :tumbnail_region_title="tumbnail_region_title"
             :region="region === 'gb' ? 'uk' : region"
             :token="token"
+            :daily_webinars="daily_webinars"
             @login="login"
           />
         </el-col>
@@ -171,6 +172,7 @@ export default {
       original_data: [],
       loading: false,
       pollingClearInterval: null,
+      daily_webinars: [],
     };
   },
   beforeMount() {
@@ -181,8 +183,6 @@ export default {
   mounted() {
     var current_url = window.location.href;
     var substr = "";
-
-    this.keepAliveApiPoll(localStorage.getItem("token"));
 
     current_url.includes("token")
       ? (substr = current_url.substring(current_url.indexOf("=") + 1))
@@ -209,6 +209,7 @@ export default {
     }
 
     this.getDetectedTimezone();
+    this.keepAliveApiPoll(localStorage.getItem("token"));
   },
   watch: {
     search: function () {
@@ -229,13 +230,14 @@ export default {
     // rebuild() {
     //   this.$refs.leftComponent.rebuildEventList();
     // },
+
     getDetectedTimezone() {
-
       var current_tz = this.$cookies.get("_detected_current_tz");
-
+      console.log(current_tz, "current_tz");
       if (current_tz === null) {
         var url_timezone =
-          "https://api.ipgeolocation.io/timezone?apiKey="+process.env.VUE_APP_COOKIE_KEY;
+          "https://api.ipgeolocation.io/timezone?apiKey=" +
+          process.env.VUE_APP_COOKIE_KEY;
         this.axios
           .get(url_timezone)
           .then((response) => {
@@ -258,10 +260,7 @@ export default {
           if (response.status === 200) {
             this.$store.dispatch("assignCustomer", response.data);
             if (!localStorage.getItem("region")) {
-              localStorage.setItem(
-                "region",
-                response.data.customer.use_region
-              );
+              localStorage.setItem("region", response.data.customer.use_region);
               this.use_region =
                 this.selected_region =
                 this.region =
@@ -332,6 +331,25 @@ export default {
 
       this.checkToken(data);
     },
+    getDailyWebinars() {
+      var daily_webinar_url =
+        process.env.VUE_APP_API_URL + "/api/daily-webinars";
+      this.axios
+        .get(daily_webinar_url, {
+          headers: {
+            "X-Session-Key": this.token,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(response, "daily webinars");
+          this.daily_webinars = response.data;
+          // let my_bookings = response.data.data;
+          // commit("SET_MYBOOKINS", my_bookings);
+        })
+        .catch((error) => {});
+    },
     getEventTypes() {
       const loading = this.$loading({
         lock: true,
@@ -339,6 +357,10 @@ export default {
         // spinner: 'el-icon-loading',
         background: "rgba(0, 0, 0, 0.7)",
       });
+
+      // this.$store.dispatch("getDailyWebonars", this.token);
+      this.getDailyWebinars();
+
       let _region = "";
       _region =
         localStorage.getItem("region") === "gb"
@@ -464,32 +486,34 @@ export default {
     keepAliveApiPoll(token) {
       let nextInterval = parseInt(process.env.VUE_APP_KEEP_ALIVE_INTERVAL) || 1;
       if (!localStorage.getItem("_nxt_kat")) {
-        let nowPlusOneMin = this.$moment(Date.now()).add(parseInt(nextInterval), "minutes").valueOf();
+        let nowPlusOneMin = this.$moment()
+          .utc()
+          .add(parseInt(nextInterval), "minutes")
+          .valueOf();
         localStorage.setItem("_nxt_kat", String(nowPlusOneMin));
       }
       this.pollingClearInterval = setInterval(() => {
-        let currInt = localStorage.getItem("_nxt_kat");
-        if (
-          Date.now() > parseInt(currInt)
-        ) {
-        this.axios
-          .get(`${process.env.VUE_APP_API_URL}/api/session/keep-alive`, {
-            headers: {
-              "X-Session-Key": token,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          })
-          .then(() => {
-            let lastInterval = parseInt(localStorage.getItem("_nxt_kat"));
-            let newInterval = this.$moment(lastInterval).add(nextInterval, "minutes").valueOf();
-            localStorage.setItem("_nxt_kat", newInterval);
-          }).catch(() => {
-            clearInterval(this.pollingClearInterval);
-            localStorage.removeItem("_nxt_kat");
-          });
+        let currInt = Number(localStorage.getItem("_nxt_kat"));
+        if (Number(this.$moment().valueOf()) > currInt) {
+          this.axios
+            .get(`${process.env.VUE_APP_API_URL}/api/session/keep-alive`, {
+              headers: {
+                "X-Session-Key": token,
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            })
+            .then(() => {
+              localStorage.setItem(
+                "_nxt_kat",
+                this.$moment(currInt).add(nextInterval, "minutes").valueOf()
+              );
+            })
+            .catch(() => {
+              clearInterval(this.pollingClearInterval);
+              localStorage.removeItem("_nxt_kat");
+            });
         }
-
       }, 5000);
     },
   },
