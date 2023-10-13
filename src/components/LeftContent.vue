@@ -11,6 +11,7 @@
         <el-col :span="24" style="padding: 0px 0px 0px 20px !important">
           <!-- eslint-disable -->
           <el-col
+            v-for="(webinar, i) in daily_webinars"
             :xs="24"
             :sm="24"
             :md="12"
@@ -18,11 +19,11 @@
             :xl="8"
             style="padding-right: 20px; padding-top: 20px"
           >
-            <div @click="getModal(event_type, 'daily_webinars')">
+            <div @click="getModal(webinar, 'daily_webinars')">
               <el-card class="box-card card-left-panel" shadow="hover">
                 <div slot="header" class="clearfix">
                   <lazy-background
-                    src=""
+                    :src="webinar.thumnail_url"
                     image-class="cam-viewport"
                     :blur="0"
                     position="left center"
@@ -53,58 +54,8 @@
                   </lazy-background>
                 </div>
                 <div class="text item">
-                  <!-- <span v-if="!event_type.description"> -</span> -->
-                  Asia webinar
-                </div>
-              </el-card>
-            </div>
-          </el-col>
-
-          <el-col
-            :xs="24"
-            :sm="24"
-            :md="12"
-            :lg="8"
-            :xl="8"
-            style="padding-right: 20px; padding-top: 20px"
-          >
-            <div @click="getModal(event_type, 'daily_webinars')">
-              <el-card class="box-card card-left-panel" shadow="hover">
-                <div slot="header" class="clearfix">
-                  <lazy-background
-                    src=""
-                    image-class="cam-viewport"
-                    :blur="0"
-                    position="left center"
-                    size="cover"
-                    style="
-                      background-size: cover;
-                      background-position: left center;
-                    "
-                    class="card-header-content"
-                  >
-                    <div slot="content">
-                      <div class="card-header-content">
-                        <!-- <div v-if="event.policy.is_accessible === false" class="lock-wrapper">
-                            <i  class="el-icon-lock"></i>
-                          </div> -->
-                        <!-- <div class="card-content-title">{{ event.name }}</div>     -->
-                        <div class="card-content-title"></div>
-                        <!-- <div class="card-content-region">{{ tumbnail_region_title }}</div>     -->
-                        <div class="card-content-sched">
-                          <!-- <div v-if="event_type.upcoming_event">
-                          Coming up at
-                          {{ getFormatedDate(event_type.upcoming_event) }}
-                        </div> -->
-                          <!-- <div v-else style="visibility: hidden">-</div> -->
-                        </div>
-                      </div>
-                    </div>
-                  </lazy-background>
-                </div>
-                <div class="text item">
-                  <!-- <span v-if="!event_type.description"> -</span> -->
-                  Europe Webinar
+                  <span v-if="!webinar.description"> -</span>
+                  {{ webinar.description }}
                 </div>
               </el-card>
             </div>
@@ -222,10 +173,10 @@ export default {
       type: Array,
       required: true,
     },
-    // events: {
-    //   required: true,
-    //   type: Array,
-    // },
+    daily_webinars: {
+      required: true,
+      type: Array,
+    },
     tumbnail_region_title: {
       required: true,
       type: String,
@@ -331,6 +282,7 @@ export default {
       });
       if (type === "daily_webinars") {
         // daily webinars
+        this.event_list.push(event_type);
         this.currentComponent = DailyWebinars;
         loading.close();
       } else {

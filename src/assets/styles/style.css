@@ -567,6 +567,12 @@ span.modal-span {
 	min-height: 404px;
 	background-size: cover;
 }
+.video-wrapper-daily-webinar {
+	width: 100%;
+	min-height: 448px;
+	background-size: cover;
+	background-color: rgba(0, 0, 0, 0.4);
+}
 
 .bg-image {
 	background-blend-mode: overlay;

@@ -1,8 +1,9 @@
 <template>
   <div>
     <!-- eslint-disable -->
+
     <el-dialog
-      :title="event_type.name"
+      :title="event_list[0].name"
       :visible.sync="dialog_visible"
       width="50%"
       top="3%"
@@ -13,27 +14,20 @@
       <div>
         <span
           class="modal-span"
-          v-if="event_type.description"
+          v-if="event_list[0].description"
           style="padding-bottom: 20px"
-          >{{ event_type.description }}</span
+          >{{ event_list[0].description }}</span
         >
         <el-col :span="24">
-          <div
+          <!-- <div
             style="
               display: inline-block;
               width: 100%;
               text-align: left;
               padding: 0px 5px 10px;
             "
-          >
-            <!-- <div style="display: inline-block; padding: 0 50px 0 0">
-              <div style="color: #a2b0d5; font-zie: 12px">Region:</div>
-              <div style="color: #ffffff; text-transform: uppercase">
-                {{ region }}
-              </div>
-            </div> -->
-
-            <div
+          > -->
+          <!-- <div
               style="display: inline-block; padding: 0 50px"
               v-if="event_type.typical_duration"
             >
@@ -41,15 +35,15 @@
               <div style="color: #ffffff">
                 {{ event_type.typical_duration }}
               </div>
-            </div>
-            <!-- <div v-if="type === 'upcoming'" style="display: inline-block">
+            </div> -->
+          <!-- <div v-if="type === 'upcoming'" style="display: inline-block">
               <div style="color: #a2b0d5; font-zie: 12px">Occurrence:</div>
               <div v-if="event_type.typical_occurence" style="color: #ffffff">
                 {{ event_type.typical_occurence }}
               </div>
               <div v-else style="color: #ffffff">-</div>
             </div> -->
-          </div>
+          <!-- </div> -->
 
           <!-----My bookings---->
           <!-- <span
@@ -63,51 +57,29 @@
             style="color: #ffffff; padding: 30px 0 15px; display: inline-block"
             >Book from available dates:</span
           > -->
-          <div class="video-wrapper">
-            <div class="player-container">
-              <div
-                v-loading="loading"
-                element-loading-background="rgba(0, 0, 0, 0.8)"
-              >
-                <vimeo-player
-                  ref="player"
-                  :video-id="videoID"
-                  player-height="500"
-                  player-width="804"
-                />
-                <!-- <vue-core-video-player
-                  v-if="video_url"
-                  @play="handlePlay()"
-                  @loadstart="handleVideoLoaded()"
-                  :cover="event_type.image_url"
-                  :title="event_type.name"
-                  :logo="require(`@/assets/images/speakers/smartcharts.png`)"
-                  :src="video_url"
-                ></vue-core-video-player> -->
-                <!-- <div v-else style="position: relative">
-                  <div
-                    class="bg-image"
-                    :style="`background-image: url(${event_type.image_url}),linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)); `"
-                  ></div>
-                  <div v-if="!video_url && !loading" class="bg-text">
-                    <p>
-                      The event for this date has ended and the video is being
-                      prepared. <br />
-                      It can take a few hours to process depending on the length
-                      of the session.
-                    </p>
-                  </div> -->
-                <!-- </div> -->
-              </div>
+          <div
+            id="videoWrapperDailyWebinar"
+            class="video-wrapper-daily-webinar"
+            v-loading="this_load"
+            element-loading-background="rgba(0, 0, 0, 0.8)"
+          >
+            <div v-if="width" class="player-container">
+              <vimeo-player
+                ref="player"
+                :video-id="event_list[0].vimeo_playlist"
+                @ready="onReady"
+                :player-height="height"
+                :player-width="width"
+              />
             </div>
           </div>
 
-          <div
+          <!-- <div
             v-loading="this_load"
             id="carousel-wrapper"
             style="height: 240px"
           >
-            <div v-if="countAvailableToBook > 0" style="min-height: 170px">
+            <div v-if="event_list > 0" style="min-height: 170px">
               <el-col :span="24">
                 <VueSlickCarousel
                   ref="slick"
@@ -117,10 +89,6 @@
                   <div
                     v-for="(event, i) in event_list"
                     :key="i"
-                    v-if="
-                      event._related_booking.progress === undefined &&
-                      !event.hidden
-                    "
                     class="carousel-block"
                   >
                     <div
@@ -184,7 +152,7 @@
               </el-col>
             </div>
             <div v-else style="min-height: 170px">No available videos</div>
-          </div>
+          </div> -->
         </el-col>
       </div>
     </el-dialog>
@@ -192,6 +160,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import VueSlickCarousel from "vue-slick-carousel";
 import "vue-slick-carousel/dist/vue-slick-carousel.css";
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
@@ -223,19 +192,19 @@ export default {
       type: String,
       required: true,
     },
-    region: {
-      type: String,
-      required: true,
-    },
-    active_events: {
-      type: Array,
-    },
-    filtered_bookings: {
-      type: Array,
-    },
-    event_type_bookings: {
-      type: Array,
-    },
+    // region: {
+    //   type: String,
+    //   required: true,
+    // },
+    // active_events: {
+    //   type: Array,
+    // },
+    // filtered_bookings: {
+    //   type: Array,
+    // },
+    // event_type_bookings: {
+    //   type: Array,
+    // },
   },
   data() {
     return {
@@ -272,21 +241,13 @@ export default {
         // lazyLoad: "true",
         // initialSlide: null,
       },
-      video_url: "",
-      active_tab: "",
-      active_event: {},
       disable: true,
-      selected_events: [],
-      recordings_per_date: [],
-      stage: 0,
-      loading: false,
+      loading: true,
       this_load: true,
-      local_timezone: this.getLocalTimezone(),
-      cookie_timezone: "",
       play_id: "",
-      videoID: "38648446",
-      height: 800,
-      width: 900,
+      // videoID: "38648446",
+      height: null,
+      width: null,
       options: {
         muted: true,
         autoplay: true,
@@ -294,149 +255,25 @@ export default {
       playerReady: false,
     };
   },
-  computed: {
-    countBooked() {
-      var booked = this.event_list.filter(function (e) {
-        return e._related_booking.progress !== undefined;
-      });
-
-      return booked.length;
-    },
-    countAvailableToBook() {
-      return this.event_list.length - this.countBooked;
-    },
-  },
   mounted() {
-    this.this_load = false;
-    if (this.event_list.length > 0 && this.type === "recording") {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.event_list.sort(function (a, b) {
-        return new Date(b.start_at.utc) - new Date(a.start_at.utc);
-      });
-      this.getVideo(this.event_list[0]);
-    }
-    if (this.event_list.length > 0 && this.type === "recording") {
-      this.$nextTick(() => {
-        this.$refs.slickRecording.goTo(this.event_list.length - 1);
-      });
-    }
+    this.this_load = true;
+    this.loading = false;
+    this.$nextTick(() => {
+      this.getDimension();
+    });
   },
   methods: {
     /* eslint-disable */
-    checkThisEvent(event) {
-      console.log(event, "cghvjbkn");
+    onReady() {
+      this.this_load = false;
     },
-    checkIfOngoing(event) {
-      // moment(localDt, localDtFormat).tz(timezone).format('YYYY-MM-DD hh:mm:ss A');
-      let now = this.$moment.utc();
-      // console.log(now, event.start_at.local, "event.start_at.local");
-      var start_date = this.$moment(event.start_at.utc).utc(true);
-      var end_date = this.$moment(event.end_at.utc).utc(true);
-
-      if (start_date < now && end_date > now) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    checkPending(events) {
-      // clear sessionStorage pending_bookings if event_list dont have pending status
-      let events_list = events;
-      let event_match = events.find(
-        (b) => b._related_booking.progress === "pending"
-      );
-      if (!event_match) {
-        sessionStorage.removeItem("pending_booking");
-      }
-      return events_list;
-    },
-    cancelBooking(active_event) {
-      this.$confirm(
-        "Are you sure you want to cancel this Booking?",
-        "Warning",
-        {
-          confirmButtonText: "Yes",
-          cancelButtonText: "No",
-          type: "warning",
-        }
-      )
-        .then(() => {
-          this.loading = true;
-          this.this_load = true;
-          this.disable = true;
-          active_event["token"] = this.token;
-          this.$store
-            .dispatch("cancelBooking", active_event)
-            .then((response) => {
-              this.loading = false;
-              this.this_load = false;
-              this.disable = false;
-              this.$emit("cancel_events", active_event);
-            })
-            .catch((err) => {
-              console.log(err);
-              this.loading = false;
-              this.this_load = false;
-              this.disable = false;
-            });
-        })
-        .catch((err) => {
-          console.log(err);
-          // this.$message({
-          //   type: "info",
-          //   message: "Delete canceled",
-          // });
-        });
-    },
-    handleBook() {
-      if (this.selected_events.length > 0) {
-        this.loading = true;
-        this.this_load = true;
-        this.disable = true;
-        let event_ids = [];
-        this.selected_events.forEach((value) => {
-          event_ids.push(value.id);
-        });
-
-        let url = process.env.VUE_APP_API_URL + "/api/bookings/register";
-        this.axios
-          .post(
-            url,
-            {
-              event_ids: event_ids,
-            },
-            {
-              headers: {
-                "X-Session-Key": this.token,
-                "Content-Type": "application/json",
-                Accept: "application/json",
-              },
-            }
-          )
-          .then((response) => {
-            if (response.status === 200) {
-              let selected = this.selected_events;
-              this.selected_events = [];
-              // make a disoatch to store all req booking, incase some is
-              // this.event_list = [];
-              this.$emit("book_events", selected);
-              this.loading = false;
-              this.this_load = false;
-              this.disable = false;
-            } else {
-              this.loading = false;
-              this.this_load = false;
-              this.disable = false;
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            this.stage = 0;
-            this.loading = false;
-            this.this_load = false;
-            this.disable = false;
-          });
-      }
+    getDimension() {
+      this.$nextTick(() => {
+        var element = document.getElementById("videoWrapperDailyWebinar");
+        var height = element.clientWidth * 0.56;
+        this.width = element.clientWidth;
+        this.height = height;
+      });
     },
     handleClose() {
       this.dialog_visible = false;
@@ -514,227 +351,186 @@ export default {
         }
       });
     },
-    getDate(date) {
-      var days = [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ];
-      var d = new Date(date);
-      var dayName = days[d.getDay()];
-      return dayName;
-    },
-    getMonth(date) {
-      var d = new Date(date);
-      var month = d.toLocaleString("default", {
-        month: "short",
-      });
-      return month;
-    },
-    getFormatedDate(date) {
-      var d = new Date(date);
-      var month = d.toLocaleString("default", {
-        month: "short",
-      });
-      var this_date = d.getDate();
-      var dateExt = this.getDateExt(this_date);
+    // getDate(date) {
+    //   var days = [
+    //     "Sunday",
+    //     "Monday",
+    //     "Tuesday",
+    //     "Wednesday",
+    //     "Thursday",
+    //     "Friday",
+    //     "Saturday",
+    //   ];
+    //   var d = new Date(date);
+    //   var dayName = days[d.getDay()];
+    //   return dayName;
+    // },
+    // getMonth(date) {
+    //   var d = new Date(date);
+    //   var month = d.toLocaleString("default", {
+    //     month: "short",
+    //   });
+    //   return month;
+    // },
+    // getFormatedDate(date) {
+    //   var d = new Date(date);
+    //   var month = d.toLocaleString("default", {
+    //     month: "short",
+    //   });
+    //   var this_date = d.getDate();
+    //   var dateExt = this.getDateExt(this_date);
 
-      var formated_date = "";
-      if (this.type === "upcoming") {
-        formated_date = this_date + dateExt;
-      } else {
-        formated_date = this_date + dateExt + " " + month;
-      }
-      return formated_date;
-    },
-    getLocalTimezone() {
-      var timezone = "";
+    //   var formated_date = "";
+    //   if (this.type === "upcoming") {
+    //     formated_date = this_date + dateExt;
+    //   } else {
+    //     formated_date = this_date + dateExt + " " + month;
+    //   }
+    //   return formated_date;
+    // },
+    // getLocalTimezone() {
+    //   var timezone = "";
 
-      switch (this.region) {
-        case "uk":
-          timezone = "Europe/London";
-          break;
-        case "aus":
-          timezone = "Australia/Sydney";
-          break;
-        case "phl":
-          timezone = "Asia/Manila";
-          break;
-      }
-      return timezone;
-    },
-    getFormatedTime(datetime) {
-      var d = new Date(datetime);
-      var time = d.toLocaleString("default", {
-        hour12: true,
-        hour: "numeric",
-        minute: "2-digit",
-      });
+    //   switch (this.region) {
+    //     case "uk":
+    //       timezone = "Europe/London";
+    //       break;
+    //     case "aus":
+    //       timezone = "Australia/Sydney";
+    //       break;
+    //     case "phl":
+    //       timezone = "Asia/Manila";
+    //       break;
+    //   }
+    //   return timezone;
+    // },
+    // getFormatedTime(datetime) {
+    //   var d = new Date(datetime);
+    //   var time = d.toLocaleString("default", {
+    //     hour12: true,
+    //     hour: "numeric",
+    //     minute: "2-digit",
+    //   });
 
-      return time;
-    },
-    getFormatedLocalTime(datetime) {
-      var timeZone = this.$cookies.get("_detected_current_tz");
-      // var gmt = new Date()
-      //   .toLocaleString("en", {
-      //     timeZone: timeZone,
-      //     timeZoneName: "short",
-      //   })
-      //   .split(" ")[3];
+    //   return time;
+    // },
+    // getFormatedLocalTime(datetime) {
+    //   var timeZone = this.$cookies.get("_detected_current_tz");
+    //   var new_d = this.$moment(datetime).utc(true);
+    //   var local_date_formatted = new Date(new_d).toLocaleString("default", {
+    //     month: "short",
+    //     day: "numeric",
+    //     year: "numeric",
+    //     hour12: true,
+    //     hour: "numeric",
+    //     minute: "2-digit",
+    //     timeZoneName: "short",
+    //     timeZone: timeZone,
+    //   });
 
-      // var d = datetime + " " + gmt;
+    //   return local_date_formatted;
+    // },
+    // getDateExt(date) {
+    //   if (date > 3 && date < 21) return "th";
+    //   switch (date % 10) {
+    //     case 1:
+    //       return "st";
+    //     case 2:
+    //       return "nd";
+    //     case 3:
+    //       return "rd";
+    //     default:
+    //       return "th";
+    //   }
+    // },
+    // getSelected(event, index) {
+    //   /* eslint-disable */
+    //   // setTimeout(() => {
+    //   this.$nextTick(() => {
+    //     // let selected_events = []
+    //     if (this.type === "upcoming") {
+    //       if (this.event_list[index].selected === true) {
+    //         this.event_list[index].selected = false;
 
-      var new_d = this.$moment(datetime).utc(true);
+    //         this.selected_events = this.selected_events.filter(
+    //           (selected_event) => selected_event.id != event.id
+    //         );
 
-      // const formatted_date = new Date(new_d);
-      // if (this.$cookies.get("timezone")) {
-      //   this.coockie_timezone = this.$cookies.get("timezone").timezone;
-      // }
+    //         if (this.selected_events.length <= 0) {
+    //           this.disable = true;
+    //         }
+    //       } else {
+    //         this.disable = false;
+    //         this.event_list[index].selected = true;
+    //         this.selected_events.push(this.event_list[index]);
+    //       }
+    //       let arr = this.event_list;
+    //       let filtered_events = arr.filter((item) => {
+    //         return item._related_booking.id === undefined;
+    //       });
 
-      // console.log(this.coockie_timezone, "left this.coockie_timezone");
-      var local_date_formatted = new Date(new_d).toLocaleString("default", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour12: true,
-        hour: "numeric",
-        minute: "2-digit",
-        timeZoneName: "short",
-        timeZone: timeZone,
-      });
+    //       let selected_index = filtered_events.findIndex((object) => {
+    //         return object.id === event.id;
+    //       });
+    //       console.log(selected_index);
 
-      return local_date_formatted;
-    },
-    getDateExt(date) {
-      if (date > 3 && date < 21) return "th";
-      switch (date % 10) {
-        case 1:
-          return "st";
-        case 2:
-          return "nd";
-        case 3:
-          return "rd";
-        default:
-          return "th";
-      }
-    },
-    getSelected(event, index) {
-      /* eslint-disable */
-      // setTimeout(() => {
-      this.$nextTick(() => {
-        // let selected_events = []
-        if (this.type === "upcoming") {
-          if (this.event_list[index].selected === true) {
-            this.event_list[index].selected = false;
+    //       this.$refs.slick.goTo(selected_index);
+    //     } else {
 
-            this.selected_events = this.selected_events.filter(
-              (selected_event) => selected_event.id != event.id
-            );
+    //       this.event_list.forEach((value, index) => {
+    //         value.selected = false;
+    //       });
 
-            if (this.selected_events.length <= 0) {
-              this.disable = true;
-            }
-          } else {
-            this.disable = false;
-            this.event_list[index].selected = true;
-            this.selected_events.push(this.event_list[index]);
-          }
-          let arr = this.event_list;
-          let filtered_events = arr.filter((item) => {
-            return item._related_booking.id === undefined;
-          });
+    //       this.event_list[index].selected = true;
 
-          let selected_index = filtered_events.findIndex((object) => {
-            return object.id === event.id;
-          });
-          console.log(selected_index);
+    //       let arr = this.event_list;
+    //       let selected_index = arr.findIndex((object) => {
+    //         return object.id === event.id;
+    //       });
 
-          this.$refs.slick.goTo(selected_index);
-        } else {
-          // this.event_list.forEach((value, index) => {
-          //   value.selected = false;
-          //   this.disable = true;
-          // });
-          this.event_list.forEach((value, index) => {
-            value.selected = false;
-          });
+    //       console.log(selected_index);
+    //       this.$refs.slickRecording.goTo(index);
+    //     }
 
-          this.event_list[index].selected = true;
-          // if (this.event_list[index].selected === true) {
-          //   this.event_list[index].selected = false;
+    //     if (this.type === "recording") {
+    //       this.getVideo(event);
+    //     }
+    //   });
+    //   // }, 20);
+    // },
+    // getVideo(event) {
+    //   var url = event.meta.resource_path;
+    //   this.loading = true;
+    //   this.axios
+    //     .get(url, {
+    //       headers: {
+    //         "X-Session-Key": this.token,
+    //         "Content-Type": "application/json",
+    //         Accept: "application/json",
+    //       },
+    //     })
+    //     .then((response) => {
+    //       if (response.status === 200) {
+    //         this.video_url =
+    //           response.data.data.recordings.length > 0
+    //             ? response.data.data.recordings[0]
+    //             : null;
 
-          //   // this.selected_events = this.selected_events.filter(
-          //   //   (selected_event) => selected_event.id != event.id
-          //   // );
+    //         this.active_tab = "Recording 1";
+    //         this.active_event = event;
+    //         this.recordings_per_date =
+    //           response.data.data.recordings.length > 0
+    //             ? response.data.data.recordings
+    //             : [];
 
-          //   // if (this.selected_events.length <= 0) {
-          //   //   this.disable = true;
-          //   // }
-          // } else {
-          //   // this.disable = false;
+    //         this.event_list.sort(function (a, b) {
+    //           return new Date(a.start_at.utc) - new Date(b.start_at.utc);
+    //         });
 
-          //   // this.selected_events.push(this.event_list[index]);
-          // }
-
-          let arr = this.event_list;
-          // let filtered_events = arr.filter((item) => {
-          //   return item._related_booking.id === undefined;
-          // });
-
-          let selected_index = arr.findIndex((object) => {
-            return object.id === event.id;
-          });
-
-          // this.disable = false;
-          // this.event_list[index].selected = true;
-          // console.log("no");
-          console.log(selected_index);
-          this.$refs.slickRecording.goTo(index);
-        }
-
-        if (this.type === "recording") {
-          this.getVideo(event);
-        }
-      });
-      // }, 20);
-    },
-    getVideo(event) {
-      var url = event.meta.resource_path;
-      this.loading = true;
-      this.axios
-        .get(url, {
-          headers: {
-            "X-Session-Key": this.token,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            this.video_url =
-              response.data.data.recordings.length > 0
-                ? response.data.data.recordings[0]
-                : null;
-
-            this.active_tab = "Recording 1";
-            this.active_event = event;
-            this.recordings_per_date =
-              response.data.data.recordings.length > 0
-                ? response.data.data.recordings
-                : [];
-
-            this.event_list.sort(function (a, b) {
-              return new Date(a.start_at.utc) - new Date(b.start_at.utc);
-            });
-
-            this.loading = false;
-          }
-        });
-    },
+    //         this.loading = false;
+    //       }
+    //     });
+    // },
   },
 };
 </script>
