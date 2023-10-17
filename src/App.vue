@@ -44,7 +44,7 @@ export default {
       currentComponent: null,
     };
   },
-  mounted() {
+  beforeMount() {
     var current_url = window.location.href;
     var substr = "";
 
@@ -70,7 +70,8 @@ export default {
         this.currentComponent = LoginComponent;
       }
     }
-
+  },
+  mounted() {
     // pubnub
     if (localStorage.getItem("customer_id")) {
       console.log("has customer id");
