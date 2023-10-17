@@ -4,17 +4,27 @@
     <!-- hidden, use only to make use watch will trigger when data change -->
     <!-- <div class="watched_data_trigger">{{ triggerRebuild }}</div> -->
     <!--  -->
-    <index ref="indexComponent" />
+    <!-- <el-col :span="24"> -->
+    <!-- <index ref="indexComponent" /> -->
+    <component
+      ref="modalComponent"
+      :is="currentComponent"
+      :token="token"
+      @login="login"
+    />
+    <!-- </el-col> -->
   </div>
 </template>
 
 <script>
 import Index from "./components/Index.vue";
+import LoginComponent from "./components/LoginComponent.vue";
 /* eslint-disable */
 export default {
   name: "App",
   components: {
     Index,
+    LoginComponent,
   },
   data() {
     return {
@@ -29,9 +39,39 @@ export default {
       ),
       presense: {},
       pubnub_status: null,
+      verification: false,
+      token: "",
+      currentComponent: null,
     };
   },
   mounted() {
+    var current_url = window.location.href;
+    var substr = "";
+
+    current_url.includes("token")
+      ? (substr = current_url.substring(current_url.indexOf("=") + 1))
+      : false;
+
+    if (substr) {
+      // check if url has token provided
+      this.verifyToken(substr);
+    } else {
+      if (localStorage.getItem("token")) {
+        this.use_region =
+          this.selected_region =
+          this.region =
+            localStorage.getItem("region");
+
+        this.token = localStorage.getItem("token");
+        this.verification = true;
+        this.currentComponent = Index;
+      } else {
+        this.verification = false;
+        this.currentComponent = LoginComponent;
+      }
+    }
+
+    // pubnub
     if (localStorage.getItem("customer_id")) {
       console.log("has customer id");
       this.$pnSubscribe({
@@ -62,6 +102,80 @@ export default {
   //   },
   // },
   methods: {
+    async checkToken(data) {
+      this.use_region =
+        this.selected_region =
+        this.region =
+          localStorage.getItem("region");
+      this.verification = true;
+      this.token = localStorage.getItem("token");
+      this.currentComponent = Index;
+      location.reload();
+      // this.getEventTypes();
+    },
+    verifyToken(token) {
+      let url = process.env.VUE_APP_API_URL + "/api/auth/login";
+
+      this.axios
+        .get(url, {
+          params: {
+            token: token,
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            this.$store.dispatch("assignCustomer", response.data);
+            if (!localStorage.getItem("region")) {
+              localStorage.setItem("region", response.data.customer.use_region);
+              this.use_region =
+                this.selected_region =
+                this.region =
+                  response.data.customer.use_region;
+            } else {
+              this.use_region =
+                this.selected_region =
+                this.region =
+                  localStorage.getItem("region");
+            }
+
+            localStorage.setItem(
+              "token",
+              response.data.app_session.session_key
+            );
+
+            this.token = localStorage.getItem("token");
+            this.verification = true;
+            this.currentComponent = Index;
+          } else {
+            this.verification = false;
+            this.currentComponent = LoginComponent;
+            this.clearSession();
+          }
+        })
+        .catch((err) => {
+          if (localStorage.getItem("token")) {
+            this.use_region =
+              this.selected_region =
+              this.region =
+                localStorage.getItem("region");
+            this.token = localStorage.getItem("token");
+            this.verification = true;
+            this.currentComponent = Index;
+          } else {
+            this.verification = false;
+            this.currentComponent = LoginComponent;
+          }
+          // loading.close();
+        });
+    },
+    login(data) {
+      localStorage.removeItem("token");
+      localStorage.setItem("token", data.app_session.session_key);
+      // window.localStorage.setItem('token', 'n8RwzOAnck4xUS9QrRRYWxzhB13SQ9aNsxIpEmpj4V') // static token
+      this.token = data.app_session.session_key;
+
+      this.checkToken(data);
+    },
     presence(ps) {
       this.presense = ps.occupancy;
       console.log("presense", ps);
