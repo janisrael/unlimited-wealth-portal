@@ -1,7 +1,7 @@
 <template>
   <div class="row full-height">
     <el-row>
-      <el-col v-if="verification === true" :span="24">
+      <el-col :span="24">
         <el-col
           :xs="24"
           :sm="24"
@@ -82,7 +82,6 @@
             :region="region === 'gb' ? 'uk' : region"
             :token="token"
             :daily_webinars="daily_webinars"
-            @login="login"
           />
         </el-col>
         <el-col :xs="24" :sm="24" :md="24" :lg="6" :xl="6" class="left-panel">
@@ -135,9 +134,9 @@
           />
         </el-col>
       </el-col>
-      <el-col v-else :span="24">
+      <!-- <el-col v-else :span="24">
         <login-component :token="token" @login="login" />
-      </el-col>
+      </el-col> -->
     </el-row>
   </div>
 </template>
@@ -146,14 +145,14 @@
 /* eslint-disable */
 import LeftContent from "./LeftContent.vue";
 import RightContent from "./RightContent.vue";
-import LoginComponent from "./LoginComponent.vue";
+// import LoginComponent from "./LoginComponent.vue";
 
 export default {
   name: "IndexVue",
   components: {
     LeftContent,
     RightContent,
-    LoginComponent,
+    // LoginComponent,
   },
   data() {
     return {
@@ -168,7 +167,7 @@ export default {
       currentRightComponent: null,
       currentLeftComponent: null,
       token: "",
-      verification: true,
+      // verification: true,
       original_data: [],
       loading: false,
       pollingClearInterval: null,
@@ -181,35 +180,16 @@ export default {
     });
   },
   mounted() {
-    var current_url = window.location.href;
-    var substr = "";
-
-    current_url.includes("token")
-      ? (substr = current_url.substring(current_url.indexOf("=") + 1))
-      : false;
-
-    if (substr) {
-      // check if url has token provided
-      this.verifyToken(substr);
-    } else {
-      if (localStorage.getItem("token")) {
-        this.use_region =
-          this.selected_region =
-          this.region =
-            localStorage.getItem("region");
-
-        this.token = localStorage.getItem("token");
-        this.verification = true;
-        this.getEventTypes();
-        this.currentRightComponent = RightContent;
-      } else {
-        this.verification = false;
-        this.currentRightComponent = null;
-      }
+    if (localStorage.getItem("token")) {
+      this.token = localStorage.getItem("token");
+      this.use_region =
+        this.region =
+        this.selected_region =
+          localStorage.getItem("region");
+      this.getEventTypes();
+      this.getDetectedTimezone();
+      this.keepAliveApiPoll(localStorage.getItem("token"));
     }
-
-    this.getDetectedTimezone();
-    this.keepAliveApiPoll(localStorage.getItem("token"));
   },
   watch: {
     search: function () {
@@ -227,10 +207,6 @@ export default {
     }
   },
   methods: {
-    // rebuild() {
-    //   this.$refs.leftComponent.rebuildEventList();
-    // },
-
     getDetectedTimezone() {
       var current_tz = this.$cookies.get("_detected_current_tz");
       console.log(current_tz, "current_tz");
@@ -249,87 +225,16 @@ export default {
           });
       }
     },
-    verifyToken(token) {
-      let url = process.env.VUE_APP_API_URL + "/api/auth/login";
-
-      this.axios
-        .get(url, {
-          token: token,
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            this.$store.dispatch("assignCustomer", response.data);
-            if (!localStorage.getItem("region")) {
-              localStorage.setItem("region", response.data.customer.use_region);
-              this.use_region =
-                this.selected_region =
-                this.region =
-                  response.data.customer.use_region;
-            } else {
-              this.use_region =
-                this.selected_region =
-                this.region =
-                  localStorage.getItem("region");
-            }
-
-            localStorage.setItem(
-              "token",
-              response.data.app_session.session_key
-            );
-
-            this.token = localStorage.getItem("token");
-            this.verification = true;
-            this.currentRightComponent = RightContent;
-            this.getEventTypes();
-          } else {
-            this.verification = false;
-            this.currentRightComponent = null;
-            this.clearSession();
-          }
-        })
-        .catch((err) => {
-          if (localStorage.getItem("token")) {
-            this.use_region =
-              this.selected_region =
-              this.region =
-                localStorage.getItem("region");
-            this.token = localStorage.getItem("token");
-            this.verification = true;
-            this.currentRightComponent = RightContent;
-            this.getEventTypes();
-          } else {
-            this.verification = false;
-            this.currentRightComponent = null;
-          }
-          // loading.close();
-        });
-    },
     clearSession() {
       window.localStorage.clear();
-      document.location.href = "/";
+      // document.location.href = "/";
       // setTimeout(() => {
       this.$nextTick(() => {
         /* eslint-disable */
+        window.location.href = "/#/";
         window.location.reload();
       });
       // }, 300);
-    },
-    async checkToken(data) {
-      this.use_region =
-        this.selected_region =
-        this.region =
-          localStorage.getItem("region");
-      this.verification = true;
-      this.token = localStorage.getItem("token");
-      this.getEventTypes();
-    },
-    login(data) {
-      localStorage.removeItem("token");
-      localStorage.setItem("token", data.app_session.session_key);
-      // window.localStorage.setItem('token', 'n8RwzOAnck4xUS9QrRRYWxzhB13SQ9aNsxIpEmpj4V') // static token
-      this.token = data.app_session.session_key;
-
-      this.checkToken(data);
     },
     getDailyWebinars() {
       var daily_webinar_url =
@@ -343,7 +248,6 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response, "daily webinars");
           this.daily_webinars = response.data;
           // let my_bookings = response.data.data;
           // commit("SET_MYBOOKINS", my_bookings);
