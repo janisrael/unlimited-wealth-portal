@@ -38,7 +38,7 @@ Vue.use(VueCookies, {
 	path: '/',
 	domain:
 		process.env.VUE_APP_COOKIE_DOMAIN ?? '', //should be from .env
-	secure: '',
+	secure: true,
 	sameSite: 'None',
 });
 
