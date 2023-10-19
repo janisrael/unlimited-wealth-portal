@@ -39,7 +39,7 @@ Vue.use(VueCookies, {
 	domain:
 		process.env.VUE_APP_COOKIE_DOMAIN ?? '', //should be from .env
 	secure: '',
-	sameSite: 'Lax',
+	sameSite: 'None',
 });
 
 Vue.use(VueLazyload);
