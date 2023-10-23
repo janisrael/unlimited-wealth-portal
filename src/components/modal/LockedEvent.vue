@@ -24,7 +24,7 @@
             <el-link
               type="success"
               style="color: #5ce6e6 !important; cursor: pointer"
-              >click this button</el-link
+              >click here</el-link
             >
             <br />
             and one of our mentors will contact you shortly.
