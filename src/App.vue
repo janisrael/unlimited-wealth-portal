@@ -73,27 +73,25 @@ export default {
   },
   mounted() {
     // pubnub
-    if (localStorage.getItem("customer_id")) {
-      console.log("has customer id");
-      this.$pnSubscribe({
-        channels: [
-          "customers." + localStorage.getItem("customer_id") + ".booking",
-        ],
-        withPresence: true,
-      });
-
-      // this.messages = this.$pnGetMessage(
-      //   "customers." + localStorage.getItem("customer_id") + ".booking",
-      //   this.receptor,
-      //   10
-      // );
-      this.$pnGetPresence(
-        "customers." + localStorage.getItem("customer_id") + ".booking",
-        this.presence
-      );
-
-      this.$pnGetStatus(this.status);
-    }
+    // if (localStorage.getItem("customer_id")) {
+    //   console.log("has customer id");
+    //   this.$pnSubscribe({
+    //     channels: [
+    //       "customers." + localStorage.getItem("customer_id") + ".booking",
+    //     ],
+    //     withPresence: true,
+    //   });
+    //   // this.messages = this.$pnGetMessage(
+    //   //   "customers." + localStorage.getItem("customer_id") + ".booking",
+    //   //   this.receptor,
+    //   //   10
+    //   // );
+    //   this.$pnGetPresence(
+    //     "customers." + localStorage.getItem("customer_id") + ".booking",
+    //     this.presence
+    //   );
+    //   this.$pnGetStatus(this.status);
+    // }
   },
   // watch: {
   //   triggerRebuild: function () {
