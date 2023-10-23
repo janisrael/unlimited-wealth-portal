@@ -24,6 +24,7 @@ import VueCookies from 'vue-cookies';
 import vueVimeoPlayer from 'vue-vimeo-player';
 import PubNubVue from 'pubnub-vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import 'video.js/dist/video-js.css';
 
 Vue.component(
 	'font-awesome-icon',

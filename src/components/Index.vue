@@ -180,6 +180,28 @@ export default {
     });
   },
   mounted() {
+    if (localStorage.getItem("customer_id")) {
+      console.log("has customer id");
+      this.$pnSubscribe({
+        channels: [
+          "customers." + localStorage.getItem("customer_id") + ".booking",
+        ],
+        withPresence: true,
+      });
+
+      // this.messages = this.$pnGetMessage(
+      //   "customers." + localStorage.getItem("customer_id") + ".booking",
+      //   this.receptor,
+      //   10
+      // );
+      this.$pnGetPresence(
+        "customers." + localStorage.getItem("customer_id") + ".booking",
+        this.presence
+      );
+
+      this.$pnGetStatus(this.status);
+    }
+
     if (localStorage.getItem("token")) {
       this.token = localStorage.getItem("token");
       this.use_region =
@@ -207,6 +229,70 @@ export default {
     }
   },
   methods: {
+    presence(ps) {
+      this.presense = ps.occupancy;
+      console.log("presense", ps);
+    },
+    status(st) {
+      console.log("listener status: ", st);
+      this.category = st.category;
+    },
+    receptor(msg) {
+      // triggers for new message from listener
+      console.log("listener receptor: ", msg);
+      var listenerRes = {};
+      listenerRes = JSON.parse(msg.message);
+      if (
+        listenerRes.data.customer_id === this.customer_id &&
+        (listenerRes.type === "booking.confirmed" ||
+          listenerRes.type === "booking.failed")
+      ) {
+        var event_match = {};
+        var event_req = [];
+        console.log(listenerRes, "listenerResreceptor");
+        var event_id = listenerRes.data.event_id;
+
+        if (listenerRes) {
+          let type = listenerRes.type;
+
+          if (type === "booking.failed") {
+            if (localStorage.getItem("pending_booking")) {
+              // for getting the complete name of event, this data assign during handlebooking method,
+              event_req = JSON.parse(localStorage.getItem("pending_booking"));
+              event_match = event_req.find((b) => b.event_id === event_id);
+            }
+            if (event_match) {
+              this.$notify.error({
+                title: "Booking Failed",
+                dangerouslyUseHTMLString: true,
+                message:
+                  "<p>Event name: " +
+                  "<strong>" +
+                  (!event_match.event_name
+                    ? listenerRes.data.event_name
+                    : event_match.event_name) +
+                  "</strong><br>Region: " +
+                  "<strong>" +
+                  event_match.region.toUpperCase() +
+                  "</strong></p>",
+                duration: 5000,
+              });
+            }
+          }
+          if (type === "booking.confirmed") {
+            console.log("booking confirmed");
+          }
+          this.$store
+            .dispatch("updateBooking", listenerRes)
+            // eslint-disable-next-line no-unused-vars
+            .then((response) => {
+              // this.triggerRebuild = listenerRes;
+              this.$root.$emit("rebuild-event-list");
+              listenerRes = undefined;
+            });
+        }
+      }
+    },
     getDetectedTimezone() {
       var current_tz = this.$cookies.get("_detected_current_tz");
       console.log(current_tz, "current_tz");

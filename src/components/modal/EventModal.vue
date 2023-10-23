@@ -288,7 +288,7 @@
                 v-loading="loading"
                 element-loading-background="rgba(0, 0, 0, 0.8)"
               >
-                <vue-core-video-player
+                <!-- <vue-core-video-player
                   v-if="video_url"
                   @play="handlePlay()"
                   @loadstart="handleVideoLoaded()"
@@ -296,7 +296,18 @@
                   :title="event_type.name"
                   :logo="require(`@/assets/images/speakers/smartcharts.png`)"
                   :src="video_url"
-                ></vue-core-video-player>
+                ></vue-core-video-player> -->
+
+                <div v-if="video_url">
+                  <component
+                    ref="videoComponent"
+                    id="video-player"
+                    :is="videoComponent"
+                    preload="auto"
+                    :key="video_url"
+                    :options="videoOptions"
+                  />
+                </div>
                 <div v-else style="position: relative">
                   <div
                     class="bg-image"
@@ -445,10 +456,12 @@ import VueSlickCarousel from "vue-slick-carousel";
 import "vue-slick-carousel/dist/vue-slick-carousel.css";
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
 import { generateRandomString } from "../../utils";
+import VideoPlayer from "./VideoPlayer.vue";
 export default {
   name: "EventModal",
   components: {
     VueSlickCarousel,
+    VideoPlayer,
   },
   props: {
     type: {
@@ -533,6 +546,37 @@ export default {
       local_timezone: this.getLocalTimezone(),
       cookie_timezone: "",
       play_id: "",
+      videoOptions: {
+        autoplay: false,
+        controls: true,
+        aspectRatio: "16:9",
+        responsive: true,
+        controlBar: {
+          remainingTimeDisplay: {
+            displayNegative: false,
+          },
+          TimeDivider: true,
+        },
+        experimentalSvgIcons: true,
+        breakpoints: {
+          tiny: 300,
+          xsmall: 400,
+          small: 500,
+          medium: 600,
+          large: 700,
+          xlarge: 800,
+          huge: 900,
+        },
+        poster: require(`@/assets/images/speakers/smartcharts.png`),
+        fluid: true,
+        sources: [
+          {
+            src: "",
+            type: "video/mp4",
+          },
+        ],
+      },
+      videoComponent: null,
     };
   },
   computed: {
@@ -554,6 +598,7 @@ export default {
       this.event_list.sort(function (a, b) {
         return new Date(b.start_at.utc) - new Date(a.start_at.utc);
       });
+
       this.getVideo(this.event_list[0]);
     }
     if (this.event_list.length > 0 && this.type === "recording") {
@@ -954,6 +999,18 @@ export default {
         })
         .then((response) => {
           if (response.status === 200) {
+            // this.videoComponent = VideoPlayer;
+
+            this.videoOptions.poster = this.event_type.image_url;
+            this.videoOptions.sources[0].src =
+              response.data.data.recordings.length > 0
+                ? response.data.data.recordings[0]
+                : null;
+
+            setTimeout(() => {
+              this.videoComponent = VideoPlayer;
+            }, 1000);
+
             this.video_url =
               response.data.data.recordings.length > 0
                 ? response.data.data.recordings[0]
