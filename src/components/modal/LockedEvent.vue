@@ -10,7 +10,6 @@
       :before-close="handleClose"
     >
       <el-col :span="24">
-        <!-- {{ event }} -->
         <div
           style="
             display: inline-block;
@@ -21,7 +20,10 @@
         >
           <div style="color: #a2b0d5">
             If you would like to upgrade your programme please
-            <el-button type="text" style="color: #5ce6e6" @click="sendEmail()"
+            <el-button
+              type="text"
+              style="color: #5ce6e6; border: 0; background: none"
+              @click="sendEmail()"
               >click here</el-button
             >
 
@@ -53,7 +55,7 @@
 export default {
   name: "LockedEvent",
   props: {
-    event: {
+    event_type: {
       type: Object,
     },
   },
@@ -81,8 +83,8 @@ export default {
       var content = {
         subject: "Upgrade Programme Request",
         meta: {
-          event_type_id: this.event.event_type_id,
-          event_name: this.event.event_name,
+          event_type_id: this.event_type.id,
+          event_name: this.event_type.name,
           platform: "UW-PORTAL",
         },
       };
