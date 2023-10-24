@@ -21,11 +21,10 @@
         >
           <div style="color: #a2b0d5">
             If you would like to upgrade your programme please
-            <el-link
-              type="success"
-              style="color: #5ce6e6 !important; cursor: pointer"
-              >click here</el-link
+            <el-button type="text" style="color: #5ce6e6" @click="sendEmail()"
+              >click here</el-button
             >
+
             <br />
             and one of our mentors will contact you shortly.
           </div>
@@ -75,6 +74,47 @@ export default {
       this.$emit("close");
     },
     handlePLay() {},
+    sendEmail() {
+      var url =
+        process.env.VUE_APP_API_URL + "/api/my-account/register-interest";
+
+      var content = {
+        subject: "Upgrade Programme Request",
+        meta: {
+          event_type_id: this.event.event_type_id,
+          event_name: this.event.event_name,
+          platform: "UW-PORTAL",
+        },
+      };
+      this.axios
+        .post(url, content, {
+          headers: {
+            "X-Session-Key": localStorage.getItem("token"),
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            console.log("true", response.data);
+            this.$notify.info({
+              title: "Request Sent",
+              message:
+                "One of our mentors will contact you shortly. Thank you. ",
+            });
+          } else {
+            console.log("false", response.data);
+            this.$notify.error({
+              title: "Oops! Unable to send a request",
+              dangerouslyUseHTMLString: true,
+              duration: 5000,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+    },
   },
 };
 </script>
