@@ -22,7 +22,11 @@
             If you would like to upgrade your programme please
             <el-button
               type="text"
-              style="color: #5ce6e6; border: 0; background: none"
+              style="
+                color: #5ce6e6;
+                border: 0 !important;
+                background: none !important;
+              "
               @click="sendEmail()"
               >click here</el-button
             >
