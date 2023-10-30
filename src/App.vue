@@ -109,7 +109,7 @@ export default {
       this.verification = true;
       this.token = localStorage.getItem("token");
       this.currentComponent = Index;
-      location.reload();
+      // location.reload();
       // this.getEventTypes();
     },
     verifyToken(token) {
