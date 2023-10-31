@@ -863,8 +863,7 @@ export default {
     },
     getFormatedLocalTime(datetime) {
       var timeZone = this.$cookies.get("_detected_current_tz");
-      timeZone = null;
-      console.log(timeZone, "timezzz");
+
       if (timeZone === null) {
         var url_timezone =
           "https://api.ipgeolocation.io/timezone?apiKey=" +
@@ -873,40 +872,44 @@ export default {
           .get(url_timezone)
           .then((response) => {
             timeZone = response.data.timezone;
+
+            var new_d = this.$moment(datetime).utc(true);
+
+            var local_date_formatted = new Date(new_d).toLocaleString(
+              "default",
+              {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+                hour12: true,
+                hour: "numeric",
+                minute: "2-digit",
+                timeZoneName: "short",
+                timeZone: timeZone,
+              }
+            );
+
+            return local_date_formatted;
           })
           .catch((error) => {
             console.log("unable to get timezone");
           });
+      } else {
+        var new_d = this.$moment(datetime).utc(true);
+
+        var local_date_formatted = new Date(new_d).toLocaleString("default", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour12: true,
+          hour: "numeric",
+          minute: "2-digit",
+          timeZoneName: "short",
+          timeZone: timeZone,
+        });
+
+        return local_date_formatted;
       }
-      // var gmt = new Date()
-      //   .toLocaleString("en", {
-      //     timeZone: timeZone,
-      //     timeZoneName: "short",
-      //   })
-      //   .split(" ")[3];
-
-      // var d = datetime + " " + gmt;
-
-      var new_d = this.$moment(datetime).utc(true);
-
-      // const formatted_date = new Date(new_d);
-      // if (this.$cookies.get("timezone")) {
-      //   this.coockie_timezone = this.$cookies.get("timezone").timezone;
-      // }
-
-      // console.log(this.coockie_timezone, "left this.coockie_timezone");
-      var local_date_formatted = new Date(new_d).toLocaleString("default", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour12: true,
-        hour: "numeric",
-        minute: "2-digit",
-        timeZoneName: "short",
-        timeZone: timeZone,
-      });
-
-      return local_date_formatted;
     },
     getDateExt(date) {
       if (date > 3 && date < 21) return "th";
