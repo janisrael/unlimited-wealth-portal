@@ -529,10 +529,10 @@ export default {
             console.log("unable to get timezone");
           });
       }
-
-      var local_date_formatted = new Date(start_formatted_date).toLocaleString(
-        "default",
-        {
+      if (timeZone) {
+        var local_date_formatted = new Date(
+          start_formatted_date
+        ).toLocaleString("default", {
           month: "short",
           day: "numeric",
           year: "numeric",
@@ -541,8 +541,8 @@ export default {
           minute: "2-digit",
           timeZoneName: "short",
           timeZone: timeZone,
-        }
-      );
+        });
+      }
 
       return local_date_formatted;
     },
