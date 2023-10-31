@@ -144,7 +144,9 @@
                   type="success"
                   :disabled="!can_join_booking"
                   :class="{ 'btn-success-custom': can_join_booking }"
-                  @click="can_join_booking ? setJoinedCookie(selected_booking) : ''"
+                  @click="
+                    can_join_booking ? setJoinedCookie(selected_booking) : ''
+                  "
                   >{{ getCountdownDate }}</el-button
                 >
               </el-link>
@@ -175,8 +177,8 @@ export default {
   },
   methods: {
     setJoinedCookie(b) {
-      console.log(b.id, 'clicked');
-      this.$cookies.set('_f_jbs_' + b.id, "1", "8h");
+      console.log(b.id, "clicked");
+      this.$cookies.set("_f_jbs_" + b.id, "1", "8h");
     },
     formatText(value) {
       let str = value.substring(value.indexOf(","));
@@ -256,6 +258,22 @@ export default {
       const end_formatted_date = new Date(new_end);
       /* eslint-disable */
       var timeZone = this.$cookies.get("_detected_current_tz");
+
+      if (timeZone === null) {
+        var url_timezone =
+          "https://api.ipgeolocation.io/timezone?apiKey=" +
+          process.env.VUE_APP_COOKIE_KEY;
+        this.axios
+          .get(url_timezone)
+          .then((response) => {
+            console.log(response.data.timezone, "- detected timezone");
+            timeZone = response.data.timezone;
+          })
+          .catch((error) => {
+            // reject(error);
+            console.log("unable to get timezone");
+          });
+      }
 
       var start_local_date_formatted = new Date(
         start_formatted_date
@@ -386,14 +404,18 @@ export default {
                     this.can_join_booking = true;
                     return `JOIN`;
                   } else {
-                    var start = new this.$moment(this.selected_booking.session.start).utc();
-                    return `Session resumes in ` + new this.$moment(start).utc(true).fromNow();
+                    var start = new this.$moment(
+                      this.selected_booking.session.start
+                    ).utc();
+                    return (
+                      `Session resumes in ` +
+                      new this.$moment(start).utc(true).fromNow()
+                    );
                   }
                 } else {
                   this.can_join_booking = true;
                   return `JOIN`;
                 }
-
               }
             }
           }

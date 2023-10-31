@@ -31,19 +31,22 @@
           style="margin-bottom: 8px; padding: 0px 20px"
         >
           <div class="events-box" @click="goToModal(event)">
-            <el-col :span="4" v-if="event.speaker && event.speaker.avatar" class="el-col-xl-3 el-col-lg-4 el-col-md-4">
-                          <country-flag
-                  :country="event.region === 'uk'
-                    ? 'gb'
-                    : event.region
-                    "
-                  size="small"
-                  style="float: left;
-              /* margin: -1em 0.1em 0.1em -1em !important; */
-              padding: 0;
-              transform: scale(0.40);
-              text-shadow: 0 0 #FFF;"
-                />
+            <el-col
+              :span="4"
+              v-if="event.speaker && event.speaker.avatar"
+              class="el-col-xl-3 el-col-lg-4 el-col-md-4"
+            >
+              <country-flag
+                :country="event.region === 'uk' ? 'gb' : event.region"
+                size="small"
+                style="
+                  float: left;
+                  /* margin: -1em 0.1em 0.1em -1em !important; */
+                  padding: 0;
+                  transform: scale(0.4);
+                  text-shadow: 0 0 #fff;
+                "
+              />
               <el-tooltip
                 class="item speaker-icon"
                 :content="event.speaker.name"
@@ -54,13 +57,22 @@
                   class="speaker-avatar-circle"
                   :size="35"
                   :src="
-                    require(`@/assets/images/speakers/${event.speaker.avatar}`)"
-                  style="margin-left: -10px; margin-top: .2em; position:static;"
+                    require(`@/assets/images/speakers/${event.speaker.avatar}`)
+                  "
+                  style="
+                    margin-left: -10px;
+                    margin-top: 0.2em;
+                    position: static;
+                  "
                 >
                 </el-avatar>
               </el-tooltip>
             </el-col>
-            <el-col :span="20" style="margin-top: .3rem;" class="el-col-xl-21 el-col-lg-20 el-col-md-20">
+            <el-col
+              :span="20"
+              style="margin-top: 0.3rem"
+              class="el-col-xl-21 el-col-lg-20 el-col-md-20"
+            >
               <div class="bookings-title">
                 {{ event.name }}
                 <!-- {{ event.event_type_name }} - -->
@@ -100,17 +112,16 @@
               style="padding-top;: 5px"
               class="el-col-xl-3 el-col-lg-4 el-col-md-4"
             >
-            <country-flag
-                :country="event.region === 'uk'
-                  ? 'gb'
-                  : event.region
-                  "
+              <country-flag
+                :country="event.region === 'uk' ? 'gb' : event.region"
                 size="small"
-                style="float: left;
-              /* margin: -1em 0.1em 0.1em -1em !important; */
-              padding: 0;
-              transform: scale(0.40);
-              text-shadow: 0 0 #FFF;"
+                style="
+                  float: left;
+                  /* margin: -1em 0.1em 0.1em -1em !important; */
+                  padding: 0;
+                  transform: scale(0.4);
+                  text-shadow: 0 0 #fff;
+                "
               />
               <el-tooltip
                 class="item speaker-icon"
@@ -124,12 +135,20 @@
                   :src="
                     require(`@/assets/images/speakers/${event.speaker.avatar}`)
                   "
-                  style="margin-left: -10px; margin-top: .2em; position:static;"
+                  style="
+                    margin-left: -10px;
+                    margin-top: 0.2em;
+                    position: static;
+                  "
                 >
                 </el-avatar>
               </el-tooltip>
             </el-col>
-            <el-col :span="20" style="margin-top: .3rem;" class="el-col-xl-21 el-col-lg-20 el-col-md-20">
+            <el-col
+              :span="20"
+              style="margin-top: 0.3rem"
+              class="el-col-xl-21 el-col-lg-20 el-col-md-20"
+            >
               <div class="bookings-title">
                 {{ event.name }}
                 <!-- {{ event.event_type_name }} - -->
@@ -186,7 +205,9 @@ export default {
   methods: {
     eventFullName(e) {
       var name = e.event_type_name;
-      var sched = this.$moment(e.start_at.local).format("ddd do MMM YYYY, HH:mm");
+      var sched = this.$moment(e.start_at.local).format(
+        "ddd do MMM YYYY, HH:mm"
+      );
 
       return name + ", " + sched + ", FX";
     },
@@ -284,6 +305,20 @@ export default {
 
       /* eslint-disable */
       var timeZone = this.$cookies.get("_detected_current_tz");
+
+      if (timeZone === null) {
+        var url_timezone =
+          "https://api.ipgeolocation.io/timezone?apiKey=" +
+          process.env.VUE_APP_COOKIE_KEY;
+        this.axios
+          .get(url_timezone)
+          .then((response) => {
+            timeZone = response.data.timezone;
+          })
+          .catch((error) => {
+            console.log("unable to get timezone");
+          });
+      }
 
       var local_date_formatted = new Date(start_formatted_date).toLocaleString(
         "default",

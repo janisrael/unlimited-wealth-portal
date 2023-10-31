@@ -6,7 +6,11 @@
           <div class="calendar-date" @click="getDate(data)">
             {{ data.day.split("-").slice(2).join("-") }}
             <div style="display: block; width: 100%; margin-top: -7px">
-              <span v-for="(dot, index) in getDots(data)" :key="index" class="dot">
+              <span
+                v-for="(dot, index) in getDots(data)"
+                :key="index"
+                class="dot"
+              >
               </span>
             </div>
           </div>
@@ -14,40 +18,81 @@
       </el-calendar>
     </el-col>
 
-    <el-col v-if="list_inprogress.length !== 0" :span="24" style="padding: 0 20px" class="in-progress-bookings-container">
-      <h4 style="font-size: 14px; font-weight: 600">
-        In Progress &nbsp;
-      </h4>
-      <el-col v-for="(event, i) in list_inprogress" :key="i" :span="24" style="margin-bottom: 8px">
-        <div class="events-box" @click="getBookingDetails(event)"
-          :class="[!isInProgress(event) ? '' : [readyToJoinAnimation(i, event), 'join-now-bg']]">
+    <el-col
+      v-if="list_inprogress.length !== 0"
+      :span="24"
+      style="padding: 0 20px"
+      class="in-progress-bookings-container"
+    >
+      <h4 style="font-size: 14px; font-weight: 600">In Progress &nbsp;</h4>
+      <el-col
+        v-for="(event, i) in list_inprogress"
+        :key="i"
+        :span="24"
+        style="margin-bottom: 8px"
+      >
+        <div
+          class="events-box"
+          @click="getBookingDetails(event)"
+          :class="[
+            !isInProgress(event)
+              ? ''
+              : [readyToJoinAnimation(i, event), 'join-now-bg'],
+          ]"
+        >
           <!-- :class="{'join-now-bg' : isInProgress(event) }]" -->
           <el-col :span="4" class="el-col-xl-3 el-col-lg-4 el-col-md-4">
-            <country-flag :country="event.event_region === 'uk'
-              ? 'gb'
-              : event.event_region
-              " size="small" style="float: left;
-              /* margin: -1em 0.1em 0.1em -1em !important; */
-              padding: 0;
-              transform: scale(0.40);
-              text-shadow: 0 0 #FFF;" />
-            <el-tooltip class="item speaker-icon" :content="event.speaker ? event.speaker.name : 'Smartcharts'"
-              placement="top" effect="light">
-              <el-avatar class="speaker-avatar-circle" :size="35" :src="require(`@/assets/images/speakers/${event.speaker ? event.speaker.avatar : 'smartcharts.png'
-                }`)
-                " style="margin-left: -10px; margin-top: .2em; position:static;
-               ">
+            <country-flag
+              :country="event.event_region === 'uk' ? 'gb' : event.event_region"
+              size="small"
+              style="
+                float: left;
+                /* margin: -1em 0.1em 0.1em -1em !important; */
+                padding: 0;
+                transform: scale(0.4);
+                text-shadow: 0 0 #fff;
+              "
+            />
+            <el-tooltip
+              class="item speaker-icon"
+              :content="event.speaker ? event.speaker.name : 'Smartcharts'"
+              placement="top"
+              effect="light"
+            >
+              <el-avatar
+                class="speaker-avatar-circle"
+                :size="35"
+                :src="
+                  require(`@/assets/images/speakers/${
+                    event.speaker ? event.speaker.avatar : 'smartcharts.png'
+                  }`)
+                "
+                style="margin-left: -10px; margin-top: 0.2em; position: static"
+              >
               </el-avatar>
             </el-tooltip>
           </el-col>
-          <el-col :span="20" style="margin-top: .3rem;" class="el-col-xl-21 el-col-lg-20 el-col-md-20">
+          <el-col
+            :span="20"
+            style="margin-top: 0.3rem"
+            class="el-col-xl-21 el-col-lg-20 el-col-md-20"
+          >
             <div class="bookings-title">
               {{ eventFullName(event) }}
               <!-- {{ event.event_type_name }} - -->
             </div>
             <div class="bookings-sub-title">
-              {{ event.is_series && !isInProgress(event) ? "Session resumes at " : "" }} {{ getFormatedLocalTime(event) }}
-              <el-badge v-if="event.status === 'Progress'" value="Pending" class="item">
+              {{
+                event.is_series && !isInProgress(event)
+                  ? "Session resumes at "
+                  : ""
+              }}
+              {{ getFormatedLocalTime(event) }}
+              <el-badge
+                v-if="event.status === 'Progress'"
+                value="Pending"
+                class="item"
+              >
               </el-badge>
             </div>
           </el-col>
@@ -55,8 +100,11 @@
       </el-col>
     </el-col>
 
-
-    <el-col :span="24" style="padding: 0 20px" class="upcoming-bookings-container">
+    <el-col
+      :span="24"
+      style="padding: 0 20px"
+      class="upcoming-bookings-container"
+    >
       <h4 style="font-size: 14px; font-weight: 600">
         My Upcoming Bookings &nbsp;
         <span v-loading="loading" element-loading-background="#2D2953"></span>
@@ -64,35 +112,61 @@
       <div v-if="list_upcoming.length === 0" class="no-booking-caption">
         No bookings to show
       </div>
-      <el-col v-for="(event, i) in list_upcoming" :key="i" :span="24" style="margin-bottom: 8px">
+      <el-col
+        v-for="(event, i) in list_upcoming"
+        :key="i"
+        :span="24"
+        style="margin-bottom: 8px"
+      >
         <div class="events-box" @click="getBookingDetails(event)">
           <!-- :class="{'join-now-bg' : isInProgress(event) }]" -->
           <el-col :span="4" class="el-col-xl-3 el-col-lg-4 el-col-md-4">
-            <country-flag :country="event.event_region === 'uk'
-              ? 'gb'
-              : event.event_region
-              " size="small" style="float: left;
-              /* margin: -1em 0.1em 0.1em -1em !important; */
-              padding: 0;
-              transform: scale(0.40);
-              text-shadow: 0 0 #FFF;" />
-            <el-tooltip class="item speaker-icon" :content="event.speaker ? event.speaker.name : 'Smartcharts'"
-              placement="top" effect="light">
-              <el-avatar class="speaker-avatar-circle" :size="35" :src="require(`@/assets/images/speakers/${event.speaker ? event.speaker.avatar : 'smartcharts.png'
-                }`)
-                " style="margin-left: -10px; margin-top: .2em; position:static;
-               ">
+            <country-flag
+              :country="event.event_region === 'uk' ? 'gb' : event.event_region"
+              size="small"
+              style="
+                float: left;
+                /* margin: -1em 0.1em 0.1em -1em !important; */
+                padding: 0;
+                transform: scale(0.4);
+                text-shadow: 0 0 #fff;
+              "
+            />
+            <el-tooltip
+              class="item speaker-icon"
+              :content="event.speaker ? event.speaker.name : 'Smartcharts'"
+              placement="top"
+              effect="light"
+            >
+              <el-avatar
+                class="speaker-avatar-circle"
+                :size="35"
+                :src="
+                  require(`@/assets/images/speakers/${
+                    event.speaker ? event.speaker.avatar : 'smartcharts.png'
+                  }`)
+                "
+                style="margin-left: -10px; margin-top: 0.2em; position: static"
+              >
               </el-avatar>
             </el-tooltip>
           </el-col>
-          <el-col :span="20" style="margin-top: .3rem;" class="el-col-xl-21 el-col-lg-20 el-col-md-20">
+          <el-col
+            :span="20"
+            style="margin-top: 0.3rem"
+            class="el-col-xl-21 el-col-lg-20 el-col-md-20"
+          >
             <div class="bookings-title">
               {{ eventFullName(event) }}
               <!-- {{ event.event_type_name }} - -->
             </div>
             <div class="bookings-sub-title">
               {{ getFormatedLocalTime(event) }}
-              <el-badge v-if="event.status === 'Progress'" value="Pending" class="item">
+              <el-badge
+                v-if="event.status === 'Progress'"
+                value="Pending"
+                class="item"
+              >
               </el-badge>
             </div>
           </el-col>
@@ -100,9 +174,15 @@
       </el-col>
     </el-col>
 
-    <component :is="currentComponent" :date="date" :event_on_this_day="event_on_this_day"
-      :my_events_for_today="my_events_for_today" :selected_booking="selected_booking" @close="CloseModal()"
-      @cancel_event="handleCancelEvent" />
+    <component
+      :is="currentComponent"
+      :date="date"
+      :event_on_this_day="event_on_this_day"
+      :my_events_for_today="my_events_for_today"
+      :selected_booking="selected_booking"
+      @close="CloseModal()"
+      @cancel_event="handleCancelEvent"
+    />
   </div>
 </template>
 
@@ -175,10 +255,10 @@ export default {
           var now = new this.$moment.utc();
           var startDay = new this.$moment(value.start_at.utc).utc(true);
           var endDay = new this.$moment(value.end_at.utc).utc(true);
-          if (now.isSame(startDay, 'day') && now.isSame(endDay, 'day')) {
+          if (now.isSame(startDay, "day") && now.isSame(endDay, "day")) {
             value.session_start = Number(startDay.valueOf());
             value.is_series = false;
-            this.setJoinEnabledCookie(value.id, value.end_at.utc)
+            this.setJoinEnabledCookie(value.id, value.end_at.utc);
           } else {
             value.session = this.eventSession(value);
             value.session_start = Number(value.session.start);
@@ -204,15 +284,17 @@ export default {
     readyToJoinAnimation(i, b) {
       var css_class = "";
 
-      if (!this.$cookies.isKey('_f_jbs_' + b.id)) {
+      if (!this.$cookies.isKey("_f_jbs_" + b.id)) {
         var n = i + 1;
-        css_class = (n % 2 == 0) ? "animation-1" : "animation-2";
+        css_class = n % 2 == 0 ? "animation-1" : "animation-2";
       }
       return css_class;
     },
     eventFullName(e) {
       var name = e.event_type_name;
-      var sched = this.$moment(e.start_at.local).format("ddd Do MMM YYYY, HH:mm");
+      var sched = this.$moment(e.start_at.local).format(
+        "ddd Do MMM YYYY, HH:mm"
+      );
 
       return name + ", " + sched + ", FX";
     },
@@ -229,45 +311,70 @@ export default {
       var start_time = new this.$moment(event.start_at.utc).utc(true);
       var end_time = new this.$moment(event.end_at.utc).utc(true);
 
-      var today_session_start = new this.$moment.utc().hours(Number(start_time.format("H"))).minutes(Number(start_time.format("H")));
-      var today_session_end = new this.$moment.utc().hours(Number(end_time.format("H"))).minutes(Number(end_time.format("m")));
+      var today_session_start = new this.$moment.utc()
+        .hours(Number(start_time.format("H")))
+        .minutes(Number(start_time.format("H")));
+      var today_session_end = new this.$moment.utc()
+        .hours(Number(end_time.format("H")))
+        .minutes(Number(end_time.format("m")));
 
       if (Number(end_time.format("H")) < Number(start_time.format("H"))) {
-        today_session_end = today_session_end.add(1, 'd');
+        today_session_end = today_session_end.add(1, "d");
       }
 
-      return (new this.$moment.utc().isBetween(today_session_start, today_session_end)) ? true : false;
+      return new this.$moment.utc().isBetween(
+        today_session_start,
+        today_session_end
+      )
+        ? true
+        : false;
     },
     eventSession(booking) {
       let now = new this.$moment.utc();
-      let start_time = new this.$moment(booking.start_at.utc, "YYYY-MM-DD HH:mm").utc(true);
-      let end_time = new this.$moment(booking.end_at.utc, "YYYY-MM-DD HH:mm").utc(true);
+      let start_time = new this.$moment(
+        booking.start_at.utc,
+        "YYYY-MM-DD HH:mm"
+      ).utc(true);
+      let end_time = new this.$moment(
+        booking.end_at.utc,
+        "YYYY-MM-DD HH:mm"
+      ).utc(true);
 
       const duration = new this.$moment.duration(end_time.diff(start_time));
       var schedules = [];
-      for (; Number(start_time.valueOf()) <= Number(end_time.valueOf());) {
-        var et = start_time.clone().add(Number(duration.hours()), 'hours').add(Number(duration.minutes()));
+      for (; Number(start_time.valueOf()) <= Number(end_time.valueOf()); ) {
+        var et = start_time
+          .clone()
+          .add(Number(duration.hours()), "hours")
+          .add(Number(duration.minutes()));
 
         let data = { st: start_time.valueOf(), et: et.valueOf() };
         schedules.push(data);
-        start_time = start_time.add(1, 'd');
+        start_time = start_time.add(1, "d");
       }
 
       let filtered = schedules.filter(function (item) {
         return Number(item.et) > Number(now);
       });
 
-      let is_open = now.isBetween(new this.$moment(filtered[0].st), new this.$moment(filtered[0].et));
+      let is_open = now.isBetween(
+        new this.$moment(filtered[0].st),
+        new this.$moment(filtered[0].et)
+      );
 
       return {
         is_open: is_open,
         start: filtered[0].st,
         end: filtered[0].et,
-        schedules: filtered
+        schedules: filtered,
       };
     },
-    setJoinEnabledCookie(eid,exp) {
-      this.$cookies.set('_f_ev_ip_' + eid, "1", this.$moment(exp).utc(true).toString());
+    setJoinEnabledCookie(eid, exp) {
+      this.$cookies.set(
+        "_f_ev_ip_" + eid,
+        "1",
+        this.$moment(exp).utc(true).toString()
+      );
     },
     getEventsDate(date) {
       var events = [];
@@ -310,7 +417,7 @@ export default {
           }
         });
     },
-    errorHandler() { },
+    errorHandler() {},
     getDate(data) {
       this.date = data;
       this.event_list.forEach((value) => {
@@ -355,7 +462,7 @@ export default {
             return new Date(a.start_at.utc) - new Date(b.start_at.utc);
           });
           this.groupBookings();
-          console.log(this.list_inprogress, '- inprogress');
+          console.log(this.list_inprogress, "- inprogress");
         }
       });
     },
@@ -401,7 +508,6 @@ export default {
       // var d = (event.start_at ? event.start_at.utc : event.start_date) + " UTC";
       var d = event.start_at ? event.start_at.utc : event.start_date;
 
-
       var new_start =
         this.$moment(d).format("MMMM DD YYYY, h:mm:ss a") + " UTC";
 
@@ -409,6 +515,20 @@ export default {
 
       /* eslint-disable */
       var timeZone = this.$cookies.get("_detected_current_tz");
+
+      if (timeZone === null) {
+        var url_timezone =
+          "https://api.ipgeolocation.io/timezone?apiKey=" +
+          process.env.VUE_APP_COOKIE_KEY;
+        this.axios
+          .get(url_timezone)
+          .then((response) => {
+            timeZone = response.data.timezone;
+          })
+          .catch((error) => {
+            console.log("unable to get timezone");
+          });
+      }
 
       var local_date_formatted = new Date(start_formatted_date).toLocaleString(
         "default",
@@ -473,7 +593,7 @@ export default {
             var is_session = false;
             var startDay = new this.$moment(selected.start_at.utc).utc(true);
             var endDay = new this.$moment(selected.end_at.utc).utc(true);
-            if (!startDay.isSame(endDay, 'day')) {
+            if (!startDay.isSame(endDay, "day")) {
               is_session = true;
               selected.session = this.eventSession(selected);
             }
@@ -517,7 +637,7 @@ export default {
 </script>
 
 <style scoped>
-.join-now-bg{
+.join-now-bg {
   /* background-image: linear-gradient(
 		#8db83c,
 		#6c9224
@@ -526,34 +646,68 @@ export default {
   /* border: 0.5px solid #a4f14a; */
   /* animation: jump-shaking-1 3s infinite; */
 }
-.animation-1{
+.animation-1 {
   animation: jump-shaking-1 3s infinite;
 }
-.animation-2{
+.animation-2 {
   animation: jump-shaking-2 3s infinite;
 }
 .green-border {
   border: 1.5px solid #a4f14a57;
 }
 @keyframes jump-shaking-1 {
-  0% { transform: translateX(0) }
-  3% { transform: translateY(-1px) }
-  6% { transform: translateY(-1px) rotate(0.5deg) }
-  9% { transform: translateY(-1px) rotate(-0.5deg) }
-  12% { transform: translateY(-1px) rotate(0.5deg) }
-  15% { transform: translateY(-1px) rotate(-0.5deg) }
-  18% { transform: translateY(0) rotate(0) }
-  50% { transform: translateY(0) rotate(0) }
-  100% { transform: translateY(0) rotate(0) }
+  0% {
+    transform: translateX(0);
+  }
+  3% {
+    transform: translateY(-1px);
+  }
+  6% {
+    transform: translateY(-1px) rotate(0.5deg);
+  }
+  9% {
+    transform: translateY(-1px) rotate(-0.5deg);
+  }
+  12% {
+    transform: translateY(-1px) rotate(0.5deg);
+  }
+  15% {
+    transform: translateY(-1px) rotate(-0.5deg);
+  }
+  18% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(0) rotate(0);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
 }
 @keyframes jump-shaking-2 {
-  0% { transform: translateY(0) rotate(0) }
-  20% { transform: translateY(0) rotate(0) }
-  50% { transform: translateY(-1px) }
-  85% { transform: translateY(-1px) rotate(0.5deg) }
-  89% { transform: translateY(-1px) rotate(-0.5deg) }
-  92% { transform: translateY(-1px) rotate(0.5deg) }
-  97% { transform: translateY(-1px) rotate(-0.5deg) }
-  100% { transform: translateY(0) rotate(0) }
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  20% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+  85% {
+    transform: translateY(-1px) rotate(0.5deg);
+  }
+  89% {
+    transform: translateY(-1px) rotate(-0.5deg);
+  }
+  92% {
+    transform: translateY(-1px) rotate(0.5deg);
+  }
+  97% {
+    transform: translateY(-1px) rotate(-0.5deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
 }
 </style>

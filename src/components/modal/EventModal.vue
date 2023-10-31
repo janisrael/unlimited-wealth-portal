@@ -863,6 +863,19 @@ export default {
     },
     getFormatedLocalTime(datetime) {
       var timeZone = this.$cookies.get("_detected_current_tz");
+      if (timeZone === null) {
+        var url_timezone =
+          "https://api.ipgeolocation.io/timezone?apiKey=" +
+          process.env.VUE_APP_COOKIE_KEY;
+        this.axios
+          .get(url_timezone)
+          .then((response) => {
+            tineZone = response.data.timezone;
+          })
+          .catch((error) => {
+            console.log("unable to get timezone");
+          });
+      }
       // var gmt = new Date()
       //   .toLocaleString("en", {
       //     timeZone: timeZone,
