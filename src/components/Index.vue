@@ -307,7 +307,7 @@ export default {
             this.$cookies.set("_detected_current_tz", response.data.timezone);
           })
           .catch((error) => {
-            // reject(error);
+            console.log("unable to get timezone");
           });
       }
     },
