@@ -863,6 +863,8 @@ export default {
     },
     getFormatedLocalTime(datetime) {
       var timeZone = this.$cookies.get("_detected_current_tz");
+      timeZone = null;
+      console.log(timeZone, "timezzz");
       if (timeZone === null) {
         var url_timezone =
           "https://api.ipgeolocation.io/timezone?apiKey=" +
@@ -870,7 +872,7 @@ export default {
         this.axios
           .get(url_timezone)
           .then((response) => {
-            tineZone = response.data.timezone;
+            timeZone = response.data.timezone;
           })
           .catch((error) => {
             console.log("unable to get timezone");
