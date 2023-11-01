@@ -863,6 +863,7 @@ export default {
     },
     getFormatedLocalTime(datetime) {
       var timeZone = this.$cookies.get("_detected_current_tz");
+      var new_d = this.$moment(datetime).utc(true);
 
       if (timeZone === null) {
         var url_timezone =
@@ -872,8 +873,6 @@ export default {
           .get(url_timezone)
           .then((response) => {
             timeZone = response.data.timezone;
-
-            var new_d = this.$moment(datetime).utc(true);
 
             var local_date_formatted = new Date(new_d).toLocaleString(
               "default",
@@ -895,8 +894,6 @@ export default {
             console.log("unable to get timezone");
           });
       } else {
-        var new_d = this.$moment(datetime).utc(true);
-
         var local_date_formatted = new Date(new_d).toLocaleString("default", {
           month: "short",
           day: "numeric",
