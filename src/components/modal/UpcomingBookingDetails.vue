@@ -268,39 +268,63 @@ export default {
           .then((response) => {
             console.log(response.data.timezone, "- detected timezone");
             timeZone = response.data.timezone;
+            var start_local_date_formatted = new Date(
+              start_formatted_date
+            ).toLocaleString("default", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+              hour12: true,
+              hour: "numeric",
+              minute: "2-digit",
+              // timeZoneName: "short",
+              timeZone: timeZone,
+            });
+
+            var end_local_date_formatted = new Date(
+              end_formatted_date
+            ).toLocaleString("default", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+              hour12: true,
+              hour: "numeric",
+              minute: "2-digit",
+              timeZoneName: "short",
+              timeZone: timeZone,
+            });
           })
           .catch((error) => {
             // reject(error);
             console.log("unable to get timezone");
           });
+      } else {
+        var start_local_date_formatted = new Date(
+          start_formatted_date
+        ).toLocaleString("default", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour12: true,
+          hour: "numeric",
+          minute: "2-digit",
+          // timeZoneName: "short",
+          timeZone: timeZone,
+        });
+
+        var end_local_date_formatted = new Date(
+          end_formatted_date
+        ).toLocaleString("default", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour12: true,
+          hour: "numeric",
+          minute: "2-digit",
+          timeZoneName: "short",
+          timeZone: timeZone,
+        });
       }
-
-      var start_local_date_formatted = new Date(
-        start_formatted_date
-      ).toLocaleString("default", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour12: true,
-        hour: "numeric",
-        minute: "2-digit",
-        // timeZoneName: "short",
-        timeZone: timeZone,
-      });
-
-      var end_local_date_formatted = new Date(
-        end_formatted_date
-      ).toLocaleString("default", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour12: true,
-        hour: "numeric",
-        minute: "2-digit",
-        timeZoneName: "short",
-        timeZone: timeZone,
-      });
-
       return start_local_date_formatted + " to " + end_local_date_formatted;
     },
     getCountdownDate() {
