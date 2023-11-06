@@ -56,6 +56,14 @@
 .el-calendar__body {
 	padding: 0px !important;
 }
+.promotion-content p {
+	word-break: keep-all;
+	text-align: center;
+	color: white !important;
+}
+#promotion-dialog .el-dialog__body {
+	padding-top: 0px !important;
+}
 .el-calendar-table .el-calendar-day {
 	box-sizing: border-box;
 	/* padding: 8px; */
