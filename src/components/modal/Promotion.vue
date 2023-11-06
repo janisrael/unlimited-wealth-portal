@@ -34,15 +34,17 @@
             <br />
             <br />
             And if you are an Unlimited Wealth customer, access to all of your
-            webinars can now be booked here. It’s also the pace to watch the
-            recordings of finished webinars, too.
+            webinars can now be booked here. <br />It’s also the pace to watch
+            the recordings of finished webinars, too.
             <br />
             <br />
             We’ll be running the old section and the new for a week but after
             that, you’ll need to access webinars from the LIVE EVENTS section.
             <br />
             <br />
-            <br />Watch this video for more detail.
+          </p>
+          <p style="font-style: italic; font-weight: 500">
+            Watch this video for more detail.
           </p>
           <div
             id="videoWrapperDailyWebinar"
