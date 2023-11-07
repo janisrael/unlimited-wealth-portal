@@ -171,11 +171,11 @@
         :region="region"
       />
     </el-row>
-    <component
+    <!-- <component
       ref="promotionComponent"
       :is="promotionComponent"
       @close="ClosePromotion()"
-    />
+    /> -->
   </div>
 </template>
 
@@ -184,7 +184,7 @@ import EventModal from "./modal/EventModal.vue";
 import LockedEvent from "./modal/LockedEvent.vue";
 import NoRecording from "./modal/NoRecording.vue";
 import DailyWebinars from "./modal/DailyWebinars.vue";
-import Promotion from "./modal/Promotion.vue";
+// import Promotion from "./modal/Promotion.vue";
 /* eslint-disable */
 export default {
   name: "LeftContent",
@@ -193,7 +193,7 @@ export default {
     LockedEvent,
     NoRecording,
     DailyWebinars,
-    Promotion,
+    // Promotion,
   },
   props: {
     type: {
@@ -228,7 +228,7 @@ export default {
       event_list: [],
       selected_event_type: {},
       active_events: [],
-      promotionComponent: Promotion,
+      // promotionComponent: Promotion,
     };
   },
 
@@ -245,9 +245,9 @@ export default {
       this.rebuildEventList();
     });
   },
-  created() {
-    this.promotionComponent = Promotion;
-  },
+  // created() {
+  //   this.promotionComponent = Promotion;
+  // },
   computed: {
     _myybookings() {
       return this.$store.getters._myybookings;
