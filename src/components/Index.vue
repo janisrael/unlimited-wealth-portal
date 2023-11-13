@@ -172,6 +172,11 @@ export default {
       loading: false,
       pollingClearInterval: null,
       daily_webinars: [],
+      messages: this.$pnGetMessage(
+        "customers." + localStorage.getItem("customer_id") + ".booking",
+        this.receptor,
+        10
+      ),
     };
   },
   beforeMount() {
