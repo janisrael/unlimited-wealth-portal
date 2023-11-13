@@ -167,7 +167,6 @@ export default {
       currentRightComponent: null,
       currentLeftComponent: null,
       token: "",
-      // verification: true,
       original_data: [],
       loading: false,
       pollingClearInterval: null,
