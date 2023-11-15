@@ -639,6 +639,7 @@ span.modal-span {
 	text-align: center;
 	margin: 0 auto;
 	width: -webkit-fill-available;
+	width: -moz-available;
 	border-top: 20px solid #17153c;
 	border-left: 10px solid #17153c;
 	border-right: 10px solid #17153c;
@@ -668,6 +669,7 @@ span.modal-span {
 	display: inline-block;
 	text-align: center;
 	width: -webkit-fill-available;
+	width: -moz-available;
 	color: #ffffff;
 	cursor: pointer;
 	margin: 10px 10px 25px;
@@ -684,6 +686,7 @@ span.modal-span {
 	display: inline-block;
 	text-align: center;
 	width: -webkit-fill-available;
+	width: -moz-available;
 	color: #ffffff;
 	cursor: pointer;
 	margin: 10px 10px 25px;
@@ -791,6 +794,7 @@ span.modal-span {
 	.el-dialog__body {
 	padding: 0;
 	width: -webkit-fill-available !important;
+	width: -moz-available;
 }
 
 .upcoming-booking-modal
