@@ -270,19 +270,29 @@
             style="color: #ffffff; padding: 30px 0 15px; display: inline-block"
             >Book from available dates:</span
           >
+          <!-- {{ temp_recordings }} -->
           <div v-if="type === 'recording'" class="video-wrapper">
             <el-radio-group
               style="padding-bottom: 10px"
               v-model="active_tab"
               size="medium"
               v-if="recordings_per_date.length > 0"
+              @change="handlePlayRecording(active_tab)"
             >
+              <!-- v-if="recordings_per_date.length > 0" -->
               <el-radio-button
                 v-for="(recording, i) in recordings_per_date"
                 :name="recording"
                 :label="`Recording ${i + 1}`"
               ></el-radio-button>
             </el-radio-group>
+            <!-- <el-radio
+              v-model="video_url"
+              v-for="(recording, i) in temp_recordings"
+              :name="recording"
+              :label="`Recording ${i + 1}`"
+            ></el-radio> -->
+
             <div class="player-container">
               <div
                 v-loading="loading"
@@ -354,7 +364,10 @@
                       :class="{ 'selected-event': event.selected == true }"
                       @click="getSelected(event, i)"
                     >
-                      <div class="carousel-check-wrapper">
+                      <div
+                        class="carousel-check-wrapper"
+                        @click="getSelected(event, i)"
+                      >
                         <el-checkbox
                           v-model="event.selected"
                           class="carousel-checked"
@@ -577,6 +590,10 @@ export default {
         ],
       },
       videoComponent: null,
+      temp_recordings: [
+        "https://webinar-videos-smartcharts.s3.eu-west-2.amazonaws.com/1-a00Ac000000iuKLIAY.mp4",
+        "https://webinar-videos-smartcharts.s3.eu-west-2.amazonaws.com/2-a00Ac000000iuKLIAY.mp4",
+      ],
     };
   },
   computed: {
@@ -609,6 +626,24 @@ export default {
   },
   methods: {
     /* eslint-disable */
+    handlePlayRecording(active_tab) {
+      console.log("test", this.active_tab);
+      var index = this.active_tab.replace(/[^0-9]/g, "");
+      // console.log(index, "index");
+      // console.log(this.temp_recordings[parseInt(index) - 1]);
+      // alert("test", active_tab);
+      this.videoComponent = null;
+
+      // this.videoOptions.poster = this.event_type.image_url;
+      this.videoOptions.sources[0].src =
+        this.videoOptions.sources[parseInt(index) - 1].src > 0
+          ? this.videoOptions.sources[parseInt(index) - 1].src
+          : null;
+      this.vudeo_url = this.videoOptions.sources[parseInt(index) - 1].src;
+      setTimeout(() => {
+        this.videoComponent = VideoPlayer;
+      }, 1000);
+    },
     checkThisEvent(event) {
       console.log(event, "cghvjbkn");
     },
