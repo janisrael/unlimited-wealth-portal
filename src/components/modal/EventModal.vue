@@ -627,7 +627,7 @@ export default {
   methods: {
     /* eslint-disable */
     handlePlayRecording(active_tab) {
-      console.log("test", this.active_tab);
+      console.log("test", this.recordings_per_date);
       var index = this.active_tab.replace(/[^0-9]/g, "");
       // console.log(index, "index");
       // console.log(this.temp_recordings[parseInt(index) - 1]);
@@ -636,10 +636,10 @@ export default {
 
       // this.videoOptions.poster = this.event_type.image_url;
       this.videoOptions.sources[0].src =
-        this.videoOptions.sources[parseInt(index) - 1].src > 0
-          ? this.videoOptions.sources[parseInt(index) - 1].src
+        this.recordings_per_date[parseInt(index) - 1] > 0
+          ? this.recordings_per_date[parseInt(index) - 1]
           : null;
-      this.vudeo_url = this.videoOptions.sources[parseInt(index) - 1].src;
+      this.vudeo_url = this.recordings_per_date[parseInt(index) - 1];
       setTimeout(() => {
         this.videoComponent = VideoPlayer;
       }, 1000);
