@@ -249,7 +249,7 @@ export default {
   },
   beforeMount() {
     this.$root.$on("refresh-mybookings", (event) => {
-      consolel.log("refresh trigger");
+      console.log("refresh trigger");
       this.getMyBookings();
     });
   },
