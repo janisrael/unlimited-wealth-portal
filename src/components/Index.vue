@@ -247,14 +247,6 @@ export default {
       var listenerRes = {};
       listenerRes = JSON.parse(msg.message);
 
-      this.currentRightComponent = null;
-      this.$nextTick(() => {
-        /* eslint-disable */
-        console.log("xfresh");
-        this.$refs.calendarComponent.getMyBookings();
-        this.currentRightComponent = RightContent;
-      });
-
       if (
         listenerRes.data.customer_id === this.customer_id &&
         (listenerRes.type === "booking.confirmed" ||
@@ -290,22 +282,22 @@ export default {
                   "</strong></p>",
                 duration: 5000,
               });
-              // this.$root.$emit("refresh-mybookings");
+              this.$root.$emit("refresh-mybookings");
               this.currentRightComponent = null;
               this.$nextTick(() => {
                 /* eslint-disable */
-                this.$refs.calendarComponent.getMyBookings();
+                // this.$refs.calendarComponent.getMyBookings();
                 this.currentRightComponent = RightContent;
               });
             }
           }
           if (type === "booking.confirmed") {
             console.log("booking confirmed");
-            // this.$root.$emit("refresh-mybookings");
+            this.$root.$emit("refresh-mybookings");
             this.currentRightComponent = null;
             this.$nextTick(() => {
               /* eslint-disable */
-              this.$refs.calendarComponent.getMyBookings();
+              // this.$refs.calendarComponent.getMyBookings();
               this.currentRightComponent = RightContent;
             });
           }
@@ -318,7 +310,7 @@ export default {
               this.currentRightComponent = null;
               this.$nextTick(() => {
                 /* eslint-disable */
-                this.$refs.calendarComponent.getMyBookings();
+                // this.$refs.calendarComponent.getMyBookings();
                 this.currentRightComponent = RightContent;
               });
               listenerRes = undefined;
@@ -326,7 +318,7 @@ export default {
           this.currentRightComponent = null;
           this.$nextTick(() => {
             /* eslint-disable */
-            this.$refs.calendarComponent.getMyBookings();
+            // this.$refs.calendarComponent.getMyBookings();
             this.currentRightComponent = RightContent;
           });
         }
