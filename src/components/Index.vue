@@ -246,6 +246,15 @@ export default {
       console.log("listener receptor: ", msg);
       var listenerRes = {};
       listenerRes = JSON.parse(msg.message);
+
+      this.currentRightComponent = null;
+      this.$nextTick(() => {
+        /* eslint-disable */
+        console.log("xfresh");
+        this.$refs.calendarComponent.getMyBookings();
+        this.currentRightComponent = RightContent;
+      });
+
       if (
         listenerRes.data.customer_id === this.customer_id &&
         (listenerRes.type === "booking.confirmed" ||
