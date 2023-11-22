@@ -247,13 +247,13 @@ export default {
       this.cookie_timezone = this.$cookies.get("timezone").timezone;
     }
   },
-  beforeMount() {
-    this.$root.$on("refresh-mybookings", (event) => {
-      consolel.log("refresh trigger");
-      alert("x");
-      this.getMyBookings();
-    });
-  },
+  // beforeMount() {
+  //   this.$root.$on("refresh-mybookings", (event) => {
+  //     consolel.log("refresh trigger");
+  //     alert("x");
+  //     this.getMyBookings();
+  //   });
+  // },
   methods: {
     groupBookings() {
       let inprogress = [];
@@ -458,6 +458,7 @@ export default {
     },
 
     getMyBookings() {
+      console.log("getMyBookings");
       this.$store.dispatch("getMybookings", this.token).then((response) => {
         if (response.status === 200) {
           this.my_events_upcoming = this._myybookings;

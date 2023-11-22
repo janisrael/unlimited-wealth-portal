@@ -281,12 +281,14 @@ export default {
                   "</strong></p>",
                 duration: 5000,
               });
-              this.$root.$emit("refresh-mybookings");
+              // this.$root.$emit("refresh-mybookings");
+              this.$refs.calendarComponent.getMyBookings();
             }
           }
           if (type === "booking.confirmed") {
             console.log("booking confirmed");
-            this.$root.$emit("refresh-mybookings");
+            // this.$root.$emit("refresh-mybookings");
+            this.$refs.calendarComponent.getMyBookings();
           }
           this.$store
             .dispatch("updateBooking", listenerRes)
