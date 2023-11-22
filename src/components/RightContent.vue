@@ -247,13 +247,12 @@ export default {
       this.cookie_timezone = this.$cookies.get("timezone").timezone;
     }
   },
-  // beforeMount() {
-  //   this.$root.$on("refresh-mybookings", (event) => {
-  //     consolel.log("refresh trigger");
-  //     alert("x");
-  //     this.getMyBookings();
-  //   });
-  // },
+  beforeMount() {
+    this.$root.$on("refresh-mybookings", (event) => {
+      consolel.log("refresh trigger");
+      this.getMyBookings();
+    });
+  },
   methods: {
     groupBookings() {
       let inprogress = [];

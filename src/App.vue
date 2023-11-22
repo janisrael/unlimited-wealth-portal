@@ -185,7 +185,7 @@ export default {
     },
     receptor(msg) {
       // triggers for new message from listener
-      console.log("listener receptor: ", msg);
+      console.log("listener receptorxx: ", msg);
       var listenerRes = {};
       listenerRes = JSON.parse(msg.message);
       if (
@@ -223,10 +223,12 @@ export default {
                   "</strong></p>",
                 duration: 5000,
               });
+              this.$root.$emit("refresh-mybookings");
             }
           }
           if (type === "booking.confirmed") {
             console.log("booking confirmed");
+            this.$root.$emit("refresh-mybookings");
           }
           this.$store
             .dispatch("updateBooking", listenerRes)
@@ -234,6 +236,7 @@ export default {
             .then((response) => {
               // this.triggerRebuild = listenerRes;
               this.$root.$emit("rebuild-event-list");
+              this.$root.$emit("refresh-mybookings");
               listenerRes = undefined;
             });
         }
