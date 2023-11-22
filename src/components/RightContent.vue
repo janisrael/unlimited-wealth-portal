@@ -239,12 +239,20 @@ export default {
       return this.$store.getters._myybookings;
     },
   },
+  /* eslint-disable */
   created() {
     this.getEventsDate();
     this.getMyBookings();
     if (this.$cookies.get("timezone")) {
       this.cookie_timezone = this.$cookies.get("timezone").timezone;
     }
+  },
+  beforeMount() {
+    this.$root.$on("refresh-mybookings", (event) => {
+      consolel.log("refresh trigger");
+      alert("x");
+      this.getMyBookings();
+    });
   },
   methods: {
     groupBookings() {

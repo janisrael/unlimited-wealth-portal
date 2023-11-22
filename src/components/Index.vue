@@ -281,10 +281,12 @@ export default {
                   "</strong></p>",
                 duration: 5000,
               });
+              this.$root.$emit("refresh-mybookings");
             }
           }
           if (type === "booking.confirmed") {
             console.log("booking confirmed");
+            this.$root.$emit("refresh-mybookings");
           }
           this.$store
             .dispatch("updateBooking", listenerRes)

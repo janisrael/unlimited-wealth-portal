@@ -635,8 +635,11 @@ export default {
       this.videoComponent = null;
 
       // this.videoOptions.poster = this.event_type.image_url;
-      this.videoOptions.sources[0].src =
-        this.recordings_per_date[parseInt(index) - 1];
+      this.videoOptions.sources[0].src = this.recordings_per_date[
+        parseInt(index) - 1
+      ]
+        ? this.recordings_per_date[parseInt(index) - 1]
+        : null;
       // this.videoOptions.sources[0].src =
       //   this.recordings_per_date[parseInt(index) - 1] > 0
       //     ? this.recordings_per_date[parseInt(index) - 1]

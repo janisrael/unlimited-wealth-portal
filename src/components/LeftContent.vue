@@ -381,11 +381,11 @@ export default {
                 {
                   confirmButtonText: "OK",
                   callback: (action) => {
-                    this.$message({
-                      type: "info",
-                      showClose: false,
-                      message: `action: ${action}`,
-                    });
+                    // this.$message({
+                    //   type: "info",
+                    //   showClose: false,
+                    //   message: `action: ${action}`,
+                    // });
                     localStorage.clear();
                     document.location.href = "/";
                     // setTimeout(() => {
