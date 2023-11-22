@@ -458,7 +458,7 @@ export default {
     },
 
     getMyBookings() {
-      console.log("getMyBookings");
+      console.log("refresh mybookings");
       this.$store.dispatch("getMybookings", this.token).then((response) => {
         if (response.status === 200) {
           this.my_events_upcoming = this._myybookings;

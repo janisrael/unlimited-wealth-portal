@@ -282,13 +282,19 @@ export default {
                 duration: 5000,
               });
               // this.$root.$emit("refresh-mybookings");
-              this.$refs.calendarComponent.getMyBookings();
+              this.$nextTick(() => {
+                /* eslint-disable */
+                this.$refs.calendarComponent.getMyBookings();
+              });
             }
           }
           if (type === "booking.confirmed") {
             console.log("booking confirmed");
             // this.$root.$emit("refresh-mybookings");
-            this.$refs.calendarComponent.getMyBookings();
+            this.$nextTick(() => {
+              /* eslint-disable */
+              this.$refs.calendarComponent.getMyBookings();
+            });
           }
           this.$store
             .dispatch("updateBooking", listenerRes)
@@ -296,6 +302,10 @@ export default {
             .then((response) => {
               // this.triggerRebuild = listenerRes;
               this.$root.$emit("rebuild-event-list");
+              this.$nextTick(() => {
+                /* eslint-disable */
+                this.$refs.calendarComponent.getMyBookings();
+              });
               listenerRes = undefined;
             });
         }
