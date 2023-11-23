@@ -250,7 +250,7 @@ export default {
     },
     receptor(msg) {
       // triggers for new message from listener
-      console.log("listener receptor: ", msg);
+      console.log("listener receptorxx: ", msg);
       var listenerRes = {};
       listenerRes = JSON.parse(msg.message);
       let selected_data = listenerRes.data;
@@ -290,36 +290,19 @@ export default {
                 duration: 5000,
               });
               this.$root.$emit("refresh-mybookings");
-              this.currentRightComponent = null;
-              this.$nextTick(() => {
-                /* eslint-disable */
-                // this.$refs.calendarComponent.getMyBookings();
-                this.currentRightComponent = RightContent;
-              });
             }
           }
           if (type === "booking.confirmed") {
             console.log("booking confirmed");
             this.$root.$emit("refresh-mybookings", selected_data);
-            this.currentRightComponent = null;
-            this.$nextTick(() => {
-              /* eslint-disable */
-              // this.$refs.calendarComponent.getMyBookings();
-              this.currentRightComponent = RightContent;
-            });
           }
           this.$store
             .dispatch("updateBooking", listenerRes)
             // eslint-disable-next-line no-unused-vars
             .then((response) => {
               // this.triggerRebuild = listenerRes;
-              this.$root.$emit("rebuild-event-list", selected_data);
-              // this.currentRightComponent = null;
-              // this.$nextTick(() => {
-              //   /* eslint-disable */
-              //   // this.$refs.calendarComponent.getMyBookings();
-              //   this.currentRightComponent = RightContent;
-              // });
+              this.$root.$emit("rebuild-event-list");
+              // this.$root.$emit("refresh-mybookings", selected_data);
               listenerRes = undefined;
             });
         }
