@@ -297,7 +297,7 @@ export default {
           }
           if (type === "booking.confirmed") {
             console.log("booking confirmed", selected_data);
-            selected_data.event_id = selected_data.id;
+            // selected_data.event_id = selected_data.id;
             this.$root.$emit("refresh-mybookings", selected_data);
           }
           this.$store
