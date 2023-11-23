@@ -250,7 +250,7 @@ export default {
   beforeMount() {
     this.$root.$on("refresh-mybookings", (event) => {
       console.log("refresh trigger with value", event);
-      this.getMyBookings(event);
+      this.addBooking(event);
     });
   },
   methods: {
@@ -455,7 +455,10 @@ export default {
       });
       return count;
     },
-
+    addBooking(data) {
+      console.log("addBooking");
+      this.list_upcoming.push(data);
+    },
     getMyBookings(data) {
       console.log("refresh mybookings");
       if (data) {
