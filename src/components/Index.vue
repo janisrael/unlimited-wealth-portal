@@ -255,13 +255,13 @@ export default {
       listenerRes = JSON.parse(msg.message);
       let selected_data = listenerRes.data;
       if (
-        listenerRes.data.customer_id === this.customer_id &&
+        listenerRes.data.customer_id === this.customerID &&
         (listenerRes.type === "booking.confirmed" ||
           listenerRes.type === "booking.failed")
       ) {
         var event_match = {};
         var event_req = [];
-        console.log(listenerRes, "listenerResreceptor");
+        console.log(listenerRes, "listenerResreceptor true");
         var event_id = listenerRes.data.event_id;
 
         if (listenerRes) {
