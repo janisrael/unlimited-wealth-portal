@@ -188,7 +188,6 @@ export default {
     // },
     // receptor(msg) {
     //   // triggers for new message from listener
-    //   console.log("listener receptorxx: ", msg);
     //   var listenerRes = {};
     //   listenerRes = JSON.parse(msg.message);
     //   let selected_data = listenerRes.data;

@@ -254,8 +254,12 @@ export default {
       var listenerRes = {};
       listenerRes = JSON.parse(msg.message);
       let selected_data = listenerRes.data;
+      console.log(
+        localStorage.getItem("customer_id"),
+        'localStorage.getItem("customer_id")'
+      );
       if (
-        listenerRes.data.customer_id === this.customerID &&
+        listenerRes.data.customer_id === localStorage.getItem("customer_id") &&
         (listenerRes.type === "booking.confirmed" ||
           listenerRes.type === "booking.failed")
       ) {

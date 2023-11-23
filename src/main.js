@@ -66,7 +66,7 @@ Vue.use(PubNubVue, {
 	// publishKey: "pub-c-c78be85e-c4e2-4e03-b862-ca9674005d70",
 	// uuid: "35467812y8u390129ui3",
 	restore: true,
-	logVerbosity: true,
+	logVerbosity: false,
 	ssl: false,
 	presenceTimeout: 300,
 });
