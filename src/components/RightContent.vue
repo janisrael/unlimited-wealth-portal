@@ -252,6 +252,10 @@ export default {
       console.log("refresh trigger with value", event);
       this.addBooking(event);
     });
+    this.$root.$on("delete-mybookings", (event) => {
+      console.log("delete event", event);
+      this.deleteBooking(event);
+    });
   },
   methods: {
     groupBookings() {
@@ -458,6 +462,13 @@ export default {
     addBooking(data) {
       console.log("addBooking");
       this.list_upcoming.push(data);
+    },
+    deleteBooking(data) {
+      this.list_upcoming.forEach((value, index) => {
+        if (value.id === data.id) {
+          this.list_upcoming.splice(index, 1);
+        }
+      });
     },
     getMyBookings(data) {
       console.log("refresh mybookings");

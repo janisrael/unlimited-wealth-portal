@@ -697,6 +697,8 @@ export default {
               this.loading = false;
               this.this_load = false;
               this.disable = false;
+              // delete-mybookings
+              this.$root.$emit("delete-mybookings", active_event);
               this.$emit("cancel_events", active_event);
             })
             .catch((err) => {
