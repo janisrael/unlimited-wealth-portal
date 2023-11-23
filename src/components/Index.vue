@@ -10,6 +10,7 @@
           :xl="18"
           class="right-panel"
         >
+          {{ customerID }}
           <el-col :span="24" class="panel-header">
             <el-col :span="17">
               <el-radio
@@ -153,6 +154,12 @@ export default {
     LeftContent,
     RightContent,
     // LoginComponent,
+  },
+  props: {
+    customerID: {
+      type: String,
+      require: true,
+    },
   },
   data() {
     return {
