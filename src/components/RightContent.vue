@@ -465,10 +465,11 @@ export default {
     },
     deleteBooking(data) {
       this.list_upcoming.forEach((value, index) => {
-        if (value.id === data.id) {
+        if (value.event_id === data.id) {
           this.list_upcoming.splice(index, 1);
         }
       });
+      console.log(this.list_upcoming, data, "new list");
     },
     getMyBookings(data) {
       console.log("refresh mybookings");
