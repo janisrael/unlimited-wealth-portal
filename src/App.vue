@@ -110,9 +110,9 @@ export default {
       this.token = localStorage.getItem("token");
       this.currentComponent = Index;
 
-      setTimeout(() => {
+      this.$nextTick(() => {
         location.reload();
-      }, 200);
+      });
       // this.getEventTypes();
     },
     verifyToken(token) {
