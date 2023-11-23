@@ -246,7 +246,7 @@ export default {
       console.log("listener receptor: ", msg);
       var listenerRes = {};
       listenerRes = JSON.parse(msg.message);
-
+      let selected_data = listenerRes.data;
       if (
         listenerRes.data.customer_id === this.customer_id &&
         (listenerRes.type === "booking.confirmed" ||
@@ -293,7 +293,7 @@ export default {
           }
           if (type === "booking.confirmed") {
             console.log("booking confirmed");
-            this.$root.$emit("refresh-mybookings");
+            this.$root.$emit("refresh-mybookings", selected_data);
             this.currentRightComponent = null;
             this.$nextTick(() => {
               /* eslint-disable */
@@ -306,21 +306,15 @@ export default {
             // eslint-disable-next-line no-unused-vars
             .then((response) => {
               // this.triggerRebuild = listenerRes;
-              this.$root.$emit("rebuild-event-list");
-              this.currentRightComponent = null;
-              this.$nextTick(() => {
-                /* eslint-disable */
-                // this.$refs.calendarComponent.getMyBookings();
-                this.currentRightComponent = RightContent;
-              });
+              this.$root.$emit("rebuild-event-list", selected_data);
+              // this.currentRightComponent = null;
+              // this.$nextTick(() => {
+              //   /* eslint-disable */
+              //   // this.$refs.calendarComponent.getMyBookings();
+              //   this.currentRightComponent = RightContent;
+              // });
               listenerRes = undefined;
             });
-          this.currentRightComponent = null;
-          this.$nextTick(() => {
-            /* eslint-disable */
-            // this.$refs.calendarComponent.getMyBookings();
-            this.currentRightComponent = RightContent;
-          });
         }
       }
     },

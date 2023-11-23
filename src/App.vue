@@ -188,6 +188,7 @@ export default {
       console.log("listener receptorxx: ", msg);
       var listenerRes = {};
       listenerRes = JSON.parse(msg.message);
+      let selected_data = listenerRes.data;
       if (
         listenerRes.data.customer_id === this.customer_id &&
         (listenerRes.type === "booking.confirmed" ||
@@ -228,7 +229,7 @@ export default {
           }
           if (type === "booking.confirmed") {
             console.log("booking confirmed");
-            this.$root.$emit("refresh-mybookings");
+            this.$root.$emit("refresh-mybookings", selected_data);
           }
           this.$store
             .dispatch("updateBooking", listenerRes)
@@ -236,7 +237,7 @@ export default {
             .then((response) => {
               // this.triggerRebuild = listenerRes;
               this.$root.$emit("rebuild-event-list");
-              this.$root.$emit("refresh-mybookings");
+              // this.$root.$emit("refresh-mybookings", selected_data);
               listenerRes = undefined;
             });
         }

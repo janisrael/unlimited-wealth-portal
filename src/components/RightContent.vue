@@ -249,8 +249,8 @@ export default {
   },
   beforeMount() {
     this.$root.$on("refresh-mybookings", (event) => {
-      console.log("refresh trigger");
-      this.getMyBookings();
+      console.log("refresh trigger with value", event);
+      this.getMyBookings(event);
     });
   },
   methods: {
@@ -456,23 +456,38 @@ export default {
       return count;
     },
 
-    getMyBookings() {
+    getMyBookings(data) {
       console.log("refresh mybookings");
-      this.$store.dispatch("getMybookings", this.token).then((response) => {
-        if (response.status === 200) {
-          this.my_events_upcoming = this._myybookings;
-          this.filterMyUpcomingEventsByRegion();
+      if (data) {
+        this._myybookings.push(data);
+        this.my_events_upcoming = this._myybookings;
+        this.filterMyUpcomingEventsByRegion();
 
-          this.all_bookings = this._myybookings;
-          this.removeCompletedEvents();
+        this.all_bookings = this._myybookings;
+        this.removeCompletedEvents();
 
-          this.all_bookings.sort(function (a, b) {
-            return new Date(a.start_at.utc) - new Date(b.start_at.utc);
-          });
-          this.groupBookings();
-          console.log(this.list_inprogress, "- inprogress");
-        }
-      });
+        this.all_bookings.sort(function (a, b) {
+          return new Date(a.start_at.utc) - new Date(b.start_at.utc);
+        });
+        this.groupBookings();
+        console.log(this.list_inprogress, "- inprogress");
+      } else {
+        this.$store.dispatch("getMybookings", this.token).then((response) => {
+          if (response.status === 200) {
+            this.my_events_upcoming = this._myybookings;
+            this.filterMyUpcomingEventsByRegion();
+
+            this.all_bookings = this._myybookings;
+            this.removeCompletedEvents();
+
+            this.all_bookings.sort(function (a, b) {
+              return new Date(a.start_at.utc) - new Date(b.start_at.utc);
+            });
+            this.groupBookings();
+            console.log(this.list_inprogress, "- inprogress");
+          }
+        });
+      }
     },
     getDateDay(date) {
       var days = [
