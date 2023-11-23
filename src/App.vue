@@ -32,11 +32,11 @@ export default {
       data: {},
       category: "",
       // triggerRebuild: null,
-      messages: this.$pnGetMessage(
-        "customers." + localStorage.getItem("customer_id") + ".booking",
-        this.receptor,
-        10
-      ),
+      // messages: this.$pnGetMessage(
+      //   "customers." + localStorage.getItem("customer_id") + ".booking",
+      //   this.receptor,
+      //   10
+      // ),
       presense: {},
       pubnub_status: null,
       verification: false,
@@ -109,7 +109,10 @@ export default {
       this.verification = true;
       this.token = localStorage.getItem("token");
       this.currentComponent = Index;
-      // location.reload();
+
+      // setTimeout(() => {
+      //   location.reload();
+      // }, 100);
       // this.getEventTypes();
     },
     verifyToken(token) {
