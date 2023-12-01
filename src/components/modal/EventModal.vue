@@ -366,7 +366,6 @@
                     >
                       <div
                         class="carousel-check-wrapper"
-                        @click="getSelected(event, i)"
                       >
                         <el-checkbox
                           v-model="event.selected"

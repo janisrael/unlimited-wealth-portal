@@ -717,8 +717,8 @@ span.modal-span {
 }
 
 .carousel-checked {
-	right: -6px;
-	top: -8px;
+	right: -3px;
+	top: -5px;
 	position: absolute !important;
 }
 
