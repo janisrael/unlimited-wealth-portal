@@ -645,7 +645,7 @@ export default {
       }, 1000);
     },
     checkThisEvent(event) {
-      console.log(event, "cghvjbkn");
+      console.log(event, "checkThisEvent");
     },
     checkIfOngoing(event) {
       // moment(localDt, localDtFormat).tz(timezone).format('YYYY-MM-DD hh:mm:ss A');
@@ -1051,6 +1051,7 @@ export default {
 
             if (this.recordings_per_date.legnth > 0) {
               this.recordings_per_date.reverse();
+              console.log(this.this.recordings_per_date, "reverse");
             }
 
             this.event_list.sort(function (a, b) {
