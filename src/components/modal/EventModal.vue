@@ -364,9 +364,7 @@
                       :class="{ 'selected-event': event.selected == true }"
                       @click="getSelected(event, i)"
                     >
-                      <div
-                        class="carousel-check-wrapper"
-                      >
+                      <div class="carousel-check-wrapper">
                         <el-checkbox
                           v-model="event.selected"
                           class="carousel-checked"
@@ -628,9 +626,7 @@ export default {
     handlePlayRecording(active_tab) {
       console.log("test", this.recordings_per_date);
       var index = this.active_tab.replace(/[^0-9]/g, "");
-      // console.log(index, "index");
-      // console.log(this.temp_recordings[parseInt(index) - 1]);
-      // alert("test", active_tab);
+
       this.videoComponent = null;
 
       // this.videoOptions.poster = this.event_type.image_url;
@@ -654,7 +650,6 @@ export default {
     checkIfOngoing(event) {
       // moment(localDt, localDtFormat).tz(timezone).format('YYYY-MM-DD hh:mm:ss A');
       let now = this.$moment.utc();
-      // console.log(now, event.start_at.local, "event.start_at.local");
       var start_date = this.$moment(event.start_at.utc).utc(true);
       var end_date = this.$moment(event.end_at.utc).utc(true);
 
@@ -995,43 +990,18 @@ export default {
 
           this.$refs.slick.goTo(selected_index);
         } else {
-          // this.event_list.forEach((value, index) => {
-          //   value.selected = false;
-          //   this.disable = true;
-          // });
           this.event_list.forEach((value, index) => {
             value.selected = false;
           });
 
           this.event_list[index].selected = true;
-          // if (this.event_list[index].selected === true) {
-          //   this.event_list[index].selected = false;
-
-          //   // this.selected_events = this.selected_events.filter(
-          //   //   (selected_event) => selected_event.id != event.id
-          //   // );
-
-          //   // if (this.selected_events.length <= 0) {
-          //   //   this.disable = true;
-          //   // }
-          // } else {
-          //   // this.disable = false;
-
-          //   // this.selected_events.push(this.event_list[index]);
-          // }
 
           let arr = this.event_list;
-          // let filtered_events = arr.filter((item) => {
-          //   return item._related_booking.id === undefined;
-          // });
 
           let selected_index = arr.findIndex((object) => {
             return object.id === event.id;
           });
 
-          // this.disable = false;
-          // this.event_list[index].selected = true;
-          // console.log("no");
           console.log(selected_index);
           this.$refs.slickRecording.goTo(index);
         }
@@ -1078,6 +1048,10 @@ export default {
               response.data.data.recordings.length > 0
                 ? response.data.data.recordings
                 : [];
+
+            if (this.recordings_per_date.legnth > 0) {
+              this.recordings_per_date.reverse();
+            }
 
             this.event_list.sort(function (a, b) {
               return new Date(a.start_at.utc) - new Date(b.start_at.utc);
