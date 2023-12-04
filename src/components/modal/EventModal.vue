@@ -284,6 +284,7 @@
                 v-for="(recording, i) in recordings_per_date"
                 :name="recording"
                 :label="`Recording ${i + 1}`"
+                :key="i"
               ></el-radio-button>
             </el-radio-group>
             <!-- <el-radio
@@ -629,12 +630,16 @@ export default {
 
       this.videoComponent = null;
 
-      // this.videoOptions.poster = this.event_type.image_url;
       this.videoOptions.sources[0].src = this.recordings_per_date[
         parseInt(index) - 1
       ]
         ? this.recordings_per_date[parseInt(index) - 1]
         : null;
+
+      console.log(
+        this.videoOptions.sources[0].src,
+        "this.videoOptions.sources[0].src"
+      );
       // this.videoOptions.sources[0].src =
       //   this.recordings_per_date[parseInt(index) - 1] > 0
       //     ? this.recordings_per_date[parseInt(index) - 1]
@@ -1028,9 +1033,15 @@ export default {
             // this.videoComponent = VideoPlayer;
 
             this.videoOptions.poster = this.event_type.image_url;
+            if (response.data.data.recordings.length > 0) {
+              this.recordings_per_date = response.data.data.recordings;
+              this.recordings_per_date.reverse();
+              // console.log(this.recordings_per_date, "reverse");
+            }
+
             this.videoOptions.sources[0].src =
-              response.data.data.recordings.length > 0
-                ? response.data.data.recordings[0]
+              this.recordings_per_date.length > 0
+                ? this.recordings_per_date[0]
                 : null;
 
             setTimeout(() => {
@@ -1038,21 +1049,16 @@ export default {
             }, 1000);
 
             this.video_url =
-              response.data.data.recordings.length > 0
-                ? response.data.data.recordings[0]
+              this.recordings_per_date.length > 0
+                ? this.recordings_per_date[0]
                 : null;
 
             this.active_tab = "Recording 1";
             this.active_event = event;
-            this.recordings_per_date =
-              response.data.data.recordings.length > 0
-                ? response.data.data.recordings
-                : [];
-
-            if (this.recordings_per_date.length > 0) {
-              this.recordings_per_date.reverse();
-              console.log(this.recordings_per_date, "reverse");
-            }
+            // this.recordings_per_date =
+            //   response.data.data.recordings.length > 0
+            //     ? response.data.data.recordings
+            //     : [];
 
             this.event_list.sort(function (a, b) {
               return new Date(a.start_at.utc) - new Date(b.start_at.utc);
