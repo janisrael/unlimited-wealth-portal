@@ -1049,7 +1049,7 @@ export default {
                 ? response.data.data.recordings
                 : [];
 
-            if (this.recordings_per_date.legnth > 0) {
+            if (this.recordings_per_date.length > 0) {
               this.recordings_per_date.reverse();
               console.log(this.this.recordings_per_date, "reverse");
             }
