@@ -1051,7 +1051,7 @@ export default {
 
             if (this.recordings_per_date.length > 0) {
               this.recordings_per_date.reverse();
-              console.log(this.this.recordings_per_date, "reverse");
+              console.log(this.recordings_per_date, "reverse");
             }
 
             this.event_list.sort(function (a, b) {
