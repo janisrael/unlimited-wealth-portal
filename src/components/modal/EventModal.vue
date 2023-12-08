@@ -68,8 +68,8 @@
             </div>
             <div v-if="type === 'upcoming'" style="display: inline-block">
               <div style="color: #a2b0d5; font-zie: 12px">Occurrence:</div>
-              <div v-if="event_type.typical_occurence" style="color: #ffffff">
-                {{ event_type.typical_occurence }}
+              <div v-if="event_type.typical_occurrence" style="color: #ffffff">
+                {{ event_type.typical_occurrence }}
               </div>
               <div v-else style="color: #ffffff">-</div>
             </div>
@@ -1036,7 +1036,6 @@ export default {
             if (response.data.data.recordings.length > 0) {
               this.recordings_per_date = response.data.data.recordings;
               this.recordings_per_date.reverse();
-              // console.log(this.recordings_per_date, "reverse");
             }
 
             this.videoOptions.sources[0].src =
@@ -1059,7 +1058,7 @@ export default {
             //   response.data.data.recordings.length > 0
             //     ? response.data.data.recordings
             //     : [];
-
+            console.log(this.recordings_per_date, "reverse");
             this.event_list.sort(function (a, b) {
               return new Date(a.start_at.utc) - new Date(b.start_at.utc);
             });
