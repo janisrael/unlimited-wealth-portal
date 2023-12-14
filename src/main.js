@@ -63,7 +63,6 @@ Vue.use(VueAxios, axios);
 Vue.use(PubNubVue, {
 	subscribeKey:
 		process.env.VUE_APP_SUBSCRIBE_KEY,
-	// publishKey: "pub-c-c78be85e-c4e2-4e03-b862-ca9674005d70",
 	// uuid: "35467812y8u390129ui3",
 	restore: true,
 	logVerbosity: false,
